@@ -2,10 +2,31 @@
 
 Webapp project for the ESTR2106 course: Building Web Applications.
 
+## Organization
+
+### Backend
+
+Backend and API related code is in the `src/api` directory. [`index.ts`](src/api/index.ts) contains the entrypoint of the api. You may make a new script in the `src/api` directory and import it in [`index.ts`](src/api/index.ts) to add new routes. All API routes will by default be prefixed with `/api/` on the server. (See [`server.ts`](server.ts)).
+
+### Frontend
+
+Any paths not caught by the API will be served by the frontend. Frontend code is in `src/`. The entrypoint of the frontend is [`main.tsx`](src/main.tsx). You may add new pages by creating a new folder in `src` and adding a new route in [`main.tsx`](src/main.tsx). Components used in multiple pages can be placed in the `src/components` directory.
+
 ## Deployment
 
-<!-- TODO: Add deployment instructions -->
-*cricket noises*
+Start MongoDB server:
+
+```bash
+docker-compose up -d
+```
+
+Alternatively you can start the MongoDB using MongoDB Compass or the MongoDB shell as long as the connection url is `mongodb://127.0.0.1:27017/`.
+
+Start development server:
+
+```bash
+npm run dev
+```
 
 ## Roadmap
 
