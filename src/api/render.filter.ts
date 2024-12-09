@@ -8,6 +8,7 @@ export class RenderFilter extends BaseExceptionFilter {
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const next = ctx.getNext<Function>();
+
     if (
       response &&
       request &&
@@ -17,6 +18,7 @@ export class RenderFilter extends BaseExceptionFilter {
     ) {
       return next();
     }
+
     return super.catch(exception, host);
   }
 }
