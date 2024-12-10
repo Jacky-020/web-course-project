@@ -10,12 +10,9 @@ function App(){
   const [count, setCount] = useState(0);
 
   return (
-    <div className='d-flex'>
-        <div className="sidebar">
-          <SideNavbar />
-        </div>
 
-        <div className="main-content">
+
+        <div>
           <div>
           <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
             <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -38,7 +35,7 @@ function App(){
           </p>
           </div>
         </div>
-    </div>
+    
   );
 };
 

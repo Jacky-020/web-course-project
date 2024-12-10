@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './SideNav.css'; 
 
-function SideNavbar({ routeLinks }) {
+function SideNavbar() {
   return (
     <div>
       <Nav className="flex-column">
