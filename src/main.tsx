@@ -4,11 +4,16 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App/App.tsx";
 import SideNavbar from'./frontend/components/SideNavbar'
+import LocationTable from'./frontend/components/LocationTable'
 
 const routes = [
     {
         path: "/",
         element: <App />,
+    },
+    {
+        path: "/locationtable",
+        element: <LocationTable/>,
     },
     {
         path: "/*",
