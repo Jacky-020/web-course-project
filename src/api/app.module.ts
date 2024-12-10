@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -17,7 +17,9 @@ import { RoleGuard } from './auth/auth.guard';
     AuthModule,
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/', {
       onConnectionCreate: (connection) => {
-        connection.on('connected', () => console.log('MongoDB connected'));
+        connection.on('connected', () =>
+          Logger.log('Connected to database', 'MongoDB'),
+        );
       },
     }),
     UserModule,
