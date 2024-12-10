@@ -1,0 +1,13 @@
+.sidebar-brand {
+padding: 10px 15px; /* Adjust brand padding */
+font-size: 1.5rem; /* Font size for brand */
+color: #fff; /* Text color */
+}
+
+.sidebar .nav-link {
+color: #fff; /* Link color */
+}
+
+.sidebar .nav-link:hover {
+background-color: gray; /* Hover effect */
+}
