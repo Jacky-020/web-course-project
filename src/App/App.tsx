@@ -16,6 +16,7 @@ function App(){
         </div>
 
         <div className="main-content">
+          <div>
           <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
             <img src={viteLogo} className="logo" alt="Vite logo" />
           </a>
@@ -35,6 +36,7 @@ function App(){
           <p className="read-the-docs">
             Click on the Vite and React logos to learn more
           </p>
+          </div>
         </div>
     </div>
   );
