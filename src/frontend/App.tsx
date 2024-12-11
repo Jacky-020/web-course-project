@@ -5,6 +5,8 @@ import SideNavbar from './components/SideNavbar.tsx';
 import { Routes, Route } from 'react-router-dom';
 import LocationTable from './components/LocationTable.tsx';
 import RegisterModal from './Register/Register.tsx';
+import MapView from './components/MapView.jsx';
+
 
 const routes = [
     {
@@ -18,6 +20,10 @@ const routes = [
     {
         path: '/locationtable',
         element: <LocationTable />,
+    },
+    {
+        path: "/MapView",
+        element: <MapView/>
     },
     {
         path: '/*',

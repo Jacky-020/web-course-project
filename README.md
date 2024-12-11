@@ -91,12 +91,12 @@ A lot of the below pages seem very repetitive, so we can probably create a gener
     - [ ] Redirect on successful login.
     - [ ] Logout functionality.
 - [ ] Use [react-data-table-component](https://www.npmjs.com/package/react-data-table-component) for table
-- [ ] Location List Page
+- [J] Location List Page
     - [ ] Dynamic table listing all locations.
     - [ ] Implement sorting (by event count) and filtering (categories, distance).
     - [ ] Add search bar to find locations by keyword.
     - [ ] Link each location to its details page.
-- [ ] Map View
+- [J] Map View
     - [ ] Display all locations with pins on a map.
     - [ ] Enable hovering/clicking on pins to display location details.
     - [ ] Add zoom and pan functionalities for better navigation.
