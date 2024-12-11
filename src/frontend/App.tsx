@@ -5,7 +5,7 @@ import SideNavbar from './components/SideNavbar.tsx';
 import { Routes, Route } from 'react-router-dom';
 import LocationTable from './components/LocationTable.tsx';
 import RegisterModal from './Register/Register.tsx';
-import MapView from './components/MapView.js';
+import MapView from './components/MapView.tsx';
 
 
 const routes = [
