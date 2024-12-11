@@ -11,7 +11,7 @@ export class AuthService {
         if (!user) {
             return 'User does not exist!';
         }
-        let ok = await compare(password, user.password);
+        const ok = await compare(password, user.password);
         if (ok) {
             return user;
         } else {

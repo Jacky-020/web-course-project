@@ -20,7 +20,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
     }
 }
 
-export const Roles = Reflector.createDecorator<String[]>();
+export const Roles = Reflector.createDecorator<string[]>();
 
 export const NoAuth = () => SetMetadata('noAuth', true);
 
@@ -33,7 +33,7 @@ export class RoleGuard implements CanActivate {
         const routeRoles = this.reflector.get(Roles, context.getHandler()) || [];
         // Use use Role([]) for routes limited to all authenticated users
         if (req.isAuthenticated()) {
-            const userRoles = req.session.passport.user.roles as String[];
+            const userRoles = req.session.passport.user.roles as string[];
             if (routeRoles.length != 0 && userRoles.some((role) => routeRoles.includes(role)))
                 throw new ForbiddenException('You do not have permission to access this resource.');
             return true;

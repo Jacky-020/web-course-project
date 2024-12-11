@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { Role, User } from './user.schema';
 import { OmitType } from '@nestjs/mapped-types'
 import { UserService } from './user.service';
@@ -14,7 +14,7 @@ export class UserController {
     @NoAuth()
     async register(@Body() body: UserCreationDto) {
         // only users can be registered
-        let user: User = {
+        const user: User = {
             ...body,
             roles: [Role.User]
         }
