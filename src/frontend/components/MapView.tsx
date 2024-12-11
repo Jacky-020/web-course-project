@@ -2,11 +2,16 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { GoogleMap, GoogleMapApiLoader, Marker, InfoWindow } from 'react-google-map-wrapper';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {fetchVenues, Venue} from './FetchVenues'; 
+import { LatLng } from 'google.maps'; 
+
+import { googleMapApiKey } from '../config/googleMapApiKey';
 
 const MapView: React.FC = () => {
     const [venues, setVenues] = useState<Venue[]>([]);
-    const [centerLocation, setCenterLocation] = useState<{ lat: number; lng: number }>({ lat: 37.5709413, lng: 126.977787 });
+    const [centerLocation, setCenterLocation] = useState<LatLng>({ lat: 37.5709413, lng: 126.977787 });
     const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
+
+
 
     useEffect(() => {
         const loadVenues = async () => {
@@ -45,7 +50,7 @@ const MapView: React.FC = () => {
 
     return (
         <div className="container-fluid" style={{ height: '100vh' }}>
-            <GoogleMapApiLoader apiKey='AIzaSyCPY14ecVZnp1vIPbT-XR3GJgCbsOIzX_U'>
+            <GoogleMapApiLoader apiKey={googleMapApiKey}>
                 <Suspense fallback={<div>Loading...</div>}>
                     <GoogleMap 
                         className="w-100" // Full width

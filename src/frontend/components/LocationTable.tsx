@@ -4,6 +4,8 @@ import {fetchVenues, Venue} from './FetchVenues';
 
 
 
+
+
 function LocationTable() {
   const predefinedColumns = [
     {
@@ -26,6 +28,11 @@ function LocationTable() {
       selector: (row: Venue) => row.eventNum,
       sortable: true,
     },
+    {
+      name: 'Distance',
+      selector: (row: Venue) => row.distance,
+      sortable: true,
+    }
   ];
 
   const predefinedData: Venue[] = fetchVenues();
@@ -35,6 +42,7 @@ function LocationTable() {
   const [pending, setPending] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
 
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setColumns(predefinedColumns);
@@ -43,12 +51,17 @@ function LocationTable() {
     return () => clearTimeout(timeout);
   }, []);
 
+
+
+
+
   const handleSearch = () => {
     const filteredData = predefinedData.filter(row => 
       row.location.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setData(filteredData);
   };
+
 
 
 
