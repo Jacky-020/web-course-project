@@ -38,10 +38,6 @@ class RegisterModal extends React.Component<RegisterModalProps> {
         };
     }
 
-    componentDidMount() {
-        console.log(this.props.isLogin);
-    }
-
     onSubmit = async (form: RegisterFormData) => {
         const endpoint = this.props.isLogin ? '/api/auth/login' : '/api/user/register';
         const res = await fetch(endpoint, {
@@ -67,7 +63,7 @@ class RegisterModal extends React.Component<RegisterModalProps> {
                 <div className="modal modal-sheet position-static d-block">
                     <Modal.Dialog>
                         <Modal.Header>
-                            <Modal.Title>{this.props.isLogin ? 'Login' : 'Register'}</Modal.Title>,
+                            <Modal.Title>{this.props.isLogin ? 'Login' : 'Register'}</Modal.Title>
                         </Modal.Header>
 
                         <Formik
