@@ -8,10 +8,10 @@ export class AuthService {
     constructor(private userService: UserService) {}
     async validateUser(username: string, password: string): Promise<User | string> {
         const user = await this.userService.get(username);
-        if (user === undefined) {
+        if (!user) {
             return 'User does not exist!';
         }
-        let ok = await compare(password, user.password);
+        const ok = await compare(password, user.password);
         if (ok) {
             return user;
         } else {

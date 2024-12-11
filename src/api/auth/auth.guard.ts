@@ -1,7 +1,14 @@
-import { CanActivate, ExecutionContext, Injectable, SetMetadata } from "@nestjs/common";
-import { Reflector } from "@nestjs/core";
-import { AuthGuard } from "@nestjs/passport";
-import { Observable } from "rxjs";
+import {
+    CanActivate,
+    ExecutionContext,
+    Injectable,
+    SetMetadata,
+    UnauthorizedException,
+    ForbiddenException,
+} from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
@@ -13,7 +20,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
     }
 }
 
-export const Roles = Reflector.createDecorator<String[]>();
+export const Roles = Reflector.createDecorator<string[]>();
 
 export const NoAuth = () => SetMetadata('noAuth', true);
 
@@ -26,9 +33,12 @@ export class RoleGuard implements CanActivate {
         const routeRoles = this.reflector.get(Roles, context.getHandler()) || [];
         // Use use Role([]) for routes limited to all authenticated users
         if (req.isAuthenticated()) {
-            const userRoles = req.session.passport.user.roles as String[];
-            return routeRoles.length == 0 || userRoles.some(role => routeRoles.includes(role));
+            const userRoles = req.session.passport.user.roles as string[];
+            if (routeRoles.length != 0 && userRoles.some((role) => routeRoles.includes(role)))
+                throw new ForbiddenException('You do not have permission to access this resource.');
+            return true;
         }
+
+        throw new UnauthorizedException('You must be logged in to access this resource.');
     }
 }
-

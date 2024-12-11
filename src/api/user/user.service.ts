@@ -16,7 +16,7 @@ export class UserService {
     const createdUser = new this.userModel(user);
     return createdUser.save();
   }
-  async get(username: string): Promise<User | undefined> {
+  async get(username: string): Promise<User | null> {
     return this.userModel.findOne({username: username}).exec();
   }
 }
