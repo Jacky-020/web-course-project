@@ -11,8 +11,8 @@ function SideNavbar() {
 
         <Nav.Link href="/">Home</Nav.Link>
         <Nav.Link href="#">Login</Nav.Link>
-        <Nav.Link href="/locationtable">Locations</Nav.Link>
-
+        <Nav.Link href="/locationTable">Locations</Nav.Link>
+        <Nav.Link href="MapView">Map view</Nav.Link>
       </Nav>
     </div>
   );

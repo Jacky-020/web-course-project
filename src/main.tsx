@@ -3,8 +3,9 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
 import App from "./App/App.tsx";
-import SideNavbar from'./frontend/components/SideNavbar.tsx'
-import LocationTable from'./frontend/components/LocationTable.js'
+import SideNavbar from'./frontend/components/SideNavbar'
+import LocationTable from'./frontend/components/LocationTable'
+import MapView from './frontend/components/MapView'
 
 const routes = [
     {
@@ -12,8 +13,12 @@ const routes = [
         element: <App />,
     },
     {
-        path: "/locationtable",
+        path: "/locationTable",
         element: <LocationTable/>,
+    },
+    {
+        path: "/MapView",
+        element: <MapView/>
     },
     {
         path: "/*",

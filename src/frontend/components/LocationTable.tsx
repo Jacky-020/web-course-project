@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
+import fetchLocation from './FetchLocations';
 
 // Define the shape of a single location object
 interface Location {
@@ -34,22 +35,7 @@ function LocationTable() {
     },
   ];
 
-  const predefinedData: Location[] = [
-    {
-      id: 1,
-      location: 'Place 1',
-      latitude: 123.01,
-      longitude: 10.02,
-      eventNum: 4,
-    },
-    {
-      id: 2,
-      location: 'Place 2',
-      latitude: 12.03,
-      longitude: 101.04,
-      eventNum: 5,
-    },
-  ];
+  const predefinedData: Location[] = fetchLocation();
 
   const [columns, setColumns] = useState<typeof predefinedColumns>([]);
   const [data, setData] = useState<Location[]>(predefinedData);
