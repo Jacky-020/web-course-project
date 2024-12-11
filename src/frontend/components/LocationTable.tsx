@@ -1,44 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import fetchLocation from './FetchLocations';
+import {fetchVenues, Venue} from './FetchVenues';
 
-// Define the shape of a single location object
-interface Location {
-  id: number;
-  location: string;
-  latitude: number;
-  longitude: number;
-  eventNum: number;
-}
+
 
 function LocationTable() {
   const predefinedColumns = [
     {
       name: 'Location',
-      selector: (row: Location) => row.location,
+      selector: (row: Venue) => row.location,
       sortable: true,
     },
     {
       name: 'Latitude',
-      selector: (row: Location) => row.latitude,
+      selector: (row: Venue) => row.latitude,
       sortable: true,
     },
     {
       name: 'Longitude',
-      selector: (row: Location) => row.longitude,
+      selector: (row: Venue) => row.longitude,
       sortable: true,
     },
     {
       name: 'Number of Events',
-      selector: (row: Location) => row.eventNum,
+      selector: (row: Venue) => row.eventNum,
       sortable: true,
     },
   ];
 
-  const predefinedData: Location[] = fetchLocation();
+  const predefinedData: Venue[] = fetchVenues();
 
   const [columns, setColumns] = useState<typeof predefinedColumns>([]);
-  const [data, setData] = useState<Location[]>(predefinedData);
+  const [data, setData] = useState<Venue[]>(predefinedData);
   const [pending, setPending] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
 

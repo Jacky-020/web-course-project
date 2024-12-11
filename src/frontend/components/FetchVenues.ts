@@ -1,4 +1,4 @@
-interface Location {
+export interface Venue {
     id: number;
     location: string;
     latitude: number;
@@ -6,8 +6,8 @@ interface Location {
     eventNum: number;
 }
 
-const fetchLocation = (): Location[] => {
-    const predefinedData: Location[] = [
+export const fetchVenues = (): Venue[] => {
+    const predefinedData: Venue[] = [
         {
             id: 1,
             location: 'North District Town Hall (Auditorium)',
@@ -27,4 +27,3 @@ const fetchLocation = (): Location[] => {
     return predefinedData;
 };
 
-export default fetchLocation;
