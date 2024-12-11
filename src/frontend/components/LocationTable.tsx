@@ -1,20 +1,25 @@
-import React from 'react';
-import DataTable from 'react-data-table-component';
+import DataTable, { TableColumn } from 'react-data-table-component';
 
-const columns = [
+type Row = {
+  id: number;
+  title: string;
+  year: string;
+};
+
+const columns: TableColumn<Row>[] = [
   {
     name: 'Title',
-    selector: row => row.title,
+    selector: (row) => row.title,
     sortable: true, // Allow sorting by title
   },
   {
     name: 'Year',
-    selector: row => row.year,
+    selector: (row) => row.year,
     sortable: true, // Allow sorting by year
   },
 ];
 
-const data = [
+const data: Row[] = [
   {
     id: 1,
     title: 'Beetlejuice',
@@ -29,24 +34,30 @@ const data = [
 
 function LocationTable() {
   return (
-	<div>
-		<h2>Location List</h2>
-		<div className='input-group ' aria-describedby="addon-wrapping">
-			<input
-				type="search"
-				className="form-control-sm border ps-3"
-				placeholder="Search"
-			/>
-			<button class="btn btn-outline-secondary" type="button" id="button-addon1">search</button>
-			<DataTable
-				columns={columns}
-				data={data}
-				pagination // Enable pagination
-				highlightOnHover // Highlight row on hover
-				dense
-			/>
-		</div>
-	</div>
+    <div>
+      <h2>Location List</h2>
+      <div className="input-group " aria-describedby="addon-wrapping">
+        <input
+          type="search"
+          className="form-control-sm border ps-3"
+          placeholder="Search"
+        />
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          id="button-addon1"
+        >
+          search
+        </button>
+        <DataTable
+          columns={columns}
+          data={data}
+          pagination // Enable pagination
+          highlightOnHover // Highlight row on hover
+          dense
+        />
+      </div>
+    </div>
   );
 }
 
@@ -74,7 +85,5 @@ function LocationTable() {
 // 		/>
 // 	);
 // }
-
-
 
 export default LocationTable;

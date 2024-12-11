@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import reactLogo from '/src/assets/react.svg'
+import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import SideNavbar from '../frontend/components/SideNavbar'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 
@@ -27,7 +26,7 @@ function App(){
               count is {count}
             </button>
             <p>
-              Edit <code>src/App/App.tsx</code> and save to test HMR
+              Edit <code>src/frontend/App/App.tsx</code> and save to test HMR
             </p>
           </div>
           <p className="read-the-docs">
