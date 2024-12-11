@@ -15,7 +15,9 @@ export class User {
     @IsAlphanumeric()
     username: string;
 
-    @IsEmail()
+    @IsEmail({
+        require_tld: false,
+    })
     @Prop({required: true})
     email: string;
 
