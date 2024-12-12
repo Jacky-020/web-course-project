@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import ThemeToggle from './ThemeToggle';
 import './SideNav.css';
 
 function SideNavbar() {
@@ -29,6 +29,7 @@ function SideNavbar() {
                 <Link className="nav-link" to="role-test">
                     Role test
                 </Link>
+                <ThemeToggle />
             </Nav>
         </div>
     );
