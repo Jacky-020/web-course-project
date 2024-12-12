@@ -11,6 +11,7 @@ import VenueDetail from './components/VenueDetail.tsx';
 import AuthProvider from './Auth/AuthProvider.tsx';
 import AuthGuard from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
+import FavouriteVenue from './components/FavouriteVenue.tsx';
 
 
 const routes = [
@@ -42,8 +43,12 @@ const routes = [
         element: <h1>You have perms!</h1>,
     },
     {
-        path: "/VenueDetail",
+        path: '/VenueDetail',
         element: <VenueDetail />
+    },
+    {
+        path: '/favourite-venue',
+        element: <FavouriteVenue/>
     },
     {
         path: '/*',

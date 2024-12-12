@@ -20,6 +20,9 @@ function SideNavbar() {
                 <Link className="nav-link" to="general-search">
                     General search
                 </Link>
+                <Link className="nav-link" to="favourite-venue">
+                    My favourite
+                </Link>
                 <Link className="nav-link" to="role-test">
                     Role test
                 </Link>
