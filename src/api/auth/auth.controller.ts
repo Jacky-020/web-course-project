@@ -8,7 +8,6 @@ export class AuthController {
     @NoAuth()
     @Post('login')
     login(@Req() req: Request) {
-        console.log(req.user.email);
         return req.user;
     }
     @Post('logout')
@@ -20,7 +19,7 @@ export class AuthController {
     @Get('user')
     @NoAuth()
     user(@Req() req: Request) {
-        if (!req.user) return {};
+        if (!req.user) return 'null';
 
         return req.user;
     }

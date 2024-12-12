@@ -23,6 +23,9 @@ function SideNavbar() {
                 <Link className="nav-link" to="MapView">
                     Map view
                 </Link>
+                <Link className="nav-link" to="role-test">
+                    Role test
+                </Link>
             </Nav>
         </div>
     );
