@@ -19,10 +19,16 @@ export class UserController {
             ...body,
             roles: [Role.User],
         };
-        await this.userService.create(user);
+        const newUser = await this.userService.create(user);
+        const reqUser: ReqUser = {
+            id: newUser.id,
+            username: newUser.username,
+            email: newUser.email,
+            roles: newUser.roles,
+        };
 
         await new Promise<void>((resolve, reject) => {
-            req.login(user, (err) => {
+            req.login(reqUser, (err) => {
                 if (err) return reject(err);
                 return resolve();
             });
