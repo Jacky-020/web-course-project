@@ -50,9 +50,9 @@ const MapView: React.FC = () => {
       
         return (
           <div id='content'>
-            <button onClick={handleClicking} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+            <a href="" onClick={handleClicking} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
               <p id='firstHeading' className='firstHeading'>{venue.location}</p>
-            </button>
+            </a>
           </div>
         );
       };
