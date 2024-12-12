@@ -4,26 +4,37 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import SideNavbar from './components/SideNavbar.tsx';
 import { Routes, Route } from 'react-router-dom';
 import LocationTable from './components/LocationTable.tsx';
-import RegisterModal from './Register/Register.tsx';
+import Auth from './Auth/Auth.tsx';
 import MapView from './components/MapView.tsx';
+
 import VenueDetail from './components/VenueDetail.tsx';
+import AuthProvider from './Auth/AuthProvider.tsx';
+import AuthGuard from './Auth/AuthGuard.tsx';
+
 
 const routes = [
     {
         path: '/login',
-        element: <RegisterModal isLogin key="login" />,
+        element: <Auth isLogin key="login" />,
+        noAuth: true,
     },
     {
         path: '/register',
-        element: <RegisterModal key="register" />,
+        element: <Auth key="register" />,
+        noAuth: true,
     },
     {
         path: '/locationtable',
         element: <LocationTable />,
     },
     {
-        path: "/MapView",
-        element: <MapView/>
+        path: '/MapView',
+        element: <MapView />,
+    },
+    {
+        path: '/role-test',
+        roles: ['admin'],
+        element: <h1>You have perms!</h1>,
     },
     {
         path: "/VenueDetail",
@@ -32,6 +43,7 @@ const routes = [
     {
         path: '/*',
         element: <h1>404 Not Found</h1>,
+        noAuth: true,
     },
 ];
 
@@ -44,11 +56,21 @@ class App extends React.Component {
                         <SideNavbar />
                     </div>
                     <div className="main-content">
-                        <Routes>
-                            {routes.map((route) => (
-                                <Route key={route.path} path={route.path} element={route.element} />
-                            ))}
-                        </Routes>
+                        <AuthProvider>
+                            <Routes>
+                                {routes.map((route) => (
+                                    <Route
+                                        key={route.path}
+                                        path={route.path}
+                                        element={
+                                            <AuthGuard noAuth={route.noAuth} roles={route.roles}>
+                                                {route.element}
+                                            </AuthGuard>
+                                        }
+                                    />
+                                ))}
+                            </Routes>
+                        </AuthProvider>
                     </div>
                 </div>
             </>
