@@ -6,9 +6,12 @@ import { Routes, Route } from 'react-router-dom';
 import LocationTable from './components/LocationTable.tsx';
 import Auth from './Auth/Auth.tsx';
 import MapView from './components/MapView.tsx';
-import AuthProvider from './Auth/AuthProvider.tsx';
 
+import VenueDetail from './components/VenueDetail.tsx';
+import AuthProvider from './Auth/AuthProvider.tsx';
 import AuthGuard from './Auth/AuthGuard.tsx';
+import GeneralSearch from './components/GeneralSearch.tsx';
+
 
 const routes = [
     {
@@ -21,18 +24,26 @@ const routes = [
         element: <Auth key="register" />,
         noAuth: true,
     },
+    // {
+    //     path: '/locationtable',
+    //     element: <LocationTable />,
+    // },
+    // {
+    //     path: '/MapView',
+    //     element: <MapView />,
+    // },
     {
-        path: '/locationtable',
-        element: <LocationTable />,
-    },
-    {
-        path: '/MapView',
-        element: <MapView />,
+        path: 'general-search',
+        element: <GeneralSearch/>,
     },
     {
         path: '/role-test',
         roles: ['admin'],
         element: <h1>You have perms!</h1>,
+    },
+    {
+        path: "/VenueDetail",
+        element: <VenueDetail />
     },
     {
         path: '/*',
