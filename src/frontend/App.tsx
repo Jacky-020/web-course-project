@@ -6,7 +6,7 @@ import { Routes, Route } from 'react-router-dom';
 import LocationTable from './components/LocationTable.tsx';
 import RegisterModal from './Register/Register.tsx';
 import MapView from './components/MapView.tsx';
-
+import VenueDetail from './components/VenueDetail.tsx';
 
 const routes = [
     {
@@ -24,6 +24,10 @@ const routes = [
     {
         path: "/MapView",
         element: <MapView/>
+    },
+    {
+        path: "/VenueDetail",
+        element: <VenueDetail />
     },
     {
         path: '/*',

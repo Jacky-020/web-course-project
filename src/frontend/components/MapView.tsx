@@ -1,10 +1,11 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { GoogleMap, GoogleMapApiLoader, Marker, InfoWindow } from 'react-google-map-wrapper';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {fetchVenues, Venue} from './FetchVenues'; 
 import { LatLng } from 'google.maps'; 
 
+import {fetchVenues, Venue} from './FetchVenues'; 
 import { googleMapApiKey } from '../config/googleMapApiKey';
+import { useNavigate } from 'react-router-dom';
 
 const MapView: React.FC = () => {
     const [venues, setVenues] = useState<Venue[]>([]);
@@ -35,18 +36,26 @@ const MapView: React.FC = () => {
         loadVenues();
     }, []);
 
-    // Define the props for the Content component
     interface ContentProps {
-        location: string;
-    }
+        venue: Venue; 
+      }
 
-    const Content: React.FC<ContentProps> = ({ location }) => {
+    const Content: React.FC<ContentProps> = ({ venue }) => {
+        const navigate = useNavigate();
+      
+        function handleClicking(event: React.MouseEvent) {
+          event.preventDefault(); 
+          navigate('/VenueDetail', { state: { selectedVenue: venue } });
+        }
+      
         return (
-            <div id='content'>
-                <p id='firstHeading' className='firstHeading'>{location}</p>
-            </div>
+          <div id='content'>
+            <button onClick={handleClicking} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+              <p id='firstHeading' className='firstHeading'>{venue.location}</p>
+            </button>
+          </div>
         );
-    };
+      };
 
     return (
         <div className="container-fluid" style={{ height: '100vh' }}>
@@ -75,7 +84,7 @@ const MapView: React.FC = () => {
                                 }} 
                                 position={{ lat: selectedVenue.latitude, lng: selectedVenue.longitude }}
                                 open={true}
-                                content={<Content location={selectedVenue.location} />}
+                                content={<Content venue={selectedVenue} />}
                             >
                             </InfoWindow>
                         )}
