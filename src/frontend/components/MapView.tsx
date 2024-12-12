@@ -1,15 +1,19 @@
-import React, { useEffect, useState, Suspense } from 'react';
+import React, { useEffect, useState, Suspense, memo } from 'react';
 import { GoogleMap, GoogleMapApiLoader, Marker, InfoWindow } from 'react-google-map-wrapper';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { LatLng } from 'google.maps'; 
 
-import {fetchVenues, Venue} from './FetchVenues'; 
+import { Venue} from './FetchVenues'; 
 import { googleMapApiKey } from '../config/googleMapApiKey';
 import { useNavigate } from 'react-router-dom';
 
-const MapView: React.FC = () => {
+
+interface MapViewProps {
+    data: Venue[];
+  }
+  
+  const MapView: React.FC<MapViewProps> = ({ data }) => {
     const [venues, setVenues] = useState<Venue[]>([]);
-    const [centerLocation, setCenterLocation] = useState<LatLng>({ lat: 37.5709413, lng: 126.977787 });
     const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
 
 
@@ -17,24 +21,13 @@ const MapView: React.FC = () => {
     useEffect(() => {
         const loadVenues = async () => {
             try {
-                const data = await fetchVenues();
-                console.log("Fetched Locations:", data); // Debugging
-                if (Array.isArray(data) && data.length > 0) {
-                    setVenues(data);
-                    setCenterLocation({
-                        lat: data[0].latitude,
-                        lng: data[0].longitude
-                    });
-                } else {
-                    console.error("Fetched data is not a valid array or is empty:", data);
-                }
+                setVenues(data); 
             } catch (error) {
                 console.error("Error fetching locations:", error);
             }
         };
-
         loadVenues();
-    }, []);
+    }, [data]);
 
     interface ContentProps {
         venue: Venue; 
@@ -63,9 +56,12 @@ const MapView: React.FC = () => {
                 <Suspense fallback={<div>Loading...</div>}>
                     <GoogleMap 
                         className="w-100" // Full width
-                        zoom={12} 
-                        center={centerLocation}
-                        style={{ height: '100%' }} // Full height
+                        zoom={10} 
+                        center={{
+                            lat: 22.38136,
+                            lng: 114.128911
+                        }}
+                        style={{ height: '70%' }} // Full height
                     >
                         {venues.map(venue => (
                             <Marker 
@@ -91,6 +87,8 @@ const MapView: React.FC = () => {
                     </GoogleMap>
                 </Suspense>
             </GoogleMapApiLoader>
+      
+     
         </div>
     );
 }

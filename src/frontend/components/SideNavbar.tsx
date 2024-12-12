@@ -17,11 +17,8 @@ function SideNavbar() {
                 <Link className="nav-link" to="/register">
                     Register
                 </Link>
-                <Link className="nav-link" to="/locationTable">
-                    Locations
-                </Link>
-                <Link className="nav-link" to="MapView">
-                    Map view
+                <Link className="nav-link" to="general-search">
+                    General search
                 </Link>
                 <Link className="nav-link" to="role-test">
                     Role test

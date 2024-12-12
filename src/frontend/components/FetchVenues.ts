@@ -17,7 +17,7 @@ interface venueWithoutDistance{
     eventNum: number;
 }
 
-export const fetchVenues = (): Venue[] => {
+
     const predefinedVenueList: venueWithoutDistance[] = [
         {
             id: 1,
@@ -64,7 +64,8 @@ export const fetchVenues = (): Venue[] => {
         return(c * r);
     }
 
-    const appendDistance = () =>{
+export const fetchVenues = (): Promise<Venue[]> => {
+    return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
             (position: GeolocationPosition) => {
                 const userLocation = {
@@ -72,18 +73,16 @@ export const fetchVenues = (): Venue[] => {
                     lng: position.coords.longitude,
                 };
 
-                console.log(userLocation)
-                for(let venue of VenueList){
-                    venue.distance = calculateDistance(userLocation.lat, userLocation.lng, venue.latitude, venue.longitude);
-                }
+                const venueList: Venue[] = predefinedVenueList.map(venue => ({
+                    ...venue,
+                    distance: calculateDistance(userLocation.lat, userLocation.lng, venue.latitude, venue.longitude),
+                }));
 
+                resolve(venueList); // Resolve with the new venue list
+            },
+            (error) => {
+                reject(error); // Handle geolocation errors
             }
         );
-    }
-
-    appendDistance();
-
-
-    return VenueList;
-};
-
+    });
+}

@@ -10,6 +10,7 @@ import MapView from './components/MapView.tsx';
 import VenueDetail from './components/VenueDetail.tsx';
 import AuthProvider from './Auth/AuthProvider.tsx';
 import AuthGuard from './Auth/AuthGuard.tsx';
+import GeneralSearch from './components/GeneralSearch.tsx';
 
 
 const routes = [
@@ -23,13 +24,17 @@ const routes = [
         element: <Auth key="register" />,
         noAuth: true,
     },
+    // {
+    //     path: '/locationtable',
+    //     element: <LocationTable />,
+    // },
+    // {
+    //     path: '/MapView',
+    //     element: <MapView />,
+    // },
     {
-        path: '/locationtable',
-        element: <LocationTable />,
-    },
-    {
-        path: '/MapView',
-        element: <MapView />,
+        path: 'general-search',
+        element: <GeneralSearch/>,
     },
     {
         path: '/role-test',
