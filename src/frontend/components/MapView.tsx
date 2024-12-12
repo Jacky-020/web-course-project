@@ -54,7 +54,7 @@ const MapView: React.FC = () => {
                 <Suspense fallback={<div>Loading...</div>}>
                     <GoogleMap 
                         className="w-100" // Full width
-                        zoom={17} 
+                        zoom={12} 
                         center={centerLocation}
                         style={{ height: '100%' }} // Full height
                     >
