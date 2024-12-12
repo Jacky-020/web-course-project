@@ -11,7 +11,8 @@ import VenueDetail from './components/VenueDetail.tsx';
 import AuthProvider from './Auth/AuthProvider.tsx';
 import AuthGuard from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
-import Logout from './Auth/Logout.tsx';
+import Logout from './Auth/Logout.tsx';import FavouriteVenue from './components/FavouriteVenue.tsx';
+
 
 const routes = [
     {
@@ -49,6 +50,10 @@ const routes = [
     {
         path: '/VenueDetail',
         element: <VenueDetail />,
+    },
+    {
+        path: '/favourite-venue',
+        element: <FavouriteVenue/>
     },
     {
         path: '/*',

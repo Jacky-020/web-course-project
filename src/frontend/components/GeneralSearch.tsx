@@ -3,33 +3,7 @@ import {fetchVenues, Venue} from './FetchVenues';
 import LocationTable from './LocationTable';
 import MapView from './MapView';
 
-const predefinedColumns = [
-  {
-    name: 'Location',
-    selector: (row: Venue) => row.location,
-    sortable: true,
-  },
-  {
-    name: 'Latitude',
-    selector: (row: Venue) => row.latitude,
-    sortable: true,
-  },
-  {
-    name: 'Longitude',
-    selector: (row: Venue) => row.longitude,
-    sortable: true,
-  },
-  {
-    name: 'Number of Events',
-    selector: (row: Venue) => row.eventNum,
-    sortable: true,
-  },
-  {
-    name: 'Distance',
-    selector: (row: Venue) => row.distance,
-    sortable: true,
-  }
-];
+
 
 const predefinedVenue = {
   id: 1,
@@ -97,28 +71,7 @@ function GeneralSearch(){
           </div>
         );
       }
-      const InputGroup = React.memo(({ searchTerm, setKeyword, handleSearch }) => {
-        return (
-          <div className='input-group' aria-describedby="addon-wrapping">
-            <input
-              type="search"
-              className="form-control-sm border ps-3 m-2"
-              placeholder="Search locations"
-              value={searchTerm}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
-            <DistanceSlider />
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
-              id="button-addon1"
-              onClick={handleSearch} // Trigger search on button click
-            >
-              Search
-            </button>
-          </div>
-        );
-      });
+
 
     //   const InputGroup = () =>{
     //     return(
@@ -154,15 +107,15 @@ function GeneralSearch(){
                 />
                 <DistanceSlider/>
                 <button 
-                className="btn btn-outline-secondary" 
+                className="btn btn-outline-secondary btn-light m-2  mt-3" 
                 type="button" 
                 id="button-addon1" 
                 onClick={handleSearch} // Trigger search on button click
                 >
-                Search
+                Apply filter
                 </button>
             </div>
-            <LocationTable data={filteredData} columns={predefinedColumns} />
+            <LocationTable data={filteredData} selectable={true} />
             <MapView data={filteredData} />          
         </div>
       )
