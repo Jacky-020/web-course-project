@@ -25,8 +25,8 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [alert, setAlert] = useState<AlertState>({
-        state: location.state?.AuthError ? 'danger' : 'HIDE',
-        message: location.state?.AuthError ?? '',
+        state: location.state?.AuthState ?? 'HIDE',
+        message: location.state?.AuthMessage ?? '',
     });
 
     const schema = yup.object().shape({

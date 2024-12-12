@@ -17,7 +17,10 @@ const AuthGuard: React.FC<AuthGuardProps> = (props) => {
                 pathname: '/login',
                 search: '?redirect=' + window.location.pathname,
             }}
-            state={{ AuthError: 'You must be logged in!' }}
+            state={{
+                AuthState: 'danger',
+                AuthMessage: 'You must be logged in!',
+            }}
             replace
         />
     );
