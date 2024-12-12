@@ -3,21 +3,26 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SideNavbar from './components/SideNavbar.tsx';
 import { Routes, Route } from 'react-router-dom';
-import LocationTable from './components/LocationTable.tsx';
+// import LocationTable from './components/LocationTable.tsx';
 import Auth from './Auth/Auth.tsx';
-import MapView from './components/MapView.tsx';
+// import MapView from './components/MapView.tsx';
 
 import VenueDetail from './components/VenueDetail.tsx';
 import AuthProvider from './Auth/AuthProvider.tsx';
 import AuthGuard from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
-import FavouriteVenue from './components/FavouriteVenue.tsx';
+import Logout from './Auth/Logout.tsx';import FavouriteVenue from './components/FavouriteVenue.tsx';
 
 
 const routes = [
     {
         path: '/login',
         element: <Auth isLogin key="login" />,
+        noAuth: true,
+    },
+    {
+        path: '/logout',
+        element: <Logout />,
         noAuth: true,
     },
     {
@@ -35,7 +40,7 @@ const routes = [
     // },
     {
         path: 'general-search',
-        element: <GeneralSearch/>,
+        element: <GeneralSearch />,
     },
     {
         path: '/role-test',
@@ -44,7 +49,7 @@ const routes = [
     },
     {
         path: '/VenueDetail',
-        element: <VenueDetail />
+        element: <VenueDetail />,
     },
     {
         path: '/favourite-venue',
