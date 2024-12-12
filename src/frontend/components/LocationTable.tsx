@@ -1,46 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
-import fetchLocation from './FetchLocations';
+import {fetchVenues, Venue} from './FetchVenues';
 
-// Define the shape of a single location object
-interface Location {
-  id: number;
-  location: string;
-  latitude: number;
-  longitude: number;
-  eventNum: number;
-}
+
+
+
 
 function LocationTable() {
   const predefinedColumns = [
     {
       name: 'Location',
-      selector: (row: Location) => row.location,
+      selector: (row: Venue) => row.location,
       sortable: true,
     },
     {
       name: 'Latitude',
-      selector: (row: Location) => row.latitude,
+      selector: (row: Venue) => row.latitude,
       sortable: true,
     },
     {
       name: 'Longitude',
-      selector: (row: Location) => row.longitude,
+      selector: (row: Venue) => row.longitude,
       sortable: true,
     },
     {
       name: 'Number of Events',
-      selector: (row: Location) => row.eventNum,
+      selector: (row: Venue) => row.eventNum,
       sortable: true,
     },
+    {
+      name: 'Distance',
+      selector: (row: Venue) => row.distance,
+      sortable: true,
+    }
   ];
 
-  const predefinedData: Location[] = fetchLocation();
+  const predefinedData: Venue[] = fetchVenues();
 
   const [columns, setColumns] = useState<typeof predefinedColumns>([]);
-  const [data, setData] = useState<Location[]>(predefinedData);
+  const [data, setData] = useState<Venue[]>(predefinedData);
   const [pending, setPending] = useState(true);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [distanceLimit, setDistanceLimit] = useState<number>(200);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -50,13 +51,37 @@ function LocationTable() {
     return () => clearTimeout(timeout);
   }, []);
 
+
+
+
+
   const handleSearch = () => {
     const filteredData = predefinedData.filter(row => 
-      row.location.toLowerCase().includes(searchTerm.toLowerCase())
+      row.location.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      row.distance <= distanceLimit
     );
     setData(filteredData);
   };
 
+  function DistanceSlider() {
+    // prevent rendering of whole page during sliding, which is very laggy
+    const [distanceSelected, setDistanceSelected] = useState(distanceLimit); 
+    return (
+      <div className='col m-2 '>
+        <input
+          type="range"
+          min="1"
+          max="200"
+          id="distanceRange"
+          value={distanceSelected}
+          step="3"
+          onChange={e => setDistanceSelected(parseFloat(e.target.value))}
+          onBlur={()=> setDistanceLimit(distanceSelected)} // update whole page when released
+        />
+        <div>Distance within : {distanceSelected} km</div>
+      </div>
+    );
+  }
 
 
   return (
@@ -65,11 +90,12 @@ function LocationTable() {
       <div className='input-group' aria-describedby="addon-wrapping">
         <input
           type="search"
-          className="form-control-sm border ps-3"
+          className="form-control-sm border ps-3 m-2"
           placeholder="Search locations"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)} // Update search term on input change
         />
+        <DistanceSlider/>
         <button 
           className="btn btn-outline-secondary" 
           type="button" 
@@ -86,6 +112,7 @@ function LocationTable() {
         highlightOnHover // Highlight row on hover
         dense
         progressPending={pending}
+        selectableRows
       />
     </div>
   );
