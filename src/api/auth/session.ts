@@ -11,14 +11,17 @@ export class SessionSerializer extends PassportSerializer {
         done(null, user.id);
     }
 
-    deserializeUser(id: string, done: (err: Error, user: ReqUser) => void): void {
+    deserializeUser(id: string, done: (err: Error, user: ReqUser | null) => void): void {
         this.userService.getFromId(id).then((user) => {
+            if (!user) return done(null, null);
+
             const reqUser: ReqUser = {
                 id: user.id,
                 username: user.username,
                 email: user.email,
                 roles: user.roles,
             };
+
             done(null, reqUser);
         });
     }

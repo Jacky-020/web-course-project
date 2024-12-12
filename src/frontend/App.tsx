@@ -10,8 +10,8 @@ import Auth from './Auth/Auth.tsx';
 import VenueDetail from './components/VenueDetail.tsx';
 import AuthGuard from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
-import Logout from './Auth/Logout.tsx';import FavouriteVenue from './components/FavouriteVenue.tsx';
-
+import Logout from './Auth/Logout.tsx';
+import FavouriteVenue from './components/FavouriteVenue.tsx';
 
 const routes = [
     {
@@ -52,7 +52,7 @@ const routes = [
     },
     {
         path: '/favourite-venue',
-        element: <FavouriteVenue/>
+        element: <FavouriteVenue />,
     },
     {
         path: '/*',
