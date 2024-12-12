@@ -1,23 +1,47 @@
 
+import { SetStateAction, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import { Venue } from './FetchVenues';
 
 
 
 
 
 
-interface Column<T> {
-  name: string;
-  selector: (row: T) => any;
-  sortable?: boolean;
-}
+const columns = [
+  {
+    name: 'Location',
+    selector: (row: Venue) => row.location,
+    sortable: true,
+  },
+  {
+    name: 'Latitude',
+    selector: (row: Venue) => row.latitude,
+    sortable: true,
+  },
+  {
+    name: 'Longitude',
+    selector: (row: Venue) => row.longitude,
+    sortable: true,
+  },
+  {
+    name: 'Number of Events',
+    selector: (row: Venue) => row.eventNum,
+    sortable: true,
+  },
+  {
+    name: 'Distance',
+    selector: (row: Venue) => row.distance,
+    sortable: true,
+  }
+];
 
 interface LocationTableProps<T> {
   data: T[];
-  columns: Column<T>[];
+  selectable: boolean; // if it is allow to add venues to favourite
 }
 
-function LocationTable<T>({ data, columns }: LocationTableProps<T>) {
+function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
 
 
   // const predefinedData: Venue[] = fetchVenues();
@@ -61,20 +85,35 @@ function LocationTable<T>({ data, columns }: LocationTableProps<T>) {
   //     </div>
   //   );
   // }
+  const [selectedRows, setSelectedRows] = useState([]);
 
+  const handleSelectedRowsChange = (state: { selectedRows: SetStateAction<never[]>; }) => {
+    setSelectedRows(state.selectedRows); // Directly use selectedRows from the state
+  };
+
+  const handleButtonClick = () => {
+    alert(`Selected Rows: ${JSON.stringify(selectedRows)}`);
+  };
 
   return (
     <div>
       <DataTable
         columns={columns}
         data={data}
-        pagination // Enable pagination
-        highlightOnHover // Highlight row on hover
+        pagination 
+        highlightOnHover 
         dense
-        selectableRows
+        selectableRows = {selectable}
         persistTableHead={true}
-        
+        onSelectedRowsChange={handleSelectedRowsChange} 
       />
+      {selectable && 
+        <button onClick={handleButtonClick}  
+          className="btn btn-success mt-3"
+          disabled={selectedRows.length === 0}>
+          Add to favourites
+        </button>
+      }
     </div>
   );
 }
