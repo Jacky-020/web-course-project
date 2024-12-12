@@ -52,11 +52,11 @@ logins and loads your page."*
 
 - [ ] User authentication
     - [ ] User Schema - `username, password, role, Sessions[Session], Favourites[Location]`
-    - [ ] Session Schema - `User`
-    - [ ] User registration endpoint
-    - [ ] User login endpoint and cookie/session management
-    - [ ] User logout endpoint
-    - [ ] Use middleware to check if user is authenticated, if so, add user details to request object and pass to next middleware, else redirect to login page.
+    - [x] Session Schema - `User`
+    - [x] User registration endpoint
+    - [x] User login endpoint and cookie/session management
+    - [x] User logout endpoint
+    - [x] Use middleware to check if user is authenticated, if so, add user details to request object and pass to next middleware, else redirect to login page.
     - [ ] Add initializer script to add sample users to the database
     - [ ] ✨ use MongoDB for [session storage](https://medium.com/front-end-weekly/make-sessions-work-with-express-js-using-mongodb-62a8a3423ef5)
     - [ ] ✨ Consider using [password hashing](https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1)
@@ -86,10 +86,10 @@ A lot of the below pages seem very repetitive, so we can probably create a gener
 - [ ] ✨ Use Bootstrap/SASS for styling
 - [ ] Implement responsive design for different screen sizes.
 - [ ] Login Page
-    - [ ] Form validation for username and password.
-    - [ ] Error handling for invalid credentials.
-    - [ ] Redirect on successful login.
-    - [ ] Logout functionality.
+    - [x] Form validation for username and password.
+    - [x] Error handling for invalid credentials.
+    - [x] Redirect on successful login.
+    - [x] Logout functionality.
 - [ ] Use [react-data-table-component](https://www.npmjs.com/package/react-data-table-component) for table
 - [J] Location List Page
     - [ ] Dynamic table listing all locations.
