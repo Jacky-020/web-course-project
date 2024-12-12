@@ -9,6 +9,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
+import { Request } from 'express';
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard('local') {
@@ -29,11 +30,11 @@ export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         if (this.reflector.get('noAuth', context.getHandler())) return true;
-        const req = context.switchToHttp().getRequest();
+        const req: Request = context.switchToHttp().getRequest();
         const routeRoles = this.reflector.get(Roles, context.getHandler()) || [];
         // Use use Role([]) for routes limited to all authenticated users
         if (req.isAuthenticated()) {
-            const userRoles = req.session.passport.user.roles as string[];
+            const userRoles = req.user.roles as string[];
             if (routeRoles.length != 0 && userRoles.some((role) => routeRoles.includes(role)))
                 throw new ForbiddenException('You do not have permission to access this resource.');
             return true;
