@@ -21,7 +21,7 @@ interface AlertState {
 }
 
 const AuthModal: React.FC<AuthModalProps> = (props) => {
-    const updateAuth = useAuthUpdate();
+    const authUpdate = useAuthUpdate();
     const navigate = useNavigate();
     const location = useLocation();
     const [alert, setAlert] = useState<AlertState>({
@@ -42,28 +42,20 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
     });
 
     const onSubmit = async (form: AuthFormData) => {
-        const endpoint = props.isLogin ? '/api/auth/login' : '/api/user/register';
-        const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(form),
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        setAlert({
-            state: res.ok ? 'success' : 'danger',
-            message: data.message ?? (res.ok ? 'Success!' : 'An error occurred!'),
-        });
-
-        if (res.ok) {
-            updateAuth().then(() => {
-                const redirect = new URLSearchParams(location.search).get('redirect');
-                navigate(redirect ?? '/');
+        authUpdate(form.username, form.password, props.isLogin ? undefined : form.email)
+            .then(() => {
+                setAlert({ state: 'success', message: 'Success!' });
+                setTimeout(() => {
+                    const redirect = new URLSearchParams(location.search).get('redirect');
+                    navigate(redirect ?? '/');
+                }, 1000);
+            })
+            .catch(({ data }) => {
+                setAlert({
+                    state: 'danger',
+                    message: data?.message ?? 'An error occurred!',
+                });
             });
-        }
     };
 
     return (

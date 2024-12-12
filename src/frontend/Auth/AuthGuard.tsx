@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from './AuthProviderHooks';
+import { useAuthState } from './AuthProviderHooks';
 
 interface AuthGuardProps {
     noAuth?: boolean;
@@ -9,7 +9,7 @@ interface AuthGuardProps {
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = (props) => {
-    const state = useAuth();
+    const state = useAuthState();
 
     const navEl = (
         <Navigate
