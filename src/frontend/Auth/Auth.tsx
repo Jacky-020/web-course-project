@@ -42,6 +42,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
     });
 
     const onSubmit = async (form: AuthFormData) => {
+        setAlert({ state: 'HIDE', message: '' });
         authUpdate(form.username, form.password, props.isLogin ? undefined : form.email)
             .then(() => {
                 setAlert({ state: 'success', message: 'Success!' });

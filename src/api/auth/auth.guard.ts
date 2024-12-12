@@ -40,6 +40,6 @@ export class RoleGuard implements CanActivate {
             return true;
         }
 
-        throw new UnauthorizedException('You must be logged in to access this resource.');
+        throw new UnauthorizedException('You must be logged in!');
     }
 }

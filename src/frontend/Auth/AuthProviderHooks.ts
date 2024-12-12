@@ -33,13 +33,3 @@ export const useAuthState = () => {
 };
 
 export const useAuth = () => {};
-
-// Secure fetching hook
-export const useFetch = () => {
-    const authUpdate = useAuthUpdate();
-    return async (input: RequestInfo | URL, init?: RequestInit) => {
-        const res = await fetch(input, init);
-        if (res.status === 401) return authUpdate().then(() => res);
-        return res;
-    };
-};

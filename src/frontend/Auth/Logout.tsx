@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useFetch } from './AuthProviderHooks';
 
 const Logout: React.FC = () => {
-    const fetch = useFetch();
     const navigate = useNavigate();
 
     useEffect(() => {
         fetch('/api/auth/logout', {
             method: 'POST',
-        })
+        }, false)
             .then((res) => {
                 if (res.ok)
                     navigate('/login', {

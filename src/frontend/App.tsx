@@ -8,7 +8,6 @@ import Auth from './Auth/Auth.tsx';
 // import MapView from './components/MapView.tsx';
 
 import VenueDetail from './components/VenueDetail.tsx';
-import AuthProvider from './Auth/AuthProvider.tsx';
 import AuthGuard from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
 import Logout from './Auth/Logout.tsx';
@@ -66,21 +65,19 @@ class App extends React.Component {
                         <SideNavbar />
                     </div>
                     <div className="main-content">
-                        <AuthProvider>
-                            <Routes>
-                                {routes.map((route) => (
-                                    <Route
-                                        key={route.path}
-                                        path={route.path}
-                                        element={
-                                            <AuthGuard noAuth={route.noAuth} roles={route.roles}>
-                                                {route.element}
-                                            </AuthGuard>
-                                        }
-                                    />
-                                ))}
-                            </Routes>
-                        </AuthProvider>
+                        <Routes>
+                            {routes.map((route) => (
+                                <Route
+                                    key={route.path}
+                                    path={route.path}
+                                    element={
+                                        <AuthGuard noAuth={route.noAuth} roles={route.roles}>
+                                            {route.element}
+                                        </AuthGuard>
+                                    }
+                                />
+                            ))}
+                        </Routes>
                     </div>
                 </div>
             </>

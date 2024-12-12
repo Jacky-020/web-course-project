@@ -29,8 +29,22 @@ const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         return user;
     };
 
+    const legacyFetch = window.fetch;
+    const fetch = async (input: RequestInfo | URL, init?: RequestInit, guarded = true) => {
+        const res = await legacyFetch(input, init);
+        if (res.status === 401 && guarded) return authUpdate().then(() => res);
+        return res;
+    };
+
     useEffect(() => {
+        window.fetch = fetch;
         authUpdate();
+        return () => {
+            window.fetch = legacyFetch;
+        };
+
+        // we only want to run this once
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
