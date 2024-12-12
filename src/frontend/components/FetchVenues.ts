@@ -28,9 +28,9 @@ export const fetchVenues = (): Venue[] => {
         },
         {
             id: 2,
-            location: 'Place 2',
-            latitude: 12.03,
-            longitude: 101.04,
+            location: "Sha Tin Town Hall (Dance Studio)",
+            latitude: 22.38136,
+            longitude: 114.1899,
             eventNum: 5,
         },
     ];
