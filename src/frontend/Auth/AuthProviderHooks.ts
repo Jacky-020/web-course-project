@@ -15,6 +15,7 @@ export const AuthStateContext = React.createContext<AuthProviderState>({
 export type AuthUpdateFunction = {
     (): Promise<ReqUser | null>;
     (username: string, password: string, email?: string): Promise<ReqUser | null>;
+    (logout: true): Promise<ReqUser | null>;
 };
 
 export const AuthUpdateContext = React.createContext<AuthUpdateFunction>(async () => {
@@ -31,5 +32,3 @@ export const useAuthState = () => {
     const state = useContext(AuthStateContext);
     return state;
 };
-
-export const useAuth = () => {};

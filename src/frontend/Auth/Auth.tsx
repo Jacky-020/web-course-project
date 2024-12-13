@@ -122,7 +122,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                                 onChange={handleChange}
                                                 isValid={touched.password && !errors.password}
                                                 isInvalid={touched.password && !!errors.password}
-                                                autoComplete="new-password"
+                                                autoComplete={props.isLogin ? 'current-password' : 'new-password'}
                                             />
                                             <Form.Control.Feedback type="invalid">
                                                 {errors.password}
