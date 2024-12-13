@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import ViteExpress from 'vite-express';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import session from 'express-session';
@@ -26,7 +25,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.setGlobalPrefix('api');
-  await app.init();
-  ViteExpress.listen(app.getHttpAdapter().getInstance(), 3000);
+  await app.listen(3000);
 }
 bootstrap();

@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "main": "server.ts",
   "scripts": {
-    "dev": "nest start --watch",
+    "dev": "conc -r \"npm:dev:*\"",
+    "dev:frontend": "vite",
+    "dev:backend": "nest start --watch --preserveWatchOutput",
     "build": "tsc -b && vite build",
     "lint": "eslint . --fix",
     "preview": "vite preview"
@@ -39,7 +41,6 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "styled-components": "^6.1.13",
-    "vite-express": "^0.20.0",
     "yup": "^1.5.0"
   },
   "devDependencies": {
@@ -62,6 +63,7 @@
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "concurrently": "^9.1.0",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
