@@ -1,12 +1,12 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { Role, User } from './user.schema';
-import { OmitType } from '@nestjs/mapped-types';
+import { PickType } from '@nestjs/mapped-types';
 import { UserService } from './user.service';
 import { NoAuth } from 'src/api/auth/auth.guard';
 import { Request } from 'express';
 
-// omit the roles field when asking for user creation
-export class UserCreationDto extends OmitType(User, ['roles'] as const) {}
+// only require username, email and password
+export class UserCreationDto extends PickType(User, ['username', 'email', 'password'] as const) {}
 
 @Controller('user')
 export class UserController {
