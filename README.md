@@ -57,7 +57,7 @@ logins and loads your page."*
     - [x] User login endpoint and cookie/session management
     - [x] User logout endpoint
     - [x] Use middleware to check if user is authenticated, if so, add user details to request object and pass to next middleware, else redirect to login page.
-    - [ ] Add initializer script to add sample users to the database
+    - [x] Add initializer script to add sample users to the database
     - [ ] ✨ use MongoDB for [session storage](https://medium.com/front-end-weekly/make-sessions-work-with-express-js-using-mongodb-62a8a3423ef5)
     - [ ] ✨ Consider using [password hashing](https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1)
 

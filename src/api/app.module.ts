@@ -11,7 +11,9 @@ import { RoleGuard } from './auth/auth.guard';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: ['.env', '.env.dev'],
+    }),
     AuthModule,
     MongooseModule.forRoot('mongodb://127.0.0.1:27017/', {
       onConnectionCreate: (connection) => {
