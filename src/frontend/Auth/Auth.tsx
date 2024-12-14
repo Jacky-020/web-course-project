@@ -48,7 +48,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                 setAlert({ state: 'success', message: 'Success!' });
                 setTimeout(() => {
                     const redirect = new URLSearchParams(location.search).get('redirect');
-                    navigate(redirect ?? '/');
+                    if (redirect) navigate(redirect);
                 }, 1000);
             })
             .catch(({ data }) => {

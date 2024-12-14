@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, ComponentProps } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import SideNavbar from './components/SideNavbar.tsx';
@@ -13,20 +13,24 @@ import GeneralSearch from './components/GeneralSearch.tsx';
 import Logout from './Auth/Logout.tsx';
 import FavouriteVenue from './components/FavouriteVenue.tsx';
 
-const routes = [
+interface RouteConfig extends ComponentProps<typeof AuthGuard> {
+    path: string;
+}
+
+const routeConfigs: RouteConfig[] = [
     {
-        path: '/login',
-        element: <Auth isLogin key="login" />,
+        path: 'login',
+        children: <Auth isLogin key="login" />,
         noAuth: true,
     },
     {
-        path: '/logout',
-        element: <Logout />,
-        noAuth: true,
+        path: 'logout',
+        children: <Logout />,
+        noRedirect: true,
     },
     {
-        path: '/register',
-        element: <Auth key="register" />,
+        path: 'register',
+        children: <Auth key="register" />,
         noAuth: true,
     },
     // {
@@ -39,24 +43,24 @@ const routes = [
     // },
     {
         path: 'general-search',
-        element: <GeneralSearch />,
+        children: <GeneralSearch />,
     },
     {
-        path: '/role-test',
+        path: 'role-test',
         roles: ['admin'],
-        element: <h1>You have perms!</h1>,
+        children: <h1>You have perms!</h1>,
     },
     {
-        path: '/VenueDetail',
-        element: <VenueDetail />,
+        path: 'VenueDetail',
+        children: <VenueDetail />,
     },
     {
-        path: '/favourite-venue',
-        element: <FavouriteVenue />,
+        path: 'favourite-venue',
+        children: <FavouriteVenue />,
     },
     {
-        path: '/*',
-        element: <h1>404 Not Found</h1>,
+        path: '*',
+        children: <h1>404 Not Found</h1>,
         noAuth: true,
     },
 ];
@@ -71,13 +75,17 @@ class App extends React.Component {
                     </div>
                     <div className="main-content">
                         <Routes>
-                            {routes.map((route) => (
+                            {routeConfigs.map((config) => (
                                 <Route
-                                    key={route.path}
-                                    path={route.path}
+                                    key={config.path}
+                                    path={config.path}
                                     element={
-                                        <AuthGuard noAuth={route.noAuth} roles={route.roles}>
-                                            {route.element}
+                                        <AuthGuard
+                                            noAuth={config.noAuth}
+                                            roles={config.roles}
+                                            noRedirect={config.noRedirect}
+                                        >
+                                            {config.children}
                                         </AuthGuard>
                                     }
                                 />

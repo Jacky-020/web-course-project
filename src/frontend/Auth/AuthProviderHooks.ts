@@ -2,14 +2,12 @@ import React, { useContext } from 'react';
 
 export interface AuthProviderState {
     user: ReqUser | null;
-    loading: boolean;
-    init: boolean;
+    state: 'loading' | 'register' | 'login' | 'logout' | 'session';
 }
 
 export const AuthStateContext = React.createContext<AuthProviderState>({
     user: null,
-    loading: false,
-    init: false,
+    state: 'loading',
 });
 
 export type AuthUpdateFunction = {
