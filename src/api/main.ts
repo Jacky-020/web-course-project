@@ -20,7 +20,7 @@ async function bootstrap() {
       cookie: {
         maxAge: 604800, // 7 days
       },
-      store: MongoStore.create({mongoUrl: 'mongodb://localhost:27017/'}),
+      store: MongoStore.create({mongoUrl: process.env.MONGO_URL}),
     }),
   );
   app.use(passport.session());

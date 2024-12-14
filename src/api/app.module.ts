@@ -8,6 +8,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RoleGuard } from './auth/auth.guard';
+import { LocationsModule } from './locations/locations.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   imports: [
@@ -28,6 +31,13 @@ import { RoleGuard } from './auth/auth.guard';
       inject: [ConfigService],
     }),
     UserModule,
+    LocationsModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      playground: true,
+      autoSchemaFile: true,
+      formatError: (err) => ({ message: err.message, status: err.extensions.code }),
+    }),
   ],
   controllers: [AppController],
 

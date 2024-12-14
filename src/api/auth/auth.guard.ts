@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { GqlExecutionContext } from '@nestjs/graphql';
 import { Observable } from 'rxjs';
 import { Request } from 'express';
 
@@ -30,12 +31,13 @@ export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
     canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         if (this.reflector.get('noAuth', context.getHandler())) return true;
-        const req: Request = context.switchToHttp().getRequest();
+        const req: Request = context.switchToHttp().getRequest()
+                             || GqlExecutionContext.create(context).getContext().req; // wtf?
         const routeRoles = this.reflector.get(Roles, context.getHandler()) || [];
         // Use use Role([]) for routes limited to all authenticated users
-        if (req.isAuthenticated()) {
+        if (req.isAuthenticated()) { // expect binded by passport middleware
             const userRoles = req.user.roles as string[];
-            if (routeRoles.length != 0 && userRoles.some((role) => routeRoles.includes(role)))
+            if (routeRoles.length != 0 && !userRoles.some((role) => routeRoles.includes(role)))
                 throw new ForbiddenException('You do not have permission to access this resource.');
             return true;
         }
