@@ -11,6 +11,7 @@ import { RoleGuard } from './auth/auth.guard';
 import { LocationsModule } from './locations/locations.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       autoSchemaFile: true,
       formatError: (err) => ({ message: err.message, status: err.extensions.code }),
     }),
+    EventsModule,
   ],
   controllers: [AppController],
 

@@ -11,5 +11,8 @@ import { Location, LocationSchema } from './entities/location.entity';
   ],
   providers: [LocationsResolver, LocationsService],
   controllers: [LocationsController],
+  exports: [
+    MongooseModule.forFeature([{name: Location.name, schema: LocationSchema}])
+  ]
 })
 export class LocationsModule {}
