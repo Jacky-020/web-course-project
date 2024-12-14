@@ -8,12 +8,20 @@ import GeneralSearch from './components/GeneralSearch.tsx';
 import Logout from './Auth/Logout.tsx';
 import FavouriteVenue from './components/FavouriteVenue.tsx';
 import Dev from './Dev/Dev.tsx';
+import Home from './Home/Home.jsx';
 
 export interface RouteConfig extends AuthGuardProps {
+    devName?: string;
     path: string;
 }
 
 const routeConfigs: RouteConfig[] = [
+    {
+        devName: 'Home',
+        path: '',
+        children: <Home />,
+        noAuth: true,
+    },
     {
         path: 'login',
         children: <Auth isLogin key="login" />,
@@ -42,6 +50,7 @@ const routeConfigs: RouteConfig[] = [
         children: <FavouriteVenue />,
     },
     {
+        devName: '404 Not Found',
         path: '*',
         children: <h1>404 Not Found</h1>,
         noAuth: true,
@@ -50,6 +59,7 @@ const routeConfigs: RouteConfig[] = [
 
 const devRouteConfigs: RouteConfig[] = [
     {
+        devName: 'Role Test',
         path: 'role-test',
         roles: ['admin'],
         children: <h1>You have perms!</h1>,

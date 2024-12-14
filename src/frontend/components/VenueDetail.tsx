@@ -12,7 +12,6 @@ function VenueDetail(){
       const { state } = location; 
       if (state && state.selectedVenue) {
         setSelectedVenue(state.selectedVenue); 
-        console.log(state.selectedVenue); 
       }
     }, [selectedVenue]);
 

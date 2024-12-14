@@ -14,7 +14,6 @@ const AuthGuard: React.FC<AuthGuardProps> = (props) => {
     const navigate = useNavigate();
     const logoutSeen = useRef(false);
 
-    console.log(props, authState, logoutSeen.current);
     useEffect(() => {
         if (authState.state !== 'logout') logoutSeen.current = false;
         if (props.noAuth || authState.state === 'loading' || authState.user) return;

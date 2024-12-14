@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import styles from './Dev.module.css';
 import { Nav, Navbar, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import ThemeToggle from '../components/ThemeToggle';
+import ThemeToggle from '../Theme/ThemeToggle';
 import { RouteConfig } from '../App';
 
 const Dev: React.FC<{ configs: RouteConfig[] }> = ({ configs }) => {
@@ -15,7 +15,7 @@ const Dev: React.FC<{ configs: RouteConfig[] }> = ({ configs }) => {
                         {configs.map((config) => (
                             <NavItem key={config.path}>
                                 <Link className="nav-link" to={config.path}>
-                                    {config.path}
+                                    {config.devName ?? config.path}
                                 </Link>
                             </NavItem>
                         ))}
