@@ -4,6 +4,7 @@ import { useAuthState } from './AuthProviderHooks';
 
 interface AuthGuardProps {
     noAuth?: boolean;
+    noRedirect?: boolean;
     roles?: string[];
     children: ReactNode;
 }
@@ -21,7 +22,8 @@ const AuthGuard: React.FC<AuthGuardProps> = (props) => {
         navigate(
             {
                 pathname: '/login',
-                search: '?redirect=' + window.location.pathname,
+                // search: '?redirect=' + window.location.pathname,
+                search: props.noRedirect ? '' : '?redirect=' + window.location.pathname,
             },
             {
                 state: {
@@ -32,7 +34,7 @@ const AuthGuard: React.FC<AuthGuardProps> = (props) => {
             },
         );
         if (firstLogout) logoutSeen.current = true;
-    }, [navigate, props.noAuth, authState.state, authState.user]);
+    }, [navigate, props.noAuth, authState.state, authState.user, props.noRedirect]);
 
     if (props.noAuth) return props.children;
     if (authState.state === 'loading') return <>Loading</>;
