@@ -22,7 +22,6 @@ const routes = [
     {
         path: '/logout',
         element: <Logout />,
-        noAuth: true,
     },
     {
         path: '/register',
