@@ -38,7 +38,10 @@ const Home: React.FC = () => {
             const arrayBuffer = await response.arrayBuffer();
 
             const decoder = new VideoDecoder({
-                output: async (frame) => frames.push(await createImageBitmap(frame)),
+                output: async (frame) => {
+                    frames.push(await createImageBitmap(frame));
+                    frame.close();
+                },
                 error: (e) => console.error(e),
             });
 
