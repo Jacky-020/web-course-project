@@ -32,22 +32,13 @@ const Home: React.FC = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        const fetchVideo = async () => {
+        const getFrames = async () => {
+            const frames: ImageBitmap[] = [];
             const response = await fetch('/day-and-night.mp4');
             const arrayBuffer = await response.arrayBuffer();
 
-            const canvas = canvasRef.current;
-            if (!canvas) return;
-            const context = canvas.getContext('2d');
-            if (!context) return;
-
             const decoder = new VideoDecoder({
-                output: (frame) => {
-                    if (context) {
-                        context.drawImage(frame, 0, 0, canvas.width, canvas.height);
-                        frame.close();
-                    }
-                },
+                output: async (frame) => frames.push(await createImageBitmap(frame)),
                 error: (e) => console.error(e),
             });
 
@@ -56,20 +47,24 @@ const Home: React.FC = () => {
             video.onError = (e: Error) => {
                 console.log(e);
             };
-            video.onReady = (info) => {
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            video.onReady = (info: any) => {
                 const track = info.videoTracks[0];
                 const stream = new MP4Box.DataStream(undefined, 0, MP4Box.DataStream.BIG_ENDIAN);
                 video.getTrackById(track.id).mdia.minf.stbl.stsd.entries[0].avcC.write(stream);
-                video.setExtractionOptions(track.id);
                 decoder.configure({
                     codec: track.codec,
                     codedHeight: track.video.height,
                     codedWidth: track.video.width,
                     description: new Uint8Array(stream.buffer, 8),
                 });
+                video.setExtractionOptions(track.id);
                 video.start();
             };
-            video.onSamples = function (id, user, samples) {
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            video.onSamples = function (_id: any, _user: any, samples: any) {
                 for (const sample of samples) {
                     decoder.decode(
                         new EncodedVideoChunk({
@@ -82,12 +77,15 @@ const Home: React.FC = () => {
                 }
             };
 
+            // @ts-expect-error required for MP4Box
             arrayBuffer.fileStart = 0;
             video.appendBuffer(arrayBuffer);
             video.flush();
+            await decoder.flush();
+            return frames;
         };
 
-        fetchVideo();
+        getFrames();
     }, []);
 
     return <canvas ref={canvasRef} width="640" height="360"></canvas>;
