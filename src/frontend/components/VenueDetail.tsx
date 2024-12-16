@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { GoogleMap, GoogleMapApiLoader, InfoWindow, Marker } from 'react-google-map-wrapper'; 
 import { Loader } from '@googlemaps/js-api-loader';
 import { googleMapApiKey } from '../config/googleMapApiKey';
@@ -77,8 +77,8 @@ function VenueDetail() {
     
         const reviewRating = review.rating;
         const reviewText = review.text;
-        const authorName = review.authorAttribution.displayName;
-        const authorUri = review.authorAttribution.uri;
+        const authorName = review.authorAttribution?.displayName || '';
+        const authorUri = review.authorAttribution?.uri || '';
     
         return (
             <div id='content'>
