@@ -61,108 +61,96 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
 
     return (
         <>
-            <div className="modal modal-sheet position-static d-block">
-                <Modal.Dialog>
-                    <Modal.Header>
-                        <Modal.Title>{props.isLogin ? 'Login' : 'Register'}</Modal.Title>
-                    </Modal.Header>
+            <Formik
+                validationSchema={schema}
+                onSubmit={onSubmit}
+                initialValues={{
+                    username: '',
+                    email: '',
+                    password: '',
+                }}
+            >
+                {({ handleSubmit, handleChange, touched, errors, isSubmitting }) => (
+                    <>
+                        <Modal.Body>
+                            <Form noValidate id="login-form" onSubmit={handleSubmit}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Username</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter username"
+                                        required
+                                        onChange={handleChange}
+                                        isValid={touched.username && !errors.username}
+                                        isInvalid={touched.password && !!errors.username}
+                                        autoComplete="username"
+                                    />
+                                    <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
+                                </Form.Group>
 
-                    <Formik
-                        validationSchema={schema}
-                        onSubmit={onSubmit}
-                        initialValues={{
-                            username: '',
-                            email: '',
-                            password: '',
-                        }}
-                    >
-                        {({ handleSubmit, handleChange, touched, errors, isSubmitting }) => (
-                            <>
-                                <Modal.Body>
-                                    <Form noValidate id="login-form" onSubmit={handleSubmit}>
-                                        <Form.Group className="mb-3" controlId="username">
-                                            <Form.Label>Username</Form.Label>
-                                            <Form.Control
-                                                type="text"
-                                                placeholder="Enter username"
-                                                required
-                                                onChange={handleChange}
-                                                isValid={touched.username && !errors.username}
-                                                isInvalid={touched.password && !!errors.username}
-                                                autoComplete="username"
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.username}
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
+                                <Form.Group className="mb-3" hidden={props.isLogin}>
+                                    <Form.Label>Email address</Form.Label>
+                                    <Form.Control
+                                        type="email"
+                                        placeholder="Enter email"
+                                        required
+                                        onChange={handleChange}
+                                        isValid={touched.email && !errors.email}
+                                        isInvalid={touched.password && !!errors.email}
+                                        autoComplete="email"
+                                    />
+                                    <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
+                                    <Form.Text className="text-muted">
+                                        We'll never share your email with anyone else.
+                                    </Form.Text>
+                                </Form.Group>
 
-                                        <Form.Group className="mb-3" controlId="email" hidden={props.isLogin}>
-                                            <Form.Label>Email address</Form.Label>
-                                            <Form.Control
-                                                type="email"
-                                                placeholder="Enter email"
-                                                required
-                                                onChange={handleChange}
-                                                isValid={touched.email && !errors.email}
-                                                isInvalid={touched.password && !!errors.email}
-                                                autoComplete="email"
-                                            />
-                                            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                                            <Form.Text className="text-muted">
-                                                We'll never share your email with anyone else.
-                                            </Form.Text>
-                                        </Form.Group>
+                                <Form.Group className="mb-3">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Password"
+                                        required
+                                        onChange={handleChange}
+                                        isValid={touched.password && !errors.password}
+                                        isInvalid={touched.password && !!errors.password}
+                                        autoComplete={props.isLogin ? 'current-password' : 'new-password'}
+                                    />
+                                    <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
+                                </Form.Group>
+                            </Form>
+                        </Modal.Body>
 
-                                        <Form.Group className="mb-3" controlId="password">
-                                            <Form.Label>Password</Form.Label>
-                                            <Form.Control
-                                                type="password"
-                                                placeholder="Password"
-                                                required
-                                                onChange={handleChange}
-                                                isValid={touched.password && !errors.password}
-                                                isInvalid={touched.password && !!errors.password}
-                                                autoComplete={props.isLogin ? 'current-password' : 'new-password'}
-                                            />
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.password}
-                                            </Form.Control.Feedback>
-                                        </Form.Group>
-                                    </Form>
-                                </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                variant="primary"
+                                type="submit"
+                                form="login-form"
+                                disabled={isSubmitting}
+                                className="d-flex justify-content-center align-items-center"
+                            >
+                                <span className={isSubmitting ? 'invisible' : ''}>Submit</span>
+                                <Spinner
+                                    animation="border"
+                                    size="sm"
+                                    className={`position-absolute spinner-border spinner-border-sm ${isSubmitting ? '' : 'visually-hidden'}`}
+                                />
+                            </Button>
 
-                                <Modal.Footer>
-                                    <Button
-                                        variant="primary"
-                                        type="submit"
-                                        form="login-form"
-                                        disabled={isSubmitting}
-                                        className="d-flex justify-content-center align-items-center"
-                                    >
-                                        <span className={isSubmitting ? 'invisible' : ''}>Submit</span>
-                                        <Spinner
-                                            animation="border"
-                                            size="sm"
-                                            className={`position-absolute spinner-border spinner-border-sm ${isSubmitting ? '' : 'visually-hidden'}`}
-                                        />
-                                    </Button>
-
-                                    {alert.state !== 'HIDE' && (
-                                        <Alert
-                                            variant={alert.state}
-                                            dismissible
-                                            onClose={() => setAlert({ state: 'HIDE', message: '' })}
-                                            className="mt-3 w-100"
-                                        >
-                                            {alert.message}
-                                        </Alert>
-                                    )}
-                                </Modal.Footer>
-                            </>
-                        )}
-                    </Formik>
-                </Modal.Dialog>
-            </div>
+                            {alert.state !== 'HIDE' && (
+                                <Alert
+                                    variant={alert.state}
+                                    dismissible
+                                    onClose={() => setAlert({ state: 'HIDE', message: '' })}
+                                    className="mt-3 w-100"
+                                >
+                                    {alert.message}
+                                </Alert>
+                            )}
+                        </Modal.Footer>
+                    </>
+                )}
+            </Formik>
         </>
     );
 };

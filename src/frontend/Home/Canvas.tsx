@@ -39,19 +39,26 @@ class AnimationHandler {
     #changeDirection = false;
 
     #timestamp = 0;
+    #init = false;
 
     #running = false;
-    #stop = false;
 
     constructor() {}
 
-    init(canvas: HTMLCanvasElement, frames: ImageBitmap[]) {
+    async init(canvas: HTMLCanvasElement, framesFetcher: () => Promise<ImageBitmap[]>) {
         this.#ctx = canvas.getContext('2d', { alpha: false }) as CanvasRenderingContext2D;
-        this.#frames = frames;
+        if (this.#init === false) {
+            this.#frames = await framesFetcher();
+        }
+        this.#init = true;
+    }
+
+    isInit() {
+        return this.#init;
     }
 
     start() {
-        if (this.#running || this.#stop || this.#ctx === null || this.#frames.length === 0) {
+        if (this.#running || this.#ctx === null || this.#frames.length === 0) {
             return;
         }
         this.#running = true;
@@ -59,7 +66,7 @@ class AnimationHandler {
     }
 
     #render(timestamp: number) {
-        if (!this.#running || this.#stop || this.#ctx === null || this.#frames.length === 0) {
+        if (!this.#running || this.#ctx === null || this.#frames.length === 0) {
             return;
         }
         requestAnimationFrame(this.#render.bind(this));
@@ -119,12 +126,17 @@ class AnimationHandler {
         this.#segment = segment;
     }
 
-    stop() {
-        this.#stop = true;
+    reset() {
+        this.#frameCache = -1;
+        this.#frame = 0;
+        this.#timestamp = 0;
+        this.#segment = 0;
+        this.#direction = 1;
+        this.#running = false;
     }
 
     pause() {
-        this.#running = !this.#running;
+        this.#running = false;
     }
 
     isRunning() {
@@ -134,13 +146,14 @@ class AnimationHandler {
 
 export type { AnimationHandler };
 
+const animationHandler = new AnimationHandler();
+
 const Canvas: React.FC<{
     done: (handler: AnimationHandler) => void;
     style?: React.CSSProperties;
     className?: string;
 }> = (props) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const animationHandlerRef = useRef<AnimationHandler | null>(null);
 
     useEffect(() => {
         const getFrames = async () => {
@@ -199,26 +212,19 @@ const Canvas: React.FC<{
             return frames;
         };
         async function init() {
-            if (animationHandlerRef.current === null) {
-                animationHandlerRef.current = new AnimationHandler();
-                animationHandlerRef.current.init(canvasRef.current as HTMLCanvasElement, await getFrames());
-            }
-            props.done(animationHandlerRef.current);
+            await animationHandler.init(canvasRef.current as HTMLCanvasElement, getFrames);
+            props.done(animationHandler);
         }
 
         init();
-
-        return () => {
-            animationHandlerRef.current?.pause();
-        };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        if (animationHandlerRef.current !== null) {
-            animationHandlerRef.current.start();
-        }
+        return () => {
+            animationHandler.reset();
+        };
     });
 
     return (

@@ -5,7 +5,3 @@
 .vignette {
     background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0.9) 200%);
 }
-
-.curtain {
-    fill: var(--bs-body-bg);
-}
