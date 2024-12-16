@@ -1,97 +1,83 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import Canvas, { AnimationHandler } from './Canvas';
 import styles from './Home.module.css';
+import { motion, animate } from 'motion/react';
 import { useTheme } from '../Theme/ThemeProviderHooks';
-import MP4Box from 'mp4box';
-
-const sectionSize = 2 * 25 + 13;
-const frames = 25;
-
-const total = sectionSize * 3;
-
-interface Segment {
-    start: number;
-    end: number;
-}
-
-const day: Segment = {
-    start: 0,
-    end: sectionSize,
-};
-
-const transition: Segment = {
-    start: sectionSize + 1,
-    end: sectionSize * 2,
-};
-
-const night: Segment = {
-    start: sectionSize * 2 + 1,
-    end: sectionSize * 3,
-};
 
 const Home: React.FC = () => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const theme = useTheme();
+    const circle = useRef<SVGCircleElement>(null);
+    const [handler, setHandler] = useState<AnimationHandler | null>(null);
+    const radius = 500;
+    const percentage = 0.5;
+    const height = 1280 + radius;
 
     useEffect(() => {
-        const getFrames = async () => {
-            const frames: ImageBitmap[] = [];
-            const response = await fetch('/day-and-night.mp4');
-            const arrayBuffer = await response.arrayBuffer();
-
-            const decoder = new VideoDecoder({
-                output: async (frame) => {
-                    frames.push(await createImageBitmap(frame));
-                    frame.close();
+        if (handler && circle.current) {
+            if (theme == 'light') handler.changeSegment(0);
+            else handler.changeSegment(2);
+            handler.start();
+            animate(
+                circle.current,
+                {
+                    cy: [height, 720 + radius * percentage, 720 + radius * percentage, 0],
+                    r: [radius, radius, radius, 1500],
                 },
-                error: (e) => console.error(e),
-            });
+                {
+                    times: [0, 0.3, 0.4, 1],
+                    duration: 5,
+                    ease: 'easeOut',
+                },
+            );
 
-            const video = MP4Box.createFile();
-            video.start();
-            video.onError = (e: Error) => {
-                console.log(e);
+            return () => {
+                handler.pause();
             };
+        }
+    }, [handler]);
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            video.onReady = (info: any) => {
-                const track = info.videoTracks[0];
-                const stream = new MP4Box.DataStream(undefined, 0, MP4Box.DataStream.BIG_ENDIAN);
-                video.getTrackById(track.id).mdia.minf.stbl.stsd.entries[0].avcC.write(stream);
-                decoder.configure({
-                    codec: track.codec,
-                    codedHeight: track.video.height,
-                    codedWidth: track.video.width,
-                    description: new Uint8Array(stream.buffer, 8),
-                });
-                video.setExtractionOptions(track.id);
-                video.start();
-            };
+    useEffect(() => {
+        if (handler) {
+            if (theme === 'light') handler.changeSegment(0);
+            else handler.changeSegment(2);
+        }
+    }, [handler, theme]);
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            video.onSamples = function (_id: any, _user: any, samples: any) {
-                for (const sample of samples) {
-                    decoder.decode(
-                        new EncodedVideoChunk({
-                            type: sample.is_sync ? 'key' : 'delta',
-                            timestamp: (1e6 * sample.cts) / sample.timescale,
-                            duration: (1e6 * sample.duration) / sample.timescale,
-                            data: sample.data,
-                        }),
-                    );
-                }
-            };
+    useEffect(() => {
+        if (handler) handler.start();
+    });
 
-            // @ts-expect-error required for MP4Box
-            arrayBuffer.fileStart = 0;
-            video.appendBuffer(arrayBuffer);
-            video.flush();
-            await decoder.flush();
-            return frames;
-        };
-
-        getFrames();
-    }, []);
-
-    return <canvas ref={canvasRef} width="640" height="360"></canvas>;
+    return (
+        <>
+            <motion.div className="h-100 w-100 overflow-hidden position-relative">
+                <Canvas done={setHandler} className={`h-100 w-100 object-fit-cover ${styles.banner}`} />
+                <motion.div className={`${styles.vignette} position-absolute top-0 h-100 w-100`}></motion.div>
+                <motion.div className={`position-absolute top-0 h-100 w-100`}>
+                    <motion.svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 1280 720"
+                        className={`object-fit-cover h-100 w-100`}
+                        preserveAspectRatio="xMidYMid slice"
+                    >
+                        <defs>
+                            <motion.mask id="screen">
+                                <motion.rect fill="white" x="0" y="0" width="1280" height="720" />
+                                <motion.circle ref={circle} fill="black" cx="640" cy={height} r={radius} />
+                            </motion.mask>
+                        </defs>
+                        <motion.rect
+                            className={styles.curtain}
+                            x="0"
+                            y="0"
+                            width="1280"
+                            height="720"
+                            mask="url(#screen)"
+                        />
+                    </motion.svg>
+                </motion.div>
+            </motion.div>
+        </>
+    );
 };
 
 export default Home;
