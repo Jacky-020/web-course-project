@@ -127,3 +127,7 @@ A lot of the below pages seem very repetitive, so we can probably create a gener
     - [ ] Table listing all events with edit/delete options.
     - [ ] Form for creating or editing events.
 - [ ] Error pages?
+
+## References
+
+<https://mixkit.co/free-stock-video/from-day-to-night-in-kobe-city-28710/>

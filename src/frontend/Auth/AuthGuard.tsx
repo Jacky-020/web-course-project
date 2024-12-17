@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthState } from './AuthProviderHooks';
 
-interface AuthGuardProps {
+export interface AuthGuardProps {
     noAuth?: boolean;
     noRedirect?: boolean;
     roles?: string[];
@@ -14,15 +14,15 @@ const AuthGuard: React.FC<AuthGuardProps> = (props) => {
     const navigate = useNavigate();
     const logoutSeen = useRef(false);
 
-    console.log(props, authState, logoutSeen.current);
     useEffect(() => {
         if (authState.state !== 'logout') logoutSeen.current = false;
         if (props.noAuth || authState.state === 'loading' || authState.user) return;
         const firstLogout = !logoutSeen.current && authState.state === 'logout';
+        const isDevPath = window.location.pathname.startsWith('/dev');
+        const LoginPath = (isDevPath ? '/dev' : '') + '/login';
         navigate(
             {
-                pathname: '/login',
-                // search: '?redirect=' + window.location.pathname,
+                pathname: LoginPath,
                 search: props.noRedirect ? '' : '?redirect=' + window.location.pathname,
             },
             {

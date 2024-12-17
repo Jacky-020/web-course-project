@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Suspense} from 'react';
 import { GoogleMap, GoogleMapApiLoader, Marker, InfoWindow } from 'react-google-map-wrapper';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { Venue} from './FetchVenues'; 
 import { googleMapApiKey } from '../config/googleMapApiKey';
