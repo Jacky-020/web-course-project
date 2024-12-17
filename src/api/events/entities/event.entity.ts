@@ -204,7 +204,7 @@ export class Event {
   @Prop()
   date_created: Date;
 
-  @Prop({type: mongoose.Schema.Types.ObjectId, ref: Comment.name})
+  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: Comment.name})
   @Field(() => [Comment], {description: "Comments for the event"})
   comments: Comment[];
 }
