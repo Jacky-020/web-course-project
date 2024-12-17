@@ -34,9 +34,10 @@ const predefinedEventList: Event[] = [
     },
 ];
 
-    let EventList: Event[] = predefinedEventList;
 
 
 export const fetchEvents = async (): Promise<Event[]> => {
-    return EventList;
+    let eventList: Event[] = predefinedEventList;
+    // eventList = await fetch();
+    return eventList;
 }
