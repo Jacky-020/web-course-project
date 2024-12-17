@@ -41,17 +41,17 @@ npm run dev
 
 API endpoint `/api/`
 
-- [ ] Parser for XML data from <https://data.gov.hk/en-data/dataset/hk-lcsd-event-event-cultural>
-    - [ ] Convert XML data to JSON
-    - [ ] Store JSON data in MongoDB
-    - [ ] Create relevant Schemas for MongoDB (see below)
-    - [ ] *"get the real time information from API to database only once when the user
-logins and loads your page."*
-    - [ ] *"Show the last updated time clearly"*
-    - [ ] Min 10 venues, each hosting at least 3 events. Handle: title, venue, date/time, description, presenter, location name, Latitude, Longitude. Only English required.
+- [x] Parser for XML data from <https://data.gov.hk/en-data/dataset/hk-lcsd-event-event-cultural>
+    - [x] Convert XML data to JSON
+    - [x] Store JSON data in MongoDB
+    - [x] Create relevant Schemas for MongoDB (see below)
+    - [-] *"get the real time information from API to database only once when the user
+logins and loads your page."* (*currently only on admin request*)
+    - [-] *"Show the last updated time clearly"* (*Last update time API built*)
+    - [x] Min 10 venues, each hosting at least 3 events. Handle: title, venue, date/time, description, presenter, location name, Latitude, Longitude. Only English required.
 
 - [ ] User authentication
-    - [ ] User Schema - `username, password, role, Sessions[Session], Favourites[Location]`
+    - [-] User Schema - `username, password, role, Sessions[Session], Favourites[Location]` (*Favourites not implemented*)
     - [x] Session Schema - `User`
     - [x] User registration endpoint
     - [x] User login endpoint and cookie/session management
@@ -59,20 +59,20 @@ logins and loads your page."*
     - [x] Use middleware to check if user is authenticated, if so, add user details to request object and pass to next middleware, else redirect to login page.
     - [x] Add initializer script to add sample users to the database
     - [x] ✨ use MongoDB for [session storage](https://medium.com/front-end-weekly/make-sessions-work-with-express-js-using-mongodb-62a8a3423ef5)
-    - [ ] ✨ Consider using [password hashing](https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1)
+    - [x] ✨ Consider using [password hashing](https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1)
 
 - [ ] CRUD endpoints for Locations, Events, Users, Comments
-    - [ ] Location Schema - `name, latitude, longitude, events[Event], Categories[Category]`
-    - [ ] Category Schema - `name, Locations[Location]`
-    - [ ] Event Schema - `title, Location/Venue, date/time, description, presenter, comments[Comment]` + ✨ `likes[User]`
-    - [ ] Comment Schema - `user, text, date, Event,` + ✨ `likes[User]`
-    - [ ] GET allowed for all users
-    - [ ] POST, PUT, DELETE allowed for Admins
+    - [-] Location Schema - `name, latitude, longitude, events[Event], Categories[Category]`
+    - [x] Category Schema - `name, Locations[Location]`
+    - [-] Event Schema - `title, Location/Venue, date/time, description, presenter, comments[Comment]` + ✨ `likes[User]`
+    - [-] Comment Schema - `user, text, date, Event,` + ✨ `likes[User]`
+    - [x] GET allowed for all users
+    - [x] POST, PUT, DELETE allowed for Admins
     - [ ] Like/Unlike endpoints for Events and Comments
     - [ ] Favorite/Unfavorite endpoints for Users
-    - [ ] New Comment endpoint for Events
-    - [ ] ✨ serverside comments sanitization, allow for html input
-    - [ ] ✨ GraphQL API for CRUD operations?
+    - [x] New Comment endpoint for Events
+    - [x] ✨ serverside comments sanitization, allow for html input (`DOMPurify.sanitize` lol)
+    - [x] ✨ GraphQL API for CRUD operations?
 
 ### Frontend
 

@@ -1,4 +1,5 @@
 import { Field, HideField, ObjectType } from "@nestjs/graphql";
+import { OmitType } from "@nestjs/mapped-types";
 import { Prop, SchemaFactory, Schema } from "@nestjs/mongoose";
 import { IsAlphanumeric, IsAscii, IsEmail } from "class-validator";
 import { HydratedDocument } from "mongoose";
@@ -33,6 +34,10 @@ export class User {
     @Prop({default: ['user']})
     @HideField()
     roles: Role[];
+}
+
+export class UserSession extends OmitType(User, ['password'] as const) {
+    id: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

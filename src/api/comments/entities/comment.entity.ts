@@ -1,12 +1,18 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Event } from 'src/api/events/entities/event.entity';
 import { User } from 'src/api/user/user.schema';
 import mongoose from 'mongoose'
+import { ObjectIDResolver } from 'graphql-scalars';
 
 @ObjectType()
 @Schema()
 export class Comment {
+  /**
+   * ID of the comment
+   */
+  @Field(() => ObjectIDResolver)
+  _id: mongoose.Schema.Types.ObjectId;
   /**
    * Commented user
    */
