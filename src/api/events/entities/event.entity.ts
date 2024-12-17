@@ -55,7 +55,7 @@ export class Event {
    * Datetime of the event
    */
   @Prop()
-  date?: Date;
+  date: Date;
 
   /**
    * Duration string of the event (Chinese)

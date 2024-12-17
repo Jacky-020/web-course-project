@@ -7,6 +7,7 @@ import { JSDOM } from 'jsdom'
 import crypto from 'node:crypto'
 import { Event, EventMeta } from './entities/event.entity';
 import { Location } from '../locations/entities/location.entity';
+import parser from 'any-date-parser';
 
 @Injectable()
 export class EventsService {
@@ -63,12 +64,15 @@ export class EventsService {
     }
     for (const eventTag of doc.getElementsByTagName("event")) {
       const getOneText = (subtagName: string) => eventTag.getElementsByTagName(subtagName)[0].textContent;
+      const parsedDate = parser.fromString(getOneText("predateE"));
+      if (!parsedDate.isValid()) continue;
       let event: Event = {
         id: Number(eventTag.getAttribute("id")),
         chi_title: getOneText("titlec"),
         en_title: getOneText("titlee"),
         cat1: getOneText("cat1"),
         cat2: getOneText("cat2"),
+        date: parsedDate,
         date_c: getOneText("predateC"),
         date_e: getOneText("predateE"),
         duration_c: getOneText("progtimec"),
