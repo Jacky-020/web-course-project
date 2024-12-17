@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import MongoStore from 'connect-mongo';
 
 dotenv.config();
+dotenv.config({ path: '.env.dev' });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter());
