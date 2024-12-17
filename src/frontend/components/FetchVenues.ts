@@ -1,12 +1,12 @@
 
 
 export interface Venue {
-    id: number;
+    id?: number;
     location: string;
-    category: string;
+    category?: string;
     latitude: number;
     longitude: number;
-    eventNum: number;
+    eventNum?: number;
     distance?: number;
 }
 
@@ -16,7 +16,7 @@ export interface Venue {
     const predefinedVenueList: Venue[] = [
         {
             id: 1,
-            location: 'North District Town Hall',
+            location: 'North District Town Hall (Auditorium)',
             category: "Auditorium",
             latitude: 22.501639,
             longitude: 114.128911,
@@ -24,7 +24,7 @@ export interface Venue {
         },
         {
             id: 2,
-            location: "Sha Tin Town Hall",
+            location: "Sha Tin Town Hall (Dance Studio)",
             category: "Dance Studio",
             latitude: 22.38136,
             longitude: 114.1899,

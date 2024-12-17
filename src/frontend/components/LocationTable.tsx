@@ -1,4 +1,4 @@
-
+// used both in general-search and my-favourite page, display controlled by props {selectable}
 import { SetStateAction, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Venue } from './FetchVenues';
@@ -8,7 +8,7 @@ const columns = [
   {
     name: 'Location',
     sortable: true,
-    cell: row => {
+    cell: (row: Venue) => {
         const navigate = useNavigate(); 
         return (
             <a href="#" onClick={(e) => {
