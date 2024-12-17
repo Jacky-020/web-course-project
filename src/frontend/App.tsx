@@ -7,6 +7,7 @@ import AuthGuard, { AuthGuardProps } from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
 import Logout from './Auth/Logout.tsx';
 import FavouriteVenue from './components/FavouriteVenue.tsx';
+import MapComponent from './components/test.jsx';
 import Dev from './Dev/Dev.tsx';
 import Home from './Home/Home.jsx';
 
@@ -40,14 +41,17 @@ const routeConfigs: RouteConfig[] = [
     {
         path: 'general-search',
         children: <GeneralSearch />,
+        noAuth: true,
     },
     {
         path: 'VenueDetail',
         children: <VenueDetail />,
+        noAuth: true,
     },
     {
         path: 'favourite-venue',
         children: <FavouriteVenue />,
+        noAuth: true,
     },
     {
         devName: '404 Not Found',
