@@ -40,7 +40,7 @@ export class EventsService {
     return this.eventMetaModel.findOne().exec();
   }
 
-  async fetchFromSource() {
+  async fetchFromSource(force: boolean = false) {
     const DATA_URL = "https://www.lcsd.gov.hk/datagovhk/event/events.xml";
     let response = await fetch(DATA_URL);
     if (response.status !== 200) {
@@ -49,7 +49,7 @@ export class EventsService {
     let content = await response.text();
     let meta = await this.getMeta() || new this.eventMetaModel();
     let content_hash = crypto.createHash('sha256').update(content).digest('hex');
-    if (meta.data_hash === content_hash) {
+    if (!force && meta.data_hash === content_hash) {
       // same as last, no need to update
       meta.last_update = new Date(Date.now());
       meta.save();
@@ -100,6 +100,6 @@ export class EventsService {
     meta.last_update = new Date(Date.now());
     meta.data_hash = content_hash;
     meta.save();
-    this.logger.log(`Updated events information from source ${DATA_URL}`);
+    this.logger.log(`${force? '[Forced update] ': ''}Updated events information from source ${DATA_URL}`);
   }
 }
