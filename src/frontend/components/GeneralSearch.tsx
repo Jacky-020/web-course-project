@@ -2,8 +2,7 @@ import React, { useState, useEffect, memo, useDeferredValue } from 'react';
 import {fetchVenues, Venue} from './FetchVenues';
 import LocationTable from './LocationTable';
 import MapView from './MapView';
-
-
+import Dropdown from 'react-bootstrap/Dropdown';
 
 const predefinedVenue = {
   id: 1,
@@ -19,9 +18,10 @@ function GeneralSearch(){
       const [filteredData, setFilteredData] = useState<Venue[]>([]);
       const [keyword, setKeyword] = useState<string>('');
       const searchTerm = useDeferredValue(keyword);
-      const [distanceLimit, setDistanceLimit] = useState<number>(200);
+      const [distanceLimit, setDistanceLimit] = useState<number>(100);
       const [data, setData] = useState<Venue[]>([]); 
-
+      const [categories, setCategories] = useState<string[]>([]);
+      const [selectedCategory, setSelectedCategory] = useState('All Categories');
 
       useEffect(() => {
         const loadVenues = async () => {
@@ -29,7 +29,8 @@ function GeneralSearch(){
                 const venues = await fetchVenues();
                 setData(venues);
                 setFilteredData(venues);
-           
+                const uniqueCategories = [...new Set(venues.map(item => item.category))];
+                setCategories(uniqueCategories);
             } catch (error) {
                 console.error("Error fetching venues:", error);
             }
@@ -41,16 +42,31 @@ function GeneralSearch(){
       const handleSearch = () => {
         const filteredData = data.filter(row => 
           (row.location.toLowerCase().includes(searchTerm.toLowerCase()) || searchTerm.trim() === '') &&
-          row.distance <= distanceLimit
+          row.distance <= distanceLimit &&
+          (selectedCategory === 'All Categories' || row.category === selectedCategory)
         );
         setFilteredData(filteredData);
       };
 
-
-
-
-
-
+      function DropDown(){
+        return(
+          <Dropdown>
+            <Dropdown.Toggle variant="btn btn-outline-secondary btn-light m-2  mt-3" id="dropdown-basic">
+              Select categories
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={()=>setSelectedCategory("All Categories")}>
+                All Categories
+              </Dropdown.Item>
+                {categories.length > 0 && categories.map((category:string, key:number) => (
+                    <Dropdown.Item  onClick={()=>setSelectedCategory(category)}>
+                        {category}
+                    </Dropdown.Item>
+                ))}
+            </Dropdown.Menu>
+          </Dropdown>
+        );
+      }
     
       function DistanceSlider() {
         // prevent rendering of whole page during sliding, which is very laggy
@@ -60,7 +76,7 @@ function GeneralSearch(){
             <input
               type="range"
               min="1"
-              max="200"
+              max="100"
               id="distanceRange"
               value={distanceSelected}
               step="3"
@@ -97,7 +113,7 @@ function GeneralSearch(){
     //   }
       return(
         <div className='w-100'>      
-            <div className='input-group ' aria-describedby="addon-wrapping">
+            <div className='input-group' aria-describedby="addon-wrapping">
                 <input
                 type="search"
                 className="form-control-sm border ps-3 m-2"
@@ -106,6 +122,7 @@ function GeneralSearch(){
                 onChange={(e)=>setKeyword(e.target.value)} 
                 />
                 <DistanceSlider/>
+                <DropDown/>
                 <button 
                 className="btn btn-outline-secondary btn-light m-2  mt-3" 
                 type="button" 

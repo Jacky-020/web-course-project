@@ -3,39 +3,36 @@
 export interface Venue {
     id: number;
     location: string;
+    category: string;
     latitude: number;
     longitude: number;
     eventNum: number;
-    distance: number;
-}
-
-interface venueWithoutDistance{
-    id: number;
-    location: string;
-    latitude: number;
-    longitude: number;
-    eventNum: number;
+    distance?: number;
 }
 
 
-    const predefinedVenueList: venueWithoutDistance[] = [
+
+
+    const predefinedVenueList: Venue[] = [
         {
             id: 1,
-            location: 'North District Town Hall (Auditorium)',
+            location: 'North District Town Hall',
+            category: "Auditorium",
             latitude: 22.501639,
             longitude: 114.128911,
             eventNum: 4,
         },
         {
             id: 2,
-            location: "Sha Tin Town Hall (Dance Studio)",
+            location: "Sha Tin Town Hall",
+            category: "Dance Studio",
             latitude: 22.38136,
             longitude: 114.1899,
             eventNum: 5,
         },
     ];
 
-    let VenueList: any[] = predefinedVenueList;
+    let VenueList: Venue[] = predefinedVenueList;
 
     // copy from external source as google map matrix may cost money
     function calculateDistance(lat1:number, lon1:number, lat2:number,  lon2:number) : number { 

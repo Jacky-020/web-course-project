@@ -64,29 +64,55 @@ function VenueDetail() {
     }
 
     function Content () {
+        const [reviewNum, setReviewNum] = useState(0);
+        
         if (!venueDetail) {
             return <div>Loading venue details...</div>; // Handle loading state
         }
-    
+        
         const place = venueDetail;
-        const review = place.reviews && place.reviews.length > 0 ? place.reviews[0] : null;
-    
+        const review = place.reviews && place.reviews.length > 0 ? place.reviews[reviewNum] : null;
+        
         if (!review) {
             return <div>No reviews available.</div>; // Handle no reviews case
         }
-    
+        
         const reviewRating = review.rating;
         const reviewText = review.text;
         const authorName = review.authorAttribution?.displayName || '';
         const authorUri = review.authorAttribution?.uri || '';
-    
+        
+        function findAverageRating(){
+            if(!place.reviews || place.reviews.length === 0){
+                return 0;
+            }
+            const averageRating:number = place.reviews.reduce((sum:number, review:google.maps.places.Review) => 
+                sum + (review.rating || 0), 0) / place.reviews.length;
+            return averageRating;
+        }
+        const averageRating = findAverageRating();
+        function incrementReviewNum(){
+            let newReviewNum = reviewNum;
+            if(place.reviews){
+                ++newReviewNum;
+                if(newReviewNum >= place.reviews.length){
+                    newReviewNum = 0;
+                }
+            } 
+            setReviewNum(newReviewNum);
+        }
+
         return (
             <div id='content'>
                 <div id="title"><b>{place.displayName}</b></div>
                 <div id="address">{place.formattedAddress}</div>
+                <div id="average-ratings">Average ratings: {averageRating}</div>
+                <hr></hr>
+                <span>{reviewNum + 1})</span> 
                 <a href={authorUri} target="_blank" rel="noopener noreferrer">Author: {authorName}</a>
                 <div id="rating">Rating: {reviewRating} stars</div>
                 <div id="review"><p>Review: {reviewText}</p></div>
+                <button onClick={incrementReviewNum}> next review</button>
             </div>
         );
     };
@@ -103,6 +129,8 @@ function VenueDetail() {
     }
 
     return (
+        
+            
         <div className="container col" style={{ height: '100vh' }}>
             <div className="container-fluid" style={{ height: '100vh' }}>
                 <div className="row h-100">
