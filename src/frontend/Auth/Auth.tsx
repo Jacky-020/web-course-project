@@ -73,8 +73,15 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                 {({ handleSubmit, handleChange, touched, errors, isSubmitting }) => (
                     <>
                         <Modal.Body>
-                            <Form noValidate id="login-form" onSubmit={handleSubmit}>
-                                <Form.Group className="mb-3">
+                            <Form
+                                id={'form-' + (props.isLogin ? 'login' : 'register')}
+                                noValidate
+                                onSubmit={handleSubmit}
+                            >
+                                <Form.Group
+                                    className="mb-3"
+                                    controlId={'username-' + (props.isLogin ? 'login' : 'register')}
+                                >
                                     <Form.Label>Username</Form.Label>
                                     <Form.Control
                                         type="text"
@@ -88,7 +95,11 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                     <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
                                 </Form.Group>
 
-                                <Form.Group className="mb-3" hidden={props.isLogin}>
+                                <Form.Group
+                                    className="mb-3"
+                                    hidden={props.isLogin}
+                                    controlId={'email-' + (props.isLogin ? 'login' : 'register')}
+                                >
                                     <Form.Label>Email address</Form.Label>
                                     <Form.Control
                                         type="email"
@@ -105,7 +116,10 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                     </Form.Text>
                                 </Form.Group>
 
-                                <Form.Group className="mb-3">
+                                <Form.Group
+                                    className="mb-3"
+                                    controlId={'password-' + (props.isLogin ? 'login' : 'register')}
+                                >
                                     <Form.Label>Password</Form.Label>
                                     <Form.Control
                                         type="password"

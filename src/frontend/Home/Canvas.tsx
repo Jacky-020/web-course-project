@@ -225,7 +225,7 @@ const Canvas: React.FC<{
         return () => {
             animationHandler.reset();
         };
-    });
+    }, []);
 
     return (
         <motion.canvas
