@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Canvas, { AnimationHandler } from './Canvas';
 import styles from './Home.module.css';
-import { motion, animate, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useTheme } from '../Theme/ThemeProviderHooks';
 import AuthModal from '../Auth/Auth';
 import { Tab, Nav, Modal } from 'react-bootstrap';
+import ThemeToggle from '../Theme/ThemeToggle';
 
 const Home: React.FC = () => {
     const theme = useTheme();
@@ -16,48 +17,34 @@ const Home: React.FC = () => {
     const height = window.innerHeight + radius;
 
     useEffect(() => {
-        if (handler && circle.current) {
-            handler?.start();
-            animate(
-                circle.current,
-                {
-                    cy: [
-                        height,
-                        window.innerHeight + radius * percentage,
-                        window.innerHeight + radius * percentage,
-                        window.innerHeight / 2,
-                    ],
-                    r: [
-                        radius,
-                        radius,
-                        radius,
-                        Math.sqrt(window.innerHeight ** 2 + window.innerHeight ** 2) + radius * 0.1,
-                    ],
-                },
-                {
-                    times: [0, 0.2, 0.45, 0.9],
-                    duration: 4.5,
-                    ease: 'easeOut',
-                    delay: 1.5,
-                },
-            ).then(() => {
-                setAnimComplete(true);
-            });
-        }
-    }, [handler]);
-
-    useEffect(() => {
-        if (handler) {
-            if (theme === 'light') handler.changeSegment(0);
-            else handler.changeSegment(2);
-        }
+        handler?.start();
+        if (theme === 'light') handler?.changeSegment(0);
+        else handler?.changeSegment(2);
     }, [handler, theme]);
 
     return (
         <>
             <motion.div className="h-100 w-100 overflow-hidden position-relative">
-                <Canvas done={setHandler} className={`h-100 w-100 object-fit-cover ${styles.banner}`} />
-                <motion.div className={`${styles.vignette} position-absolute top-0 h-100 w-100`}></motion.div>
+                <Canvas
+                    done={setHandler}
+                    className={`h-100 w-100 object-fit-cover`}
+                    style={{
+                        display: 'block',
+                        filter: `url(#sharpBlur)`,
+                    }}
+                />
+                <motion.div className={`${styles.vignette} position-absolute top-0 h-100 w-100`}>
+                    <svg>
+                        <filter id="sharpBlur">
+                            <feGaussianBlur stdDeviation="3"></feGaussianBlur>
+                            <feColorMatrix
+                                type="matrix"
+                                values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 9 0"
+                            ></feColorMatrix>
+                            <feComposite in2="SourceGraphic" operator="in"></feComposite>
+                        </filter>
+                    </svg>
+                </motion.div>
                 <div
                     className={`position-absolute top-0 h-100 w-100`}
                     style={{
@@ -87,15 +74,16 @@ const Home: React.FC = () => {
                 {handler != null && (
                     <Tab.Container defaultActiveKey="login">
                         <motion.div
-                            className="modal modal-sheet d-block"
+                            className="modal modal-sheet d-block position-absolute h-auto"
                             initial={{ opacity: 0, scale: 0.0, top: '50%' }}
                             animate={{ opacity: 1, scale: 1, top: '90px' }}
                             transition={{ delay: 6.5, duration: 0.7, type: 'spring', bounce: 0.25 }}
                             style={{
                                 top: '90px',
+                                zIndex: 'unset',
                             }}
                         >
-                            <Modal.Dialog>
+                            <Modal.Dialog className="mt-4">
                                 <Modal.Header>
                                     <Nav variant="tabs" fill justify className="w-100 navbar-nav flex-row">
                                         <Nav.Item>
@@ -123,6 +111,20 @@ const Home: React.FC = () => {
                     </Tab.Container>
                 )}
 
+                {handler != null && (
+                    <motion.div
+                        className="d-flex justify-content-center position-absolute w-100"
+                        initial={{ opacity: 0, scale: 0, top: '100%' }}
+                        animate={{ opacity: 1, scale: 1, top: '600px' }}
+                        transition={{ delay: 7, type: 'spring', bounce: 0.25 }}
+                        style={{
+                            top: '600px',
+                        }}
+                    >
+                        <ThemeToggle scale={1.5} />
+                    </motion.div>
+                )}
+
                 {!animComplete && (
                     <div
                         className={`position-absolute top-0 h-100 w-100 bg-body`}
@@ -143,7 +145,37 @@ const Home: React.FC = () => {
                                         height="1"
                                     >
                                         <rect fill="white" x="0" y="0" width="100%" height="100%" />
-                                        <circle ref={circle} fill="black" cx="50%" cy={height} r={radius} />
+                                        {handler != null && (
+                                            <motion.circle
+                                                ref={circle}
+                                                animate={{
+                                                    cy: [
+                                                        height,
+                                                        window.innerHeight + radius * percentage,
+                                                        window.innerHeight + radius * percentage,
+                                                        window.innerHeight / 2,
+                                                    ],
+                                                    r: [
+                                                        radius,
+                                                        radius,
+                                                        radius,
+                                                        Math.sqrt(window.innerHeight ** 2 + window.innerHeight ** 2) +
+                                                            radius * 0.1,
+                                                    ],
+                                                }}
+                                                transition={{
+                                                    times: [0, 0.2, 0.45, 0.9],
+                                                    duration: 4.5,
+                                                    ease: 'easeOut',
+                                                    delay: 1.5,
+                                                }}
+                                                onAnimationComplete={() => setAnimComplete(true)}
+                                                fill="black"
+                                                cx="50%"
+                                                cy={height}
+                                                r={radius}
+                                            />
+                                        )}
                                     </mask>
                                 </defs>
                             </svg>

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
 
 // @ts-expect-error no types available
 import MP4Box from 'mp4box';
@@ -228,13 +227,13 @@ const Canvas: React.FC<{
     }, []);
 
     return (
-        <motion.canvas
+        <canvas
             ref={canvasRef}
             style={props.style}
             className={props.className}
             width={1280}
             height={720}
-        ></motion.canvas>
+        ></canvas>
     );
 };
 
