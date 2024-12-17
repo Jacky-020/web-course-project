@@ -4,8 +4,8 @@ import { UpdateCommentInput } from './dto/update-comment.input';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Comment } from './entities/comment.entity';
-import { UserDocument } from '../user/user.schema';
-import DOMPurify from 'dompurify';
+import { UserDocument, UserSession, Role } from '../user/user.schema';
+import DOMPurify from 'isomorphic-dompurify';
 import { Event } from '../events/entities/event.entity';
 
 @Injectable()
@@ -14,46 +14,53 @@ export class CommentsService {
     @InjectModel(Comment.name) private commentModel: Model<Comment>,
     @InjectModel(Event.name) private eventModel: Model<Event>,
   ) {}
-  async create(createCommentInput: CreateCommentInput, user: UserDocument) {
+  async create(createCommentInput: CreateCommentInput, userSession: UserSession): Promise<Comment> {
     const nowDate = new Date(Date.now());
-    let event = await this.eventModel.findOne({id: createCommentInput.event_id}).exec();
+    let event = await this.eventModel.findOne({ id: createCommentInput.event_id }).exec();
     if (event === null) {
-      throw new UnprocessableEntityException("No such event!"); // Note: repackage error for graphql
+      throw new UnprocessableEntityException("No such event!"); // FIXME: repackage error for graphql
     }
-    const comment = await this.commentModel.create({
-      user: user._id,
-      event: createCommentInput.event_id,
+    const new_comment = await this.commentModel.create({
+      user: userSession.id,
+      event: event._id,
       body: DOMPurify.sanitize(createCommentInput.comment), // security feature
       post_date: nowDate,
       last_update: nowDate,
       likes: []
     });
-    event.comments.push(comment); // no idea how this works, if it automatically resolves to objectid or vice versa
+    event.comments.push(new_comment); // no idea how this works, if it automatically resolves to objectid or vice versa <-- edit: seems like it does
     event.save();
+    return this.commentModel.findById(new_comment._id, null, { populate: ['user', 'event'] }).exec(); // FIXME: might be inefficient but anyways
   }
 
   async findAll() {
-    return this.commentModel.find().exec();
+    return this.commentModel.find(null, null, { populate: ['user', 'event'] }).exec();
   }
 
   async findOne(id: string) {
-    return this.commentModel.findOne({_id: id}).exec();
+    return this.commentModel.findById(id, null, { populate: ['user', 'event'] }).exec();
   }
 
   async update(
     updateCommentInput: UpdateCommentInput,
     currentUser: UserDocument,
   ) {
+    // Feature: admins can delete comments but not change a comment
+    // (Of course, if you don't go into the db and delete yourself)
     return this.commentModel.findOneAndUpdate(
-      {_id: updateCommentInput.id, user: currentUser},
-      {body: updateCommentInput.comment},
+      { _id: updateCommentInput.id, user: currentUser },
+      { body: updateCommentInput.comment, last_update: new Date(Date.now()) },
       { new: true }
     )
   }
 
-  async remove(id: string) {
-    return this.commentModel.findOneAndDelete(
-      {_id: id}
-    );
+  async remove(id: string, currentUser: UserSession) {
+    // FIXME: Populating the user field instead of comparing ObjectID is kind of inefficient,
+    // but I don't have a way to be typescript compliant
+    const comment = await this.commentModel.findById(id, null, {populate: ['user']}).exec();
+    if (comment.user.username === currentUser.username || Role.Admin in currentUser.roles) {
+      comment.deleteOne().exec();
+    }
+    return comment;
   }
 }

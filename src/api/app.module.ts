@@ -13,6 +13,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { EventsModule } from './events/events.module';
 import { CommentsModule } from './comments/comments.module';
+import { ObjectIDResolver } from 'graphql-scalars';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CommentsModule } from './comments/comments.module';
       playground: true,
       autoSchemaFile: true,
       formatError: (err) => ({ message: err.message, status: err.extensions.code }),
+      resolvers: { ObjectID: ObjectIDResolver }
     }),
     EventsModule,
     CommentsModule,
