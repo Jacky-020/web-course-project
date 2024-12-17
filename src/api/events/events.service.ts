@@ -4,9 +4,9 @@ import { UpdateEventInput } from './dto/update-event.input';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JSDOM } from 'jsdom'
-import { Event } from './entities/event.entity';
+import crypto from 'node:crypto'
+import { Event, EventMeta } from './entities/event.entity';
 import { Location } from '../locations/entities/location.entity';
-import { date } from 'yup';
 
 @Injectable()
 export class EventsService {
@@ -14,6 +14,7 @@ export class EventsService {
   constructor(
     @InjectModel(Event.name) private eventModel: Model<Event>,
     @InjectModel(Location.name) private locationModel: Model<Location>,
+    @InjectModel(EventMeta.name) private eventMetaModel: Model<EventMeta>,
   ) {}
   async create(createEventInput: CreateEventInput) {
     return this.eventModel.create(createEventInput);
@@ -34,13 +35,28 @@ export class EventsService {
   remove(id: number) {
     return this.eventModel.deleteOne({id: id}).exec();
   }
+
+  async getMeta() {
+    return this.eventMetaModel.findOne().exec();
+  }
+
   async fetchFromSource() {
     const DATA_URL = "https://www.lcsd.gov.hk/datagovhk/event/events.xml";
     let response = await fetch(DATA_URL);
     if (response.status !== 200) {
       this.logger.warn("fetch returns non 200 code, something may be wrong!");
     }
-    let doc = (new JSDOM(await response.text(), {contentType: "application/xml"})).window.document;
+    let content = await response.text();
+    let meta = await this.getMeta() || new this.eventMetaModel();
+    let content_hash = crypto.createHash('sha256').update(content).digest('hex');
+    if (meta.data_hash === content_hash) {
+      // same as last, no need to update
+      meta.last_update = new Date(Date.now());
+      meta.save();
+      this.logger.log("Events information is up to date.");
+      return;
+    }
+    let doc = (new JSDOM(content, {contentType: "application/xml"})).window.document;
     const datestrToDate = (s: string) => {
       let s_trim = s.trim().replace(' ', 'T');
       return s_trim === ""? null : new Date(s_trim);
@@ -81,6 +97,9 @@ export class EventsService {
       };
       this.eventModel.findOneAndUpdate({id: event.id}, event, {upsert: true}).exec();
     }
+    meta.last_update = new Date(Date.now());
+    meta.data_hash = content_hash;
+    meta.save();
     this.logger.log(`Updated events information from source ${DATA_URL}`);
   }
 }

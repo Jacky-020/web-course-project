@@ -9,7 +9,7 @@ export class Event {
   /**
    * ID of the event, used by LCSD
    */
-  @Prop()
+  @Prop({unique: true, index: true})
   id: number;
 
   /**
@@ -205,3 +205,14 @@ export class Event {
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
+
+@ObjectType()
+@Schema()
+export class EventMeta {
+  @Prop()
+  data_hash?: string;
+  @Prop()
+  last_update?: Date;
+}
+
+export const EventMetaSchema = SchemaFactory.createForClass(EventMeta);

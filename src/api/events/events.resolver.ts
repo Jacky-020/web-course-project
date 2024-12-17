@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { EventsService } from './events.service';
-import { Event } from './entities/event.entity';
+import { Event, EventMeta } from './entities/event.entity';
 import { CreateEventInput } from './dto/create-event.input';
 import { UpdateEventInput } from './dto/update-event.input';
 import { Role } from '../user/user.schema';
@@ -37,4 +37,14 @@ export class EventsResolver {
   removeEvent(@Args('id', { type: () => Int }) id: number) {
     return this.eventsService.remove(id);
   }
+}
+
+@Resolver(() => EventMeta)
+export class EventsMetaResolver {
+  constructor(private readonly eventsService: EventsService) {}
+  @Query(() => EventMeta, {name: 'event_meta'})
+  async findOne() {
+    return (await this.eventsService.getMeta()) || {};
+  }
+  
 }
