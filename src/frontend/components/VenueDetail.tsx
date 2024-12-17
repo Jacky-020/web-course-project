@@ -10,8 +10,8 @@ import Carousel from 'react-bootstrap/Carousel';
 
 function VenueDetail() {
     const location = useLocation();
-    const [selectedVenue, setSelectedVenue] = useState<Venue | undefined >(undefined);
-    const [venueDetail, setVenueDetail] = useState<google.maps.places.Place[]>();
+    const [selectedVenue, setSelectedVenue] = useState<Venue | undefined >(undefined); // the venue to be displayed
+    const [venueDetail, setVenueDetail] = useState<google.maps.places.Place[]>(); // info of venue visited (up to 3)
     
 
     useEffect(() => {
@@ -80,6 +80,7 @@ function VenueDetail() {
         );
     }
 
+    // Carousel on the right panel
     function ControlledCarousel() {
         const navigate = useNavigate(); 
         const [index, setIndex] = useState(0);
@@ -120,6 +121,7 @@ function VenueDetail() {
         );
       }
 
+    // content in infoWindow
     function Content () {
         const [reviewNum, setReviewNum] = useState(0);
         
@@ -159,10 +161,9 @@ function VenueDetail() {
             } 
             setReviewNum(newReviewNum);
         }
-
         return (
-            <div id='content'>
-                <img src={photoUrl.getURI({maxWidth: 150, maxHeight: 150})}></img>
+            <div id='content' className='text-dark'>
+                <img src={photoUrl.getURI({maxWidth: 150, maxHeight: 150})} ></img>
                 <div id="title"><b>{place.displayName}</b></div>
                 <div id="address">{place.formattedAddress}</div>
                 <div id="average-ratings">Average ratings: {averageRating}</div>
@@ -171,62 +172,72 @@ function VenueDetail() {
                 <a href={authorUri} target="_blank" rel="noopener noreferrer">Author: {authorName}</a>
                 <div id="rating">Rating: {reviewRating} stars</div>
                 <div id="review"><p>Review: {reviewText}</p></div>
-                <button onClick={incrementReviewNum}> next review</button>
+                <button className="btn btn-outline-info" onClick={incrementReviewNum}> next review</button>
             </div>
         );
     };
+
+    const handleButtonClick = () => {
+        alert(`Selected Rows: ${JSON.stringify(selectedVenue)}`);
+    };
     
     function Detail() {
+        const [comment, setComment] = useState('');
         return (
-            <div className="card" style={{ width: "18rem" }}>
+            <div className="card w-100 mt-2">
                 <div className="card-body">
                     <h5 className="card-title">{selectedVenue ? selectedVenue.location : 'Not selected'}</h5>
-                    
+                    <button  onClick={handleButtonClick}  
+                    className="btn btn-outline-success mt-3 btn-sm"
+                    >
+                    Add to favourites
+                    </button>
+                    <p>Leave your comment</p>
+                    <textarea className="w-100" rows={3} onChange={(e)=>{setComment(e.target.value)}}></textarea>
+                    <button  onClick={handleButtonClick}  
+                    className="btn btn-outline-info mt-3 btn-sm"
+                    >
+                        submit comment
+                    </button>
                 </div>
             </div>
         );
     }
 
-    return (
-        
-       
-            
+    return (         
         <div className="container col" style={{ height: '100vh' }}>
-            
             <div className="container-fluid" style={{ height: '100vh' }}>
                 <div className="row h-100">
-                            <div className="col-9">
-                            
-                    <GoogleMapApiLoader apiKey={googleMapApiKey}>
-                        <Suspense fallback={<div>Loading...</div>}>
-                                {selectedVenue ? (
-                                    <GoogleMap 
-                                        className="w-100" 
-                                        zoom={15} 
-                                        center={{ lat: selectedVenue.latitude, lng: selectedVenue.longitude }} 
-                                        style={{ height: '100%' }} 
-                                    >
+                    <div className="col-9">
+                        <GoogleMapApiLoader apiKey={googleMapApiKey}>
+                            <Suspense fallback={<div>Loading...</div>}>
+                                    {selectedVenue ? (
+                                        <GoogleMap 
+                                            className="w-100" 
+                                            zoom={15} 
+                                            center={{ lat: selectedVenue.latitude, lng: selectedVenue.longitude }} 
+                                            style={{ height: '100%' }} 
+                                        >
 
-                                        <Marker 
-                                            lat={selectedVenue.latitude} 
-                                            lng={selectedVenue.longitude} 
-                                        />
-                                        {selectedVenue && (
-                                            <InfoWindow 
-                
-                                                position={{ lat: selectedVenue.latitude, lng: selectedVenue.longitude }}
-                                                open={true}
-                                                content={<Content />}
-                                            >
-                                            </InfoWindow>
-                                        )}
-                                    </GoogleMap>
-                                ) : (
-                                    <div>Loading venue details...</div>
-                                )}
-                        </Suspense>
-                    </GoogleMapApiLoader>
-                            </div>         
+                                            <Marker 
+                                                lat={selectedVenue.latitude} 
+                                                lng={selectedVenue.longitude} 
+                                            />
+                                            {selectedVenue && (
+                                                <InfoWindow 
+                                                    position={{ lat: selectedVenue.latitude, lng: selectedVenue.longitude }}
+                                                    open={true}
+                                                    content={<Content />}
+                                                >
+                                                </InfoWindow>
+                                            )}
+                                        </GoogleMap>
+                                    ) : (
+                                        <div>Loading venue details...</div>
+                                    )}
+                            </Suspense>
+                        </GoogleMapApiLoader>
+                    </div>         
                     <div className="col-3">
                         <ControlledCarousel/>
                         {selectedVenue ? (

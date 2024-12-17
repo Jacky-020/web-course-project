@@ -1,4 +1,4 @@
-
+// used both in general-search and my-favourite page, display controlled by props {selectable}
 import { SetStateAction, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Venue } from './FetchVenues';
