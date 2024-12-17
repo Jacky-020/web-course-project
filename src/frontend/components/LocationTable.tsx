@@ -55,11 +55,11 @@ interface LocationTableProps<T> {
 function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
   const [selectedRows, setSelectedRows] = useState([]);
 
-  const handleSelectedRowsChange = (state: { selectedRows: SetStateAction<never[]>; }) => {
+  function handleSelectedRowsChange (state: { selectedRows: SetStateAction<never[]>; })  {
     setSelectedRows(state.selectedRows); // Directly use selectedRows from the state
   };
 
-  const handleButtonClick = () => {
+  function addFavourite(){
     alert(`Selected Rows: ${JSON.stringify(selectedRows)}`);
   };
 
@@ -76,7 +76,7 @@ function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
         onSelectedRowsChange={handleSelectedRowsChange} 
       />
       {selectable && 
-        <button  onClick={handleButtonClick}  
+        <button  onClick={addFavourite}  
           className="btn btn-outline-success mt-3 btn-sm"
           disabled={selectedRows.length === 0}>
           Add to favourites

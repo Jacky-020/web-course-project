@@ -12,7 +12,7 @@ function VenueDetail() {
     const location = useLocation();
     const [selectedVenue, setSelectedVenue] = useState<Venue | undefined >(undefined); // the venue to be displayed
     const [venueDetail, setVenueDetail] = useState<google.maps.places.Place[]>(); // info of venue visited (up to 3)
-    
+    const [infoWindowVisible, setInfoWindowVisible] = useState(true);
 
     useEffect(() => {
         function trackVenue(){
@@ -177,31 +177,59 @@ function VenueDetail() {
         );
     };
 
-    const handleButtonClick = () => {
-        alert(`Selected Rows: ${JSON.stringify(selectedVenue)}`);
-    };
     
     function Detail() {
-        const [comment, setComment] = useState('');
+        const [myComment, setMyComment] = useState('');
+        const [commentList, setCommentList] = useState([]);
+        
+        function addFavourite(){
+            alert(`Selected Rows: ${JSON.stringify(selectedVenue)}`);
+        };
+    
+        function addComment(){
+            alert(myComment);
+        }
         return (
             <div className="card w-100 mt-2">
                 <div className="card-body">
                     <h5 className="card-title">{selectedVenue ? selectedVenue.location : 'Not selected'}</h5>
-                    <button  onClick={handleButtonClick}  
-                    className="btn btn-outline-success mt-3 btn-sm"
+                    <button  onClick={addFavourite}  
+                        className="btn btn-outline-success mt-3 btn-sm"
                     >
                         <span className="d-none d-md-inline">add to favourite</span>
                         <span className="d-inline d-md-none">add</span>
                     </button>
-                    <p>Leave your comment</p>
-                    <textarea className="w-100" rows={3} onChange={(e)=>{setComment(e.target.value)}}></textarea>
-                    <button  onClick={handleButtonClick}  
-                    className="btn btn-outline-info mt-3 btn-sm"
-                    disabled={!comment.trim()} // prevent empty comment
-                    >
-                        <span className="d-none d-md-inline">submit comment</span>
-                        <span className="d-inline d-md-none">submit</span>
-                    </button>
+                    <hr/>
+                    <ul className="list-group mt-2">
+                        {commentList.length ? commentList.map((comment, key) => {
+                            return (
+                            <li key={key} className="list-group-item">{comment}</li>
+                            );
+                        }) : (
+                            <li className="list-group-item">No comments yet</li>
+                        )}
+                    </ul>
+
+                    <fieldset className='border mt-4  p-2'>
+                        <legend className="float-none w-auto fs-5">Leave a comment</legend>
+                        <div className='mt-2'>
+                            <textarea
+                            className="w-100"
+                            rows={3}
+                            value={myComment} // Controlled component
+                            onChange={(e) => setMyComment(e.target.value)}
+                            placeholder="Write your comment here..."
+                            />
+                        </div>
+                        <button
+                            onClick={addComment}
+                            className="btn btn-outline-info mt-3 btn-sm"
+                            disabled={!myComment.trim()} // Prevent empty comment
+                        >
+                            <span className="d-none d-md-inline">Submit Comment</span>
+                            <span className="d-inline d-md-none">Submit</span>
+                        </button>
+                    </fieldset>
                 </div>
             </div>
         );
@@ -225,14 +253,16 @@ function VenueDetail() {
                                             <Marker 
                                                 lat={selectedVenue.latitude} 
                                                 lng={selectedVenue.longitude} 
+                                                onClick={()=>{setInfoWindowVisible(true)}}
                                             />
-                                            {selectedVenue && (
+                                            {selectedVenue && infoWindowVisible && (
                                                 <InfoWindow 
                                                     position={{ lat: selectedVenue.latitude, lng: selectedVenue.longitude }}
+                                                    onCloseClick={()=>{setInfoWindowVisible(false)}}
                                                     open={true}
                                                     content={<Content />}
                                                 >
-                                                </InfoWindow>
+                                                </InfoWindow >
                                             )}
                                         </GoogleMap>
                                     ) : (
@@ -245,7 +275,7 @@ function VenueDetail() {
                         <Suspense fallback={<div>Loading search records...</div>}>
                             <ControlledCarousel/>
                         </Suspense>
-                        {selectedVenue ? (
+                        {selectedVenue  ? (
                             <Detail />
                         ) : (
                             <p>No venue data available.</p>

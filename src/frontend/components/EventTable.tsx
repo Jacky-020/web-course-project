@@ -19,29 +19,37 @@ function EventTable() {
           {row.id}
         </a>
       ),
+      width: "4rem" 
     },
     {
       name: 'title',
       selector: (row: Event) => row.title,
+      wrap: true,
       sortable: true,
     },
     {
       name: 'date',
-      selector: (row: Event) => new Date(row.date).toLocaleString(), // Format the date
+      selector: (row: Event) => new Date(row.date).toLocaleString(),
+      wrap: true,
+      width: "10rem"
     },
     {
       name: 'description',
       selector: (row: Event) => row.description,
+      wrap: true,
+      width: "30rem" 
     },
     {
       name: 'presentar',
       selector: (row: Event) => row.presentar,
+      wrap: true,
       sortable: true,
     },
     {
       name: 'price',
       selector: (row: Event) => row.price?.toFixed(2), // Format the price
       sortable: true,
+      width: "6rem" 
     },
     {
       name: 'like',
@@ -61,6 +69,7 @@ function EventTable() {
           />
         );
       },
+      width: "4rem" 
     },
   ];
 
