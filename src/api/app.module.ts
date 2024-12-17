@@ -40,7 +40,8 @@ import { ObjectIDResolver } from 'graphql-scalars';
       playground: true,
       autoSchemaFile: true,
       formatError: (err) => ({ message: err.message, status: err.extensions.code }),
-      resolvers: { ObjectID: ObjectIDResolver }
+      resolvers: { ObjectID: ObjectIDResolver },
+      path: '/api/graphql',
     }),
     EventsModule,
     CommentsModule,
