@@ -5,13 +5,14 @@ import { Model } from 'mongoose';
 import { hash } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { homies } from './user.sample';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UserService implements OnApplicationBootstrap{
   constructor(@InjectModel(User.name) private userModel: Model<User>, private configService: ConfigService) {}
   async onApplicationBootstrap() {
     // create users for demo / testing purposes
-    let cleanUsers = this.configService.get<string>('CLEAN_USERS', "0");
+    const cleanUsers = this.configService.get<string>('CLEAN_USERS', "0");
     if (cleanUsers === "1") {
       await this.userModel.deleteMany().exec();
       homies.forEach(homie => this.create(homie));
@@ -31,5 +32,23 @@ export class UserService implements OnApplicationBootstrap{
   }
   async getFromId(id: string): Promise<UserDocument | null> {
     return this.userModel.findById(id).exec();
+  }
+  
+  async findAll() {
+    return this.userModel.find().exec();
+  }
+
+  async findOne(id: string) {
+    return this.userModel.findById(id).exec();
+  }
+
+  async update(id: string, updateUserInput: UpdateUserInput) {
+    if(updateUserInput.password) updateUserInput.password = await hash(updateUserInput.password, 10);
+    
+    return this.userModel.findByIdAndUpdate(id, updateUserInput).exec();
+  }
+
+  async remove(id: string) {
+    return this.userModel.findByIdAndDelete(id).exec();
   }
 }
