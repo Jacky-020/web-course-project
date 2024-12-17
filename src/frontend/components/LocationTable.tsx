@@ -10,6 +10,11 @@ const columns = [
     sortable: true,
   },
   {
+    name: 'category',
+    selector: (row: Venue) => row.category,
+    sortable: true,
+  },
+  {
     name: 'Latitude',
     selector: (row: Venue) => row.latitude,
     sortable: true,
@@ -37,49 +42,6 @@ interface LocationTableProps<T> {
 }
 
 function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
-
-
-  // const predefinedData: Venue[] = fetchVenues();
-
-
-
-  // const [data, setData] = useState<Venue[]>(predefinedData);
-  // const [searchTerm, setSearchTerm] = useState<string>('');
-  // const [distanceLimit, setDistanceLimit] = useState<number>(200);
-
-
-
-
-
-
-
-  // const handleSearch = () => {
-  //   const filteredData = predefinedData.filter(row => 
-  //     row.location.toLowerCase().includes(searchTerm.toLowerCase()) &&
-  //     row.distance <= distanceLimit
-  //   );
-  //   setData(filteredData);
-  // };
-
-  // function DistanceSlider() {
-  //   // prevent rendering of whole page during sliding, which is very laggy
-  //   const [distanceSelected, setDistanceSelected] = useState(distanceLimit); 
-  //   return (
-  //     <div className='col m-2 '>
-  //       <input
-  //         type="range"
-  //         min="1"
-  //         max="200"
-  //         id="distanceRange"
-  //         value={distanceSelected}
-  //         step="3"
-  //         onChange={e => setDistanceSelected(parseFloat(e.target.value))}
-  //         onBlur={()=> setDistanceLimit(distanceSelected)} // update whole page when released
-  //       />
-  //       <div>Distance within : {distanceSelected} km</div>
-  //     </div>
-  //   );
-  // }
   const [selectedRows, setSelectedRows] = useState([]);
 
   const handleSelectedRowsChange = (state: { selectedRows: SetStateAction<never[]>; }) => {
@@ -91,7 +53,7 @@ function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
   };
 
   return (
-    <div>
+    <div className='m-1'>
       <DataTable
         columns={columns}
         data={data}
@@ -103,8 +65,8 @@ function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
         onSelectedRowsChange={handleSelectedRowsChange} 
       />
       {selectable && 
-        <button onClick={handleButtonClick}  
-          className="btn btn-success mt-3"
+        <button  onClick={handleButtonClick}  
+          className="btn btn-outline-success mt-3 btn-sm"
           disabled={selectedRows.length === 0}>
           Add to favourites
         </button>

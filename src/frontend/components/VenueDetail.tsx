@@ -82,6 +82,15 @@ function VenueDetail() {
         const authorName = review.authorAttribution?.displayName || '';
         const authorUri = review.authorAttribution?.uri || '';
         
+        function findAverageRating(){
+            if(!place.reviews || place.reviews.length === 0){
+                return 0;
+            }
+            const averageRating:number = place.reviews.reduce((sum:number, review:google.maps.places.Review) => 
+                sum + (review.rating || 0), 0) / place.reviews.length;
+            return averageRating;
+        }
+        const averageRating = findAverageRating();
         function incrementReviewNum(){
             let newReviewNum = reviewNum;
             if(place.reviews){
@@ -97,7 +106,9 @@ function VenueDetail() {
             <div id='content'>
                 <div id="title"><b>{place.displayName}</b></div>
                 <div id="address">{place.formattedAddress}</div>
+                <div id="average-ratings">Average ratings: {averageRating}</div>
                 <hr></hr>
+                <span>{reviewNum + 1})</span> 
                 <a href={authorUri} target="_blank" rel="noopener noreferrer">Author: {authorName}</a>
                 <div id="rating">Rating: {reviewRating} stars</div>
                 <div id="review"><p>Review: {reviewText}</p></div>
@@ -118,6 +129,8 @@ function VenueDetail() {
     }
 
     return (
+        
+            
         <div className="container col" style={{ height: '100vh' }}>
             <div className="container-fluid" style={{ height: '100vh' }}>
                 <div className="row h-100">
