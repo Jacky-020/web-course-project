@@ -1,3 +1,4 @@
+import { Field, HideField, ObjectType } from "@nestjs/graphql";
 import { Prop, SchemaFactory, Schema } from "@nestjs/mongoose";
 import { IsAlphanumeric, IsAscii, IsEmail } from "class-validator";
 import { HydratedDocument } from "mongoose";
@@ -10,22 +11,27 @@ export enum Role {
 }
 
 @Schema()
+@ObjectType()
 export class User {
     @Prop({unique: true, required: true, index: true})
     @IsAlphanumeric()
+    @Field()
     username: string;
 
     @IsEmail({
         require_tld: false,
     })
     @Prop({required: true})
+    @Field()
     email: string;
 
     @Prop({required: true})
     @IsAscii()
+    @HideField()
     password: string;
 
     @Prop({default: ['user']})
+    @HideField()
     roles: Role[];
 }
 

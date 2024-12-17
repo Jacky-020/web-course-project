@@ -94,6 +94,7 @@ export class EventsService {
         presenter_c: getOneText("presenterorgc"),
         presenter_e: getOneText("presenterorge"),
         date_created: datestrToDate(getOneText("submitdate")),
+        comments: [],
       };
       this.eventModel.findOneAndUpdate({id: event.id}, event, {upsert: true}).exec();
     }

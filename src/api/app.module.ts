@@ -12,6 +12,7 @@ import { LocationsModule } from './locations/locations.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { EventsModule } from './events/events.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { EventsModule } from './events/events.module';
       formatError: (err) => ({ message: err.message, status: err.extensions.code }),
     }),
     EventsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
 

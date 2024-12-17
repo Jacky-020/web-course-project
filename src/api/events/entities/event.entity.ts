@@ -1,7 +1,8 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Location } from 'src/api/locations/entities/location.entity';
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
+import { Comment } from 'src/api/comments/entities/comment.entity';
 
 @ObjectType()
 @Schema()
@@ -202,6 +203,10 @@ export class Event {
    */
   @Prop()
   date_created: Date;
+
+  @Prop({type: mongoose.Schema.Types.ObjectId, ref: Comment.name})
+  @Field(() => [Comment], {description: "Comments for the event"})
+  comments: Comment[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
