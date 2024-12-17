@@ -2,12 +2,23 @@
 import { SetStateAction, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Venue } from './FetchVenues';
+import { useNavigate } from 'react-router-dom';
 
 const columns = [
   {
     name: 'Location',
-    selector: (row: Venue) => row.location,
     sortable: true,
+    cell: row => {
+        const navigate = useNavigate(); 
+        return (
+            <a href="#" onClick={(e) => {
+                e.preventDefault();
+                navigate('/VenueDetail', { state: { selectedVenue: row } }); 
+            }}>
+                {row.location}
+            </a>
+        );
+    },
   },
   {
     name: 'category',
