@@ -20,7 +20,7 @@ function GeneralSearch(){
       const searchTerm = useDeferredValue(keyword);
       const [distanceLimit, setDistanceLimit] = useState<number>(100);
       const [data, setData] = useState<Venue[]>([]); 
-      const [categories, setCategories] = useState<string[]>([]);
+      const [categories, setCategories] = useState<(string | undefined)[]>([]);
       const [selectedCategory, setSelectedCategory] = useState('All Categories');
 
       useEffect(() => {
@@ -42,7 +42,7 @@ function GeneralSearch(){
       const handleSearch = () => {
         const filteredData = data.filter(row => 
           (row.location.toLowerCase().includes(searchTerm.toLowerCase()) || searchTerm.trim() === '') &&
-          row.distance <= distanceLimit &&
+          (row.distance && row.distance <= distanceLimit) &&
           (selectedCategory === 'All Categories' || row.category === selectedCategory)
         );
         setFilteredData(filteredData);
@@ -58,7 +58,7 @@ function GeneralSearch(){
               <Dropdown.Item onClick={()=>setSelectedCategory("All Categories")}>
                 All Categories
               </Dropdown.Item>
-                {categories.length > 0 && categories.map((category:string, key:number) => (
+                {categories.length > 0 && categories.map((category:string) => (
                     <Dropdown.Item  onClick={()=>setSelectedCategory(category)}>
                         {category}
                     </Dropdown.Item>
@@ -72,7 +72,8 @@ function GeneralSearch(){
         // prevent rendering of whole page during sliding, which is very laggy
         const [distanceSelected, setDistanceSelected] = useState(distanceLimit); 
         return (
-          <div className='col m-2 '>
+          <div>
+          <div className='col m-2'>
             <input
               type="range"
               min="1"
@@ -84,6 +85,7 @@ function GeneralSearch(){
               onBlur={()=> setDistanceLimit(distanceSelected)} // update whole page when released
             />
             <div>Distance within : {distanceSelected} km</div>
+          </div>
           </div>
         );
       }
@@ -112,25 +114,31 @@ function GeneralSearch(){
     //     )
     //   }
       return(
-        <div className='w-100'>      
-            <div className='input-group' aria-describedby="addon-wrapping">
+        <div className='w-100'>  
+        <div className='container-fluid'>    
+            <div className='input-group d-flex justify-content-between'  aria-describedby="addon-wrapping">
+              <div className='d-flex flex-row'>
                 <input
                 type="search"
-                className="form-control-sm border ps-3 m-2"
+                className="form-control-sm border ps-3 m-2 d-block "
                 placeholder="Search locations"
                 value={searchTerm}
                 onChange={(e)=>setKeyword(e.target.value)} 
                 />
                 <DistanceSlider/>
                 <DropDown/>
+              </div>
+              <div>
                 <button 
-                className="btn btn-outline-secondary btn-light m-2  mt-3" 
+                className="btn btn-outline-secondary btn-light m-2  mt-3 d-block" 
                 type="button" 
                 id="button-addon1" 
                 onClick={handleSearch} // Trigger search on button click
                 >
                 Apply filter
                 </button>
+              </div>
+            </div>
             </div>
             <LocationTable data={filteredData} selectable={true} />
             <MapView data={filteredData} />          

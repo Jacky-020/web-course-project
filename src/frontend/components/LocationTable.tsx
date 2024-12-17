@@ -8,7 +8,7 @@ const columns = [
   {
     name: 'Location',
     sortable: true,
-    cell: row => {
+    cell: (row: Venue) => {
         const navigate = useNavigate(); 
         return (
             <a href="#" onClick={(e) => {
