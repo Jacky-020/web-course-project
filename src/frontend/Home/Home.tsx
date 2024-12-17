@@ -72,57 +72,53 @@ const Home: React.FC = () => {
                 </div>
 
                 {handler != null && (
-                    <Tab.Container defaultActiveKey="login">
+                    <div className="position-absolute top-0 h-100 w-100">
+                        <Tab.Container defaultActiveKey="login">
+                            <motion.div
+                                className="modal modal-sheet d-block position-static h-auto"
+                                initial={{ opacity: 0, scale: 0.0, y: '100%' }}
+                                animate={{ opacity: 1, scale: 1, y: '0%' }}
+                                transition={{ delay: 6.5, duration: 0.7, type: 'spring', bounce: 0.25 }}
+                                style={{
+                                    zIndex: 'unset',
+                                    marginTop: '90px',
+                                }}
+                            >
+                                <Modal.Dialog className="mt-4">
+                                    <Modal.Header>
+                                        <Nav variant="tabs" fill justify className="w-100 navbar-nav flex-row">
+                                            <Nav.Item>
+                                                <Nav.Link eventKey="login" draggable="false">
+                                                    Login
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                            <Nav.Item>
+                                                <Nav.Link eventKey="register" draggable="false">
+                                                    Register
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        </Nav>
+                                    </Modal.Header>
+                                    <Tab.Content>
+                                        <Tab.Pane eventKey="login">
+                                            <AuthModal isLogin />
+                                        </Tab.Pane>
+                                        <Tab.Pane eventKey="register">
+                                            <AuthModal />
+                                        </Tab.Pane>
+                                    </Tab.Content>
+                                </Modal.Dialog>
+                            </motion.div>
+                        </Tab.Container>
                         <motion.div
-                            className="modal modal-sheet d-block position-absolute h-auto"
-                            initial={{ opacity: 0, scale: 0.0, top: '50%' }}
-                            animate={{ opacity: 1, scale: 1, top: '90px' }}
-                            transition={{ delay: 6.5, duration: 0.7, type: 'spring', bounce: 0.25 }}
-                            style={{
-                                top: '90px',
-                                zIndex: 'unset',
-                            }}
+                            className="d-flex justify-content-center w-100"
+                            initial={{ opacity: 0, scale: 0, y: '100%' }}
+                            animate={{ opacity: 1, scale: 1, y: '0%' }}
+                            transition={{ delay: 7, type: 'spring', bounce: 0.25 }}
                         >
-                            <Modal.Dialog className="mt-4">
-                                <Modal.Header>
-                                    <Nav variant="tabs" fill justify className="w-100 navbar-nav flex-row">
-                                        <Nav.Item>
-                                            <Nav.Link eventKey="login" draggable="false">
-                                                Login
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link eventKey="register" draggable="false">
-                                                Register
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </Nav>
-                                </Modal.Header>
-                                <Tab.Content>
-                                    <Tab.Pane eventKey="login">
-                                        <AuthModal isLogin />
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="register">
-                                        <AuthModal />
-                                    </Tab.Pane>
-                                </Tab.Content>
-                            </Modal.Dialog>
+                            <ThemeToggle scale={1.5} />
                         </motion.div>
-                    </Tab.Container>
-                )}
-
-                {handler != null && (
-                    <motion.div
-                        className="d-flex justify-content-center position-absolute w-100"
-                        initial={{ opacity: 0, scale: 0, top: '100%' }}
-                        animate={{ opacity: 1, scale: 1, top: '600px' }}
-                        transition={{ delay: 7, type: 'spring', bounce: 0.25 }}
-                        style={{
-                            top: '600px',
-                        }}
-                    >
-                        <ThemeToggle scale={1.5} />
-                    </motion.div>
+                    </div>
                 )}
 
                 {!animComplete && (
@@ -159,7 +155,7 @@ const Home: React.FC = () => {
                                                         radius,
                                                         radius,
                                                         radius,
-                                                        Math.sqrt(window.innerHeight ** 2 + window.innerHeight ** 2) +
+                                                        Math.sqrt(window.innerHeight ** 2 + window.innerWidth ** 2) +
                                                             radius * 0.1,
                                                     ],
                                                 }}

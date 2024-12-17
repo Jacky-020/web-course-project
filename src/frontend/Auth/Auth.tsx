@@ -139,7 +139,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                             <Button
                                 variant="primary"
                                 type="submit"
-                                form="login-form"
+                                form={'form-' + (props.isLogin ? 'login' : 'register')}
                                 disabled={isSubmitting}
                                 className="d-flex justify-content-center align-items-center"
                             >
