@@ -32,7 +32,7 @@ export interface Venue {
         },
     ];
 
-    let VenueList: Venue[] = predefinedVenueList;
+    
 
     // copy from external source as google map matrix may cost money
     function calculateDistance(lat1:number, lon1:number, lat2:number,  lon2:number) : number { 
@@ -70,7 +70,12 @@ export const fetchVenues = async (): Promise<Venue[]> => {
                     lng: position.coords.longitude,
                 };
 
-                const venueList: Venue[] = predefinedVenueList.map(venue => ({
+
+                let venueList = predefinedVenueList;
+                // venueList = await fetch();  
+
+                // caclulate and add distance field, may alson need to extract and add category field
+                venueList = venueList.map(venue => ({
                     ...venue,
                     distance: calculateDistance(userLocation.lat, userLocation.lng, venue.latitude, venue.longitude),
                 }));
