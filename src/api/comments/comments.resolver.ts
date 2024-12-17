@@ -47,7 +47,7 @@ export class CommentsResolver {
   }
 
   @Mutation(() => Comment)
-  async removeComment(@Args('id', { type: () => ID }) id: string, @CurrentUser() user: UserSession) { // FIXME: take out typedef
+  async removeComment(@Args('id', { type: () => ObjectIDResolver }) id: string, @CurrentUser() user: UserSession) { // FIXME: take out typedef
     return this.commentsService.remove(id, user);
   }
 }
