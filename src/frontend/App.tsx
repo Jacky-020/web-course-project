@@ -13,6 +13,7 @@ import GeneralSearch from './components/GeneralSearch.tsx';
 import Logout from './Auth/Logout.tsx';
 import FavouriteVenue from './components/FavouriteVenue.tsx';
 import MapComponent from './components/test.jsx';
+import EventTable from './components/EventTable.tsx';
 
 interface RouteConfig extends ComponentProps<typeof AuthGuard> {
     path: string;
@@ -61,6 +62,11 @@ const routeConfigs: RouteConfig[] = [
     {
         path: 'favourite-venue',
         children: <FavouriteVenue />,
+        noAuth: true,
+    },
+    {
+        path: 'event-page',
+        children: <EventTable />,
         noAuth: true,
     },
     {

@@ -88,7 +88,7 @@ function VenueDetail() {
             return <div>Loading venue details...</div>; // Handle loading state
         }
         
-        const handleSelect = (selectedIndex) => {
+        const handleSelect = (selectedIndex: number) => {
           setIndex(selectedIndex);
         };
       
@@ -140,7 +140,7 @@ function VenueDetail() {
         const reviewText = review.text;
         const authorName = review.authorAttribution?.displayName || '';
         const authorUri = review.authorAttribution?.uri || '';
-        const photoUrl = place.photos[0]; 
+        const photoUrl = place.photos? place.photos[0] : ''; 
 
         function findAverageRating(){
             if(!place.reviews || place.reviews.length === 0){
@@ -163,7 +163,7 @@ function VenueDetail() {
         }
         return (
             <div id='content' className='text-dark'>
-                <img src={photoUrl.getURI({maxWidth: 150, maxHeight: 150})} ></img>
+                <img src={photoUrl.getURI({maxWidth: 150, maxHeight: 150})} alt="No photo"></img>
                 <div id="title"><b>{place.displayName}</b></div>
                 <div id="address">{place.formattedAddress}</div>
                 <div id="average-ratings">Average ratings: {averageRating}</div>
@@ -190,14 +190,17 @@ function VenueDetail() {
                     <button  onClick={handleButtonClick}  
                     className="btn btn-outline-success mt-3 btn-sm"
                     >
-                    Add to favourites
+                        <span className="d-none d-md-inline">add to favourite</span>
+                        <span className="d-inline d-md-none">add</span>
                     </button>
                     <p>Leave your comment</p>
                     <textarea className="w-100" rows={3} onChange={(e)=>{setComment(e.target.value)}}></textarea>
                     <button  onClick={handleButtonClick}  
                     className="btn btn-outline-info mt-3 btn-sm"
+                    disabled={!comment.trim()} // prevent empty comment
                     >
-                        submit comment
+                        <span className="d-none d-md-inline">submit comment</span>
+                        <span className="d-inline d-md-none">submit</span>
                     </button>
                 </div>
             </div>
@@ -239,7 +242,9 @@ function VenueDetail() {
                         </GoogleMapApiLoader>
                     </div>         
                     <div className="col-3">
-                        <ControlledCarousel/>
+                        <Suspense fallback={<div>Loading search records...</div>}>
+                            <ControlledCarousel/>
+                        </Suspense>
                         {selectedVenue ? (
                             <Detail />
                         ) : (

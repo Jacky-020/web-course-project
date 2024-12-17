@@ -52,16 +52,18 @@ function GeneralSearch(){
         return(
           <Dropdown>
             <Dropdown.Toggle variant="btn btn-outline-secondary btn-light m-2  mt-3" id="dropdown-basic">
-              Select categories
+              {selectedCategory}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={()=>setSelectedCategory("All Categories")}>
                 All Categories
               </Dropdown.Item>
-                {categories.length > 0 && categories.map((category:string) => (
-                    <Dropdown.Item  onClick={()=>setSelectedCategory(category)}>
+                {categories.length > 0 && categories.map((category:string | undefined) => (
+                  typeof category === 'string' && (
+                    <Dropdown.Item key={category} onClick={() => setSelectedCategory(category)}>
                         {category}
                     </Dropdown.Item>
+                  )
                 ))}
             </Dropdown.Menu>
           </Dropdown>
@@ -115,7 +117,7 @@ function GeneralSearch(){
     //   }
       return(
         <div className='w-100'>  
-        <div className='container-fluid'>    
+          <div className='container-fluid'>    
             <div className='input-group d-flex justify-content-between'  aria-describedby="addon-wrapping">
               <div className='d-flex flex-row'>
                 <input
@@ -139,9 +141,9 @@ function GeneralSearch(){
                 </button>
               </div>
             </div>
-            </div>
-            <LocationTable data={filteredData} selectable={true} />
-            <MapView data={filteredData} />          
+          </div>
+          <LocationTable data={filteredData} selectable={true} />
+          <MapView data={filteredData} />          
         </div>
       )
 }
