@@ -10,6 +10,7 @@ import ThemeToggle from '../Theme/ThemeToggle';
 const Home: React.FC = () => {
     const theme = useTheme();
     const circle = useRef<SVGCircleElement>(null);
+    const [ready, setReady] = useState<boolean>(true);
     const [handler, setHandler] = useState<AnimationHandler | null>(null);
     const [animComplete, setAnimComplete] = useState(false);
     const radius = (300 / 1150) * window.innerHeight;
@@ -18,8 +19,9 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         handler?.start();
-        if (theme === 'light') handler?.changeSegment(0);
-        else handler?.changeSegment(2);
+        setReady(false);
+        if (theme === 'light') handler?.changeSegment(0, () => setReady(true));
+        else handler?.changeSegment(2, () => setReady(true));
     }, [handler, theme]);
 
     return (
@@ -30,7 +32,7 @@ const Home: React.FC = () => {
                     className={`h-100 w-100 object-fit-cover`}
                     style={{
                         display: 'block',
-                        filter: `url(#sharpBlur)`,
+                        filter: `url(#sharpBlur) drop-shadow(16px 16px 10px black)`,
                     }}
                 />
                 <motion.div className={`${styles.vignette} position-absolute top-0 h-100 w-100`}>
@@ -116,7 +118,7 @@ const Home: React.FC = () => {
                             animate={{ opacity: 1, scale: 1, y: '0%' }}
                             transition={{ delay: 7, type: 'spring', bounce: 0.25 }}
                         >
-                            <ThemeToggle scale={1.5} />
+                            <ThemeToggle scale={1.5} parentReady={ready} />
                         </motion.div>
                     </div>
                 )}

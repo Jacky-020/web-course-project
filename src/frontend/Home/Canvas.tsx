@@ -39,6 +39,7 @@ class AnimationHandler {
 
     #timestamp = 0;
     #init = false;
+    #done: null | (() => void) = null;
 
     #running = false;
 
@@ -104,10 +105,19 @@ class AnimationHandler {
             this.#ctx.canvas.height = this.#frames[frame].height;
             this.#ctx.drawImage(this.#frames[frame], 0, 0);
             this.#frameCache = frame;
+
+            if (
+                this.#done !== null &&
+                frame >= this.#segments[this.#segment].start &&
+                frame < this.#segments[this.#segment].end
+            ) {
+                this.#done();
+                this.#done = null;
+            }
         }
     }
 
-    changeSegment(segment: 0 | 2) {
+    changeSegment(segment: 0 | 2, done?: () => void) {
         if (this.#timestamp === 0) {
             if (segment === 0) {
                 this.#direction = -1;
@@ -123,6 +133,7 @@ class AnimationHandler {
         }
 
         this.#segment = segment;
+        this.#done = done || null;
     }
 
     reset() {
@@ -226,15 +237,7 @@ const Canvas: React.FC<{
         };
     }, []);
 
-    return (
-        <canvas
-            ref={canvasRef}
-            style={props.style}
-            className={props.className}
-            width={1280}
-            height={720}
-        ></canvas>
-    );
+    return <canvas ref={canvasRef} style={props.style} className={props.className} width={1280} height={720}></canvas>;
 };
 
 export default Canvas;
