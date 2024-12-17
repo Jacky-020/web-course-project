@@ -61,7 +61,7 @@ export interface Venue {
         return(c * r);
     }
 
-export const fetchVenues = (): Promise<Venue[]> => {
+export const fetchVenues = async (): Promise<Venue[]> => {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
             (position: GeolocationPosition) => {
