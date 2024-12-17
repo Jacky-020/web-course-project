@@ -34,10 +34,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
             .string()
             .required()
             .matches(/^[a-zA-Z0-9]+$/, 'Username must be alphanumeric'),
-        email: yup.string().when('isLogin', {
-            is: false,
-            then: (schema) => schema.email().required(),
-        }),
+        email: yup.string().email().required(),
         password: yup.string().required(),
     });
 
@@ -62,7 +59,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
     return (
         <>
             <Formik
-                validationSchema={schema}
+                validationSchema={props.isLogin ? schema.omit(['email']) : schema}
                 onSubmit={onSubmit}
                 initialValues={{
                     username: '',
