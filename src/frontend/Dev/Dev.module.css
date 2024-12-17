@@ -1,0 +1,17 @@
+/* This is for managing the sidebar */
+
+.sidebar {
+    height: 100vh; /* Full height */
+    width: 200px; /* Width of the sidebar */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    padding-top: 20px; /* Padding at the top */
+}
+
+.main-content {
+    flex-grow: 1; /* Take remaining space */
+    padding: 20px; /* Padding for content */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
