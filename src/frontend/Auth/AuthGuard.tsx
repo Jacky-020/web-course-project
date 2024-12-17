@@ -1,34 +1,45 @@
-import React, { ReactNode } from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { ReactNode, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuthState } from './AuthProviderHooks';
 
-interface AuthGuardProps {
+export interface AuthGuardProps {
     noAuth?: boolean;
+    noRedirect?: boolean;
     roles?: string[];
     children: ReactNode;
 }
 
 const AuthGuard: React.FC<AuthGuardProps> = (props) => {
-    const state = useAuthState();
+    const authState = useAuthState();
+    const navigate = useNavigate();
+    const logoutSeen = useRef(false);
 
-    const navEl = (
-        <Navigate
-            to={{
-                pathname: '/login',
-                search: '?redirect=' + window.location.pathname,
-            }}
-            state={{
-                AuthState: 'danger',
-                AuthMessage: 'You must be logged in!',
-            }}
-            replace
-        />
-    );
+    useEffect(() => {
+        if (authState.state !== 'logout') logoutSeen.current = false;
+        if (props.noAuth || authState.state === 'loading' || authState.user) return;
+        const firstLogout = !logoutSeen.current && authState.state === 'logout';
+        const isDevPath = window.location.pathname.startsWith('/dev');
+        const LoginPath = (isDevPath ? '/dev' : '') + '/login';
+        navigate(
+            {
+                pathname: LoginPath,
+                search: props.noRedirect ? '' : '?redirect=' + window.location.pathname,
+            },
+            {
+                state: {
+                    AuthState: firstLogout ? 'success' : 'danger',
+                    AuthMessage: firstLogout ? 'Logged out!' : 'You must be logged in to view this page',
+                },
+                replace: true,
+            },
+        );
+        if (firstLogout) logoutSeen.current = true;
+    }, [navigate, props.noAuth, authState.state, authState.user, props.noRedirect]);
 
     if (props.noAuth) return props.children;
-    if (state.loading || !state.init) return <>Loading</>;
-    if (!state.user) return navEl;
-    if (props.roles && !props.roles.every((role) => state.user?.roles.includes(role))) return <h1>Unauthorized</h1>;
+    if (authState.state === 'loading') return <>Loading</>;
+    if (!authState.user) return null;
+    if (props.roles && !props.roles.every((role) => authState.user?.roles.includes(role))) return <h1>Unauthorized</h1>;
     return props.children;
 };
 

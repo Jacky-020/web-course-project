@@ -13,7 +13,7 @@ export class AuthController {
     @Post('logout')
     logout(@Req() req: Request) {
         req.logout(() => {});
-        return 'Logged out successfully.';
+        return 'null';
     }
 
     @Get('user')

@@ -8,5 +8,10 @@ export default defineConfig({
             '/api': 'http://localhost:3000',
         },
     },
+    css: {
+        modules: {
+            localsConvention: 'camelCaseOnly',
+        },
+    },
     plugins: [react()],
 });
