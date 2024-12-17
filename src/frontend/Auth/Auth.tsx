@@ -87,6 +87,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                         type="text"
                                         placeholder="Enter username"
                                         required
+                                        name="username"
                                         onChange={handleChange}
                                         isValid={touched.username && !errors.username}
                                         isInvalid={touched.password && !!errors.username}
@@ -105,6 +106,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                         type="email"
                                         placeholder="Enter email"
                                         required
+                                        name="email"
                                         onChange={handleChange}
                                         isValid={touched.email && !errors.email}
                                         isInvalid={touched.password && !!errors.email}
@@ -125,6 +127,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                         type="password"
                                         placeholder="Password"
                                         required
+                                        name="password"
                                         onChange={handleChange}
                                         isValid={touched.password && !errors.password}
                                         isInvalid={touched.password && !!errors.password}
