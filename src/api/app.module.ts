@@ -3,24 +3,47 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RoleGuard } from './auth/auth.guard';
+import { LocationsModule } from './locations/locations.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { EventsModule } from './events/events.module';
+import { CommentsModule } from './comments/comments.module';
+import { ObjectIDResolver } from 'graphql-scalars';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: ['.env', '.env.dev'],
+    }),
     AuthModule,
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/', {
-      onConnectionCreate: (connection) => {
-        connection.on('connected', () =>
-          Logger.log('Connected to database', 'MongoDB'),
-        );
-      },
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get('MONGO_URL', 'mongodb://127.0.0.1:27017/'),
+        onConnectionCreate: connection => {
+          connection.on('connected', () => 
+            Logger.log('Connected to database', 'MongoDB'),
+          );
+        }
+      }),
+      inject: [ConfigService],
     }),
     UserModule,
+    LocationsModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      playground: true,
+      autoSchemaFile: true,
+      formatError: (err) => ({ message: err.message, status: err.extensions.code }),
+      resolvers: { ObjectID: ObjectIDResolver }
+    }),
+    EventsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
 
