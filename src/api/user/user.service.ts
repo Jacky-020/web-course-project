@@ -32,4 +32,7 @@ export class UserService implements OnApplicationBootstrap{
   async getFromId(id: string): Promise<UserDocument | null> {
     return this.userModel.findById(id).exec();
   }
+  async findAll() {
+    return this.userModel.find().exec();
+  }
 }

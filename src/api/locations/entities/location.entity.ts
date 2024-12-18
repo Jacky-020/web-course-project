@@ -32,7 +32,7 @@ export class Location {
   /**
    * Users that favourited this location
    */
-  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: User.name})
+  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'User'})
   @Field(() => [User])
   favourited: User[];
   

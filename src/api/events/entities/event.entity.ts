@@ -208,7 +208,7 @@ export class Event {
   /**
    * Users that favourited this event
    */
-  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: User.name})
+  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'User'})
   @Field(() => [User])
   favourited: User[];
 
