@@ -73,16 +73,17 @@ logins and loads your page."* (*currently only on admin request*)
     - [x] New Comment endpoint for Events
     - [x] ✨ serverside comments sanitization, allow for html input (`DOMPurify.sanitize` lol)
     - [x] ✨ GraphQL API for CRUD operations?
+    - [x] user CRUD operations for Admins
 
 ### Frontend
 
 A lot of the below pages seem very repetitive, so we can probably create a generic page template and just pass in the data to display. Lets try out best to keep things functional and reusable.
 
 - [ ] ✨ Animated transitions between pages, fluid animations of elements, use <https://motion.dev/>
-- [ ] ✨ Dark/Light theme switch button
+- [x] ✨ Dark/Light theme switch button
 - [ ] ✨ Like button for Events
 - [ ] ✨ Lazy loading of images, comments, events (basically everything) use react [Suspense](https://react.dev/reference/react/Suspense)
-- [ ] ✨ Use TSX
+- [x] ✨ Use TSX
 - [ ] ✨ Use Bootstrap/SASS for styling
 - [ ] Implement responsive design for different screen sizes.
 - [ ] Login Page
@@ -113,13 +114,13 @@ A lot of the below pages seem very repetitive, so we can probably create a gener
     - [ ] Add search bar to find Events by keyword.
     - [ ] Link each Events to its details page?
 - [ ] Event Details Page?
-- [ ] User Profile Page?
+- [-] User Profile Page?
     - [ ] Display user details (username, role, favorites, etc.).
     - [ ] Show user's favorite locations.
-- [ ] Admin User Management Page
-    - [ ] Table listing all users with options to edit/delete.
+- [x] Admin User Management Page
+    - [x] Table listing all users with options to edit/delete.
     - [ ] Enable searching users by name.
-    - [ ] Add form for creating new users.
+    - [x] Add form for creating new users.
 - [ ] Admin Location Management Page
     - [ ] Table listing all locations with edit/delete options.
     - [ ] Form for creating or editing location details.
