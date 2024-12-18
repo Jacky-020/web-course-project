@@ -4,8 +4,14 @@ import DataTable from 'react-data-table-component';
 import { Venue } from './FetchVenues';
 import { useTheme } from '../Theme/ThemeProviderHooks';
 import { useNavigate } from 'react-router-dom';
+import { gql, useMutation } from '@apollo/client';
 
 const columns = [
+  {
+    name: 'id',
+    sortable: true, 
+    selector: (row: Venue) => row.id,
+  },
   {
     name: 'Location',
     sortable: true,
@@ -28,20 +34,28 @@ const columns = [
   },
   {
     name: 'Latitude',
-    selector: (row: Venue) => row.latitude,
+    selector: (row: Venue) => row.latitude? row.latitude.toFixed(4): '',
     sortable: true,
   },
   {
     name: 'Longitude',
-    selector: (row: Venue) => row.longitude,
+    selector: (row: Venue) => row.longitude? row.longitude.toFixed(4): '',
     sortable: true,
   },
   {
-    name: 'Distance (in km)',
-    selector: (row: Venue) => row.distance,
+    name: 'Distance from you (km)',
+    selector: (row: Venue) => row.distance? row.distance.toFixed(2): '',
     sortable: true,
   }
 ];
+
+const FAVORITE_VENUE = gql`
+    mutation favouriteLocation($id: Int!) {
+        favouriteLocation(id: $id) {
+            id
+        }
+    }
+`;
 
 interface LocationTableProps<T> {
   data: T[];
@@ -49,15 +63,26 @@ interface LocationTableProps<T> {
 }
 
 function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
-  const [selectedRows, setSelectedRows] = useState([]);
+  const [favouriteLocation] = useMutation(FAVORITE_VENUE);
+  const [selectedRows, setSelectedRows] = useState<Venue[]>([]);
   const theme = useTheme();
 
   function handleSelectedRowsChange (state: { selectedRows: SetStateAction<never[]>; })  {
     setSelectedRows(state.selectedRows); // Directly use selectedRows from the state
   };
 
-  function addFavourite(){
-    alert(`Selected Rows: ${JSON.stringify(selectedRows)}`);
+
+
+  function addFavourite() {
+    for(const row of selectedRows){
+      favouriteLocation({
+          variables: {
+              id: row.id,
+          },
+      }).then((result) => {
+      });
+    }
+    alert('Add to favourite successfully');
   };
 
   return (

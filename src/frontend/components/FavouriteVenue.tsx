@@ -18,7 +18,7 @@ function FavouriteVenue() {
   const  { user } = useAuthState();
     
 
-      const [filteredData, setFilteredData] = useState<Venue[]>([]);
+    const [filteredData, setFilteredData] = useState<Venue[]>([]);
       useEffect(() => {
         const loadVenues = async () => {
             try {
@@ -34,12 +34,12 @@ function FavouriteVenue() {
     }, []);
 
 
-      return(
-        <div className='w-100'>      
-            <LocationTable data={filteredData} selectable={false} />
-            <MapView data={filteredData} />          
-        </div>
-      )
+    return(
+      <div className='w-100'>      
+          <LocationTable data={filteredData} selectable={false} />
+          <MapView data={filteredData} />          
+      </div>
+    )
 }
 
 
