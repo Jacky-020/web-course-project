@@ -13,6 +13,7 @@ import EventTable from './components/EventTable.tsx';
 import Users from './Admin/Users.tsx';
 import GlobalNavbar from './components/Navbar.tsx';
 import Message from './components/Message.tsx';
+import ModifyEvents from './Admin/ModifyEvents';
 
 export interface RouteConfig extends AuthGuardProps {
     devName?: string;
@@ -43,6 +44,12 @@ const routeConfigs: RouteConfig[] = [
     {
         path: 'event-page',
         children: <EventTable />,
+        devNoAuth: true,
+    },
+    {
+        path: 'admin/modify-events',
+        roles: ['admin'],
+        children: <ModifyEvents />,
         devNoAuth: true,
     },
     {
