@@ -112,7 +112,7 @@ export const fetchVenues = async (user_id?:string): Promise<Venue[]> => {
                 .filter((location: { latitude: null; longitude: null; }) => location.latitude !== null && location.longitude !== null)
                 .map((location: { en_name: string; id: any; latitude: number; longitude: number; }) => {
                     // Use regex to extract the category from en_name
-                    const regex = /\((.*?)\)/;
+                    const regex = /\((.*)\)/;
                     const matches = regex.exec(location.en_name);
                     const category = matches ? matches[1] : ''; 
             

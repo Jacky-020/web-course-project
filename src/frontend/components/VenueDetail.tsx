@@ -67,12 +67,12 @@ function VenueDetail() {
             if (state && state.selectedVenue) {
                 let chosenVenue = state.selectedVenue;
                 // remove the (category), which reduce textsearch accuracy in google map api
-                chosenVenue.location = state.selectedVenue.location.replace(/\s*\([^)]*\)/g, '').trim();
+                chosenVenue.location = state.selectedVenue.location.replace(/\((.*)\)/, '').trim();
                 setSelectedVenue(chosenVenue); 
                 // Retrieve existing venues from localStorage
                 const savedVenue = JSON.parse(localStorage.getItem('venueList')) || [];
                 let updatedVenue = [...savedVenue]; // Combine existing and new venue
-                updatedVenue = updatedVenue.filter(venue => venue.location !== chosenVenue.location); // remove duplicate
+                updatedVenue = updatedVenue.filter(venue => venue.id !== chosenVenue.id); // remove duplicate
                 updatedVenue.push(chosenVenue);
                 // Limit to the last 3 venues
                 if (updatedVenue.length > 3) {
@@ -177,6 +177,7 @@ function VenueDetail() {
                     />
                     <Carousel.Caption>
                         <h3 className='text-light'>{venue?.displayName || ''}</h3>
+                        <h6 className='text-light'>{venueIdList? venueIdList[index] : ''}</h6>
                     </Carousel.Caption>
                     </div>
                 </Carousel.Item>
@@ -281,7 +282,7 @@ function VenueDetail() {
         return (
             <div className="card w-100 mt-2">
                 <div className="card-body">
-                    <h5 className="card-title">{selectedVenue ? selectedVenue.location : 'Not selected'}</h5>
+                    <h5 className="card-title">{selectedVenue ? selectedVenue.location : 'Not selected'}{selectedVenue ? ` (${selectedVenue.id})`: ''}</h5>
                     <button  onClick={addFavourite}  
                         className="btn btn-outline-success mt-3 btn-sm"
                     >
