@@ -45,7 +45,7 @@ export class Comment {
    */
   @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]})
   @Field(() => [User])
-  likes: [User];
+  likes: User[];
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

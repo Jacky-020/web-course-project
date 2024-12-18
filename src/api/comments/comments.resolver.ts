@@ -3,17 +3,9 @@ import { CommentsService } from './comments.service';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentInput } from './dto/create-comment.input';
 import { UpdateCommentInput } from './dto/update-comment.input';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserDocument, UserSession } from '../user/user.schema';
 import { ObjectIDResolver } from 'graphql-scalars';
-
-// FIXME: Move to elsewhere if needed
-export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const req = ctx.switchToHttp().getRequest() || GqlExecutionContext.create(ctx).getContext().req;
-    return req.user;
-  }
-);
+import { LoginUser } from '../auth/auth.service';
+import { SessionUser } from '../auth/auth.service';
 
 @Resolver(() => Comment)
 export class CommentsResolver {
@@ -22,7 +14,7 @@ export class CommentsResolver {
   @Mutation(() => Comment)
   async createComment(
     @Args('createCommentInput') createCommentInput: CreateCommentInput,
-    @CurrentUser() currentUser: UserSession,
+    @LoginUser() currentUser: SessionUser,
   ): Promise<Comment> {
     return this.commentsService.create(createCommentInput, currentUser);
   }
@@ -39,15 +31,31 @@ export class CommentsResolver {
   }
 
   @Mutation(() => Comment)
+  async likeComment(
+    @Args('id', {type: () => ObjectIDResolver}) id: string,
+    @LoginUser() user: SessionUser
+  ) {
+    return this.commentsService.likeComment(id, user.id);
+  }
+
+  @Mutation(() => Comment)
+  async unlikeComment(
+    @Args('id', {type: () => ObjectIDResolver}) id: string,
+    @LoginUser() user: SessionUser
+  ) {
+    return this.commentsService.unlikeComment(id, user.id);
+  }
+
+  @Mutation(() => Comment)
   async updateComment(
     @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
-    @CurrentUser() user: UserDocument,
+    @LoginUser() user: SessionUser,
   ) {
     return this.commentsService.update(updateCommentInput, user);
   }
 
   @Mutation(() => Comment)
-  async removeComment(@Args('id', { type: () => ObjectIDResolver }) id: string, @CurrentUser() user: UserSession) { // FIXME: take out typedef
+  async removeComment(@Args('id', { type: () => ObjectIDResolver }) id: string, @LoginUser() user: SessionUser) {
     return this.commentsService.remove(id, user);
   }
 }

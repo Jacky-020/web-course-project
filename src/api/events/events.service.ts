@@ -8,7 +8,6 @@ import crypto from 'node:crypto'
 import { Event, EventMeta } from './entities/event.entity';
 import { Location } from '../locations/entities/location.entity';
 import parser from 'any-date-parser';
-import { populate } from 'dotenv';
 
 @Injectable()
 export class EventsService {
@@ -23,19 +22,31 @@ export class EventsService {
   }
 
   async findAll() {
-    return this.eventModel.find(null, null, { populate: ['venue', 'comments'] }).exec();
+    return this.eventModel.find(null, null, { populate: ['venue', 'comments', 'favourited'] }).exec();
   }
 
   async findOne(id: number) {
-    return this.eventModel.findOne({id: id}, null, { populate: ['venue', 'comments' ]}).exec();
+    return this.eventModel.findOne({id: id}, null, { populate: ['venue', 'comments', 'favourited']}).exec();
+  }
+  
+  async count() {
+    return this.eventModel.countDocuments().exec();
+  }
+
+  async favouriteEvent(id: number, userId: string) {
+    return this.eventModel.findOneAndUpdate({id: id}, {$addToSet: {favourited: userId}}, {populate: ['venue', 'comments', 'favourited'], new: true}).exec();
+  }
+
+  async unfavouriteEvent(id: number, userId: string) {
+    return this.eventModel.findOneAndUpdate({id: id}, {$pull: {favourited: userId}}, {populate: ['venue', 'comments', 'favourited'], new: true}).exec();
   }
 
   update(id: number, updateEventInput: UpdateEventInput) {
-    return this.eventModel.findOneAndUpdate({id: id}, updateEventInput).exec();
+    return this.eventModel.findOneAndUpdate({id: id}, updateEventInput, {populate: ['venue', 'comments', 'favourited'], new: true}).exec();
   }
 
   remove(id: number) {
-    return this.eventModel.deleteOne({id: id}).exec();
+    return this.eventModel.findOneAndDelete({id: id}, {populate: ['venue', 'comments', 'favourited']}).exec();
   }
 
   async getMeta() {
@@ -100,6 +111,7 @@ export class EventsService {
         presenter_e: getOneText("presenterorge"),
         date_created: datestrToDate(getOneText("submitdate")),
         comments: [],
+        favourited: [],
       };
       this.eventModel.findOneAndUpdate({id: event.id}, event, {upsert: true}).exec();
     }
