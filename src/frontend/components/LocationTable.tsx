@@ -37,12 +37,7 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'Number of Events',
-    selector: (row: Venue) => row.eventNum,
-    sortable: true,
-  },
-  {
-    name: 'Distance',
+    name: 'Distance (in km)',
     selector: (row: Venue) => row.distance,
     sortable: true,
   }
