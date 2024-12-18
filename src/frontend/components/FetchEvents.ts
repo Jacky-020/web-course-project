@@ -40,6 +40,8 @@ query{
         id
         en_title
         venue{
+          id
+          en_name
           latitude
           longitude
         }
@@ -62,10 +64,15 @@ export const fetchEvents = async (): Promise<Event[]> => {
     const { data } = await client.query({ query: GET_EVENTS });
     eventList = eventList = data.events
     // .filter(event => event.venue !== null && event.venue.latitude !== null && event.venue.longitude !== null)
-    .map((event: { id: any; en_title: any; venue: { latitude: any; longitude: any; }; date_e: any; desc_e: any; presenter_e: any; price_e: any; }) => ({
+    .map((event: { id: any; en_title: any; venue: {
+        id: any;
+        en_name: any; latitude: any; longitude: any; 
+}; date_e: any; desc_e: any; presenter_e: any; price_e: any; }) => ({
         id: event.id,
         title: event.en_title,
         venue: {
+            id: event.venue.id,
+            location: event.venue.en_name,
             latitude: event.venue.latitude,
             longitude: event.venue.longitude,
         },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo, useDeferredValue } from 'react';
+import React, { useState, useEffect} from 'react';
 import {fetchVenues, Venue} from './FetchVenues';
 import LocationTable from './LocationTable';
 import MapView from './MapView';

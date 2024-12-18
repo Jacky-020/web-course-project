@@ -1,5 +1,6 @@
 
 import { useDeferredValue, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { Event, fetchEvents } from './FetchEvents';
 import { HandThumbsUp } from 'react-bootstrap-icons';
@@ -24,13 +25,24 @@ function EventTable() {
     {
       name: 'id',
       sortable: true,
-      // cell: (row: Event) => (
-      //   <a href="#" onClick={() => navigate(`/event/${row.id}`)}>
-      //     {row.id}
-      //   </a>
-      // ),
       selector: (row: Event) => row.id,
       width: '5rem'
+    },
+    {
+      name: 'venue',
+      wrap: true,
+      cell: (row: Event) => {
+        const navigate = useNavigate();
+        return (
+          <a href="" onClick={
+            (e) => {
+              e.preventDefault();
+              navigate('/VenueDetail', { state: { selectedVenue: row.venue } });
+              }}>
+            {row.venue?.location}
+          </a>
+        );
+      }
     },
     {
       name: 'title',
