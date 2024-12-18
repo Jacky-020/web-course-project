@@ -23,14 +23,16 @@ const CREATE_COMMENT = gql`
 `;
 
 const GET_COMMENTS = gql`
-    query getComments {
-        comments {
-            _id
-            body
-            post_date
-            last_update
-            user {
-                username
+    query getComments($location_id: Int!) {
+        location(id: $location_id) {
+            comments {
+                _id
+                body
+                post_date
+                last_update
+                user {
+                    username
+                }
             }
         }
     }
@@ -52,7 +54,11 @@ function VenueDetail() {
     const [infoWindowVisible, setInfoWindowVisible] = useState(true);
     const [createComment] = useMutation(CREATE_COMMENT);
     const [favouriteLocation] = useMutation(FAVORITE_VENUE);
-    const { data, refetch } = useQuery(GET_COMMENTS);
+    const { data, refetch } = useQuery(GET_COMMENTS, {
+        variables: {
+            location_id: selectedVenue?.id,
+        },
+    });
 
     useEffect(() => {
         function trackVenue(){
@@ -231,13 +237,12 @@ function VenueDetail() {
                     id: selectedVenue?.id,
                 },
             }).then((result) => {
-                console.log(result);
             });
         };
 
         useEffect(() => {
             if (data) {
-                setCommentList(data.comments);
+                setCommentList(data.location.comments);
             }
         }, []);
     
