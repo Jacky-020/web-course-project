@@ -55,9 +55,9 @@ const EventForm = ({ existingEventData }) => {
                 id: Number.parseInt(formData.id),
             };
             const { data } = await updateEvent({ variables: { input: inputData } });
-            console.log('Event updated:', data.updateEvent);
+            alert('Event updated. Go check in the event page' );
         } catch (error) {
-            console.error('Error updating event:', error);
+            alert('Error updating event. Please makes sure you have entered a valid event id');
         }
     };
 
