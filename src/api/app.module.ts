@@ -59,6 +59,9 @@ import { ObjectIDResolver } from 'graphql-scalars';
           },
         },
       ],
+      subscriptions: {
+        'graphql-ws': true,
+      }
     }),
     EventsModule,
     CommentsModule,

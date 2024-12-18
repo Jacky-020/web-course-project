@@ -5,6 +5,7 @@ import { CreateLocationInput } from './dto/create-location.input';
 import { UpdateLocationInput } from './dto/update-location.input';
 import { Roles } from '../auth/auth.guard';
 import { Role } from '../user/user.schema';
+import { LoginUser, SessionUser } from '../auth/auth.service';
 
 @Resolver(() => Location)
 export class LocationsResolver {
@@ -24,6 +25,21 @@ export class LocationsResolver {
   @Query(() => Location, { name: 'location' })
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.locationsService.findOne(id);
+  }
+  @Mutation(() => Location)
+  favouriteLocation(
+    @Args('id', { type: () => Int}) id: number,
+    @LoginUser() user: SessionUser
+  ) {
+    return this.locationsService.favouriteLocation(id, user.id);
+  }
+
+  @Mutation(() => Location)
+  unfavouriteLocation(
+    @Args('id', { type: () => Int}) id: number,
+    @LoginUser() user: SessionUser
+  ) {
+    return this.locationsService.unfavouriteLocation(id, user.id);
   }
 
   @Mutation(() => Location)

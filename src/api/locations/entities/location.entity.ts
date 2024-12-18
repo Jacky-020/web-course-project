@@ -1,7 +1,8 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
-import { HydratedDocument } from "mongoose"
+import mongoose, { HydratedDocument } from "mongoose"
 import { Comment } from 'src/api/comments/entities/comment.entity';
+import { User } from 'src/api/user/user.schema';
 
 export type LocationDocument = HydratedDocument<Location>
 
@@ -28,6 +29,13 @@ export class Location {
   @Prop()
   longitude?: number;
 
+  /**
+   * Users that favourited this location
+   */
+  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: User.name})
+  @Field(() => [User])
+  favourited: User[];
+  
   /**
    * Comments of the location
    */

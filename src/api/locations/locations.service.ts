@@ -13,6 +13,9 @@ export class LocationsService {
     {
       path: 'comments',
       populate: 'user',
+    },
+    {
+      path: 'favourited',
     }
   ];
   private readonly logger = new Logger(LocationsService.name);
@@ -27,6 +30,14 @@ export class LocationsService {
 
   async findOne(id: number) {
     return this.locationModel.findOne({id: id}, null, {populate: this.POPULATES}).exec();
+  }
+
+  async favouriteLocation(id: number, userId: string) {
+    return this.locationModel.findOneAndUpdate({id: id}, {$addToSet: {favourited: userId}}, {populate: ['comments', 'favourited'], new: true}).exec();
+  }
+
+  async unfavouriteLocation(id: number, userId: string) {
+    return this.locationModel.findOneAndUpdate({id: id}, {$pull: {favourited: userId}}, {populate: ['comments', 'favourited'], new: true}).exec();
   }
 
   async update(id: number, updateLocationInput: UpdateLocationInput) {
@@ -65,6 +76,7 @@ export class LocationsService {
         latitude: strToNumOrNull(getOneText(venueTag, "latitude")),
         longitude: strToNumOrNull(getOneText(venueTag, "longitude")),
         comments: [],
+        favourited: [],
       };
       this.locationModel.findOneAndUpdate(
         { id: loc.id },
