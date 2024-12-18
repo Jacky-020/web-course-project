@@ -6,11 +6,13 @@ import { HandThumbsUp } from 'react-bootstrap-icons';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { useTheme } from '../Theme/ThemeProviderHooks';
 import { InfoCircle } from 'react-bootstrap-icons';
+import { number } from 'yup';
 
 function EventTable() {
   const [filteredData, setFilteredData] = useState<Event[]>([]);
   const [keyword, setKeyword] = useState<string>('');
   const searchTerm = useDeferredValue(keyword);
+  const [searchId, setSearchId] = useState<string>('');
   const [priceLimit, setPriceLimit] = useState<number>(500);
   const [likedEvents, setLikedEvents] = useState<(number | undefined) [] >([]);
   const [data, setData] = useState<Event[]>([]);
@@ -107,7 +109,8 @@ function EventTable() {
   const handleSearch = () => {
     const filteredData = data.filter(row => 
       (row.title.toLowerCase().includes(searchTerm.toLowerCase()) || searchTerm.trim() === '') &&
-      (row.price && Number.parseInt(row.price.replace(/[$,]/g, ''), 10) <= priceLimit)
+      (row.price && Number.parseInt(row.price.replace(/[$,]/g, ''), 10) <= priceLimit) && 
+      (!searchId || row.id == searchId)
     );
     setFilteredData(filteredData);
   };
@@ -139,6 +142,13 @@ function EventTable() {
     <div className='m-1'>
       <div className='input-group d-flex justify-content-between'  aria-describedby="addon-wrapping">
               <div className='d-flex flex-row'>
+                <input
+                type="search"
+                className="form-control-sm border ps-3 m-2 d-block "
+                placeholder="Search id"
+                value={searchId}
+                onChange={(e)=>setSearchId(e.target.value)} 
+                />
                 <input
                 type="search"
                 className="form-control-sm border ps-3 m-2 d-block "

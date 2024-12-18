@@ -15,7 +15,13 @@ const UPDATE_EVENT = gql`
         }
     }
 `;
-
+const REMOVE_EVENT = gql`
+    mutation removeEvent($id: Int!) {
+        removeEvent(id: $id) {
+            id
+        }
+    }
+`;
 const EventForm = ({ existingEventData }) => {
     const [formData, setFormData] = useState({
         id: '',
@@ -27,6 +33,7 @@ const EventForm = ({ existingEventData }) => {
     });
 
     const [updateEvent] = useMutation(UPDATE_EVENT);
+    const [deleteEvent] = useMutation(REMOVE_EVENT);
 
     // Load existing event data into the form if provided
     useEffect(() => {
@@ -61,9 +68,22 @@ const EventForm = ({ existingEventData }) => {
         }
     };
 
+    const handleDelete = async () => {     
+            try {
+                console.log('Deleting event with ID:', Number.parseInt(formData.id));
+                await deleteEvent({ variables: { id: Number.parseInt(formData.id) } });
+                alert('Event deleted successfully.');
+            } catch (error) {
+                alert('Error deleting event. Make sure the event exists. Please try again.');
+               console.log(error)
+            }
+    };
+
     return (
         <Form onSubmit={handleSubmit}>
-            <InputGroup className="mb-3">
+            <h6>This must be filled:</h6>
+
+            <InputGroup className="mb-3 mt-3">
                 <InputGroup.Text id="basic-addon1">Event ID</InputGroup.Text>
                 <Form.Control
                     name="id"
@@ -75,7 +95,9 @@ const EventForm = ({ existingEventData }) => {
                 />
             </InputGroup>
 
-            <InputGroup className="mb-3">
+            <h6>Fill the below if you want to update events, skip if you want to delete:</h6>
+
+            <InputGroup className="mb-3 mt-3">
                 <InputGroup.Text id="basic-addon1">Event Title</InputGroup.Text>
                 <Form.Control
                     name="en_title"
@@ -135,6 +157,9 @@ const EventForm = ({ existingEventData }) => {
 
             <Button variant="primary" type="submit">
                 Update
+            </Button>
+            <Button variant="danger" onClick={handleDelete} className="ms-2">
+                Delete
             </Button>
         </Form>
     );
