@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useAuthUpdate } from './AuthProviderHooks';
+import Message from '../components/Message';
 
 const Logout: React.FC = () => {
     const authUpdate = useAuthUpdate();
@@ -11,7 +12,7 @@ const Logout: React.FC = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return <h1>Logging out...</h1>;
+    return <Message message="Logging out..." />;
 };
 
 export default Logout;

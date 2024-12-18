@@ -29,8 +29,8 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [alert, setAlert] = useState<AlertState>({
-        state: location.state?.AuthState ?? 'HIDE',
-        message: location.state?.AuthMessage ?? '',
+        state: props.type == 'login' ? (location.state?.AuthState ?? 'HIDE') : 'HIDE',
+        message: props.type == 'login' ? (location.state?.AuthMessage ?? '') : '',
     });
 
     const schema = yup.object().shape({
@@ -69,6 +69,7 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                     setTimeout(() => {
                         const redirect = new URLSearchParams(location.search).get('redirect');
                         if (redirect) navigate(redirect);
+                        else navigate('/general-search');
                     }, 1000);
                 })
                 .catch(({ data }) => {

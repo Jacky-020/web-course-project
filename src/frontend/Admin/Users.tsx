@@ -6,6 +6,7 @@ import { useTheme } from '../Theme/ThemeProviderHooks';
 import { Modal, Button } from 'react-bootstrap';
 import { useAuthState } from '../Auth/AuthProviderHooks';
 import AuthModal from '../Auth/Auth';
+import Message from '../components/Message';
 
 const GET_USERS = gql`
     query {
@@ -116,7 +117,7 @@ const Users: React.FC = () => {
         },
     ];
 
-    if (error) return <p>Error :(</p>;
+    if (error) return <Message message={error?.message ?? ''} />;
 
     return (
         <>
@@ -127,11 +128,16 @@ const Users: React.FC = () => {
                         conditionalRowStyles={[
                             {
                                 when: (row: ReqUser) => row.roles.includes('Admin') && row.id !== user?.id,
-                                classNames: ['text-danger-emphasis'],
+                                classNames: ['text-info'],
                             },
                             {
                                 when: (row: ReqUser) => row.id === user?.id,
                                 classNames: ['text-danger'],
+                            },
+                            {
+                                when: () => true,
+                                // style: { fontSize: '1rem' },
+                                classNames: ['py-2'],
                             },
                         ]}
                         title={
@@ -188,7 +194,7 @@ const Users: React.FC = () => {
                             onClick={() => setState({ show: false, state: 'NONE', user: undefined })}
                             variant="secondary"
                         >
-                            Cancel
+                            Close
                         </Button>
                     }
                 />
@@ -226,7 +232,7 @@ const Users: React.FC = () => {
                             onClick={() => setState({ show: false, state: 'NONE', user: undefined })}
                             variant="secondary"
                         >
-                            Cancel
+                            Close
                         </Button>
                     }
                 />
@@ -258,7 +264,7 @@ const Users: React.FC = () => {
                             onClick={() => setState({ show: false, state: 'NONE', user: undefined })}
                             variant="secondary"
                         >
-                            Cancel
+                            Close
                         </Button>
                     }
                 />

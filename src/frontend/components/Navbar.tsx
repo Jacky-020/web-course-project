@@ -35,6 +35,7 @@ const GlobalNavbar: React.FC = () => {
                                             <NavDropdown
                                                 title="Admin Panel"
                                                 id={`offcanvasNavbarDropdown-expand-${expand}`}
+                                                className='ms-3'
                                             >
                                                 <NavDropdown.Item as={Link} to="/admin/users">
                                                     User Management
@@ -46,6 +47,7 @@ const GlobalNavbar: React.FC = () => {
                                                 <NavDropdown.Item href="#action5">Something else here</NavDropdown.Item> */}
                                             </NavDropdown>
                                         )}
+                                        <ThemeToggle className="mx-3" />
                                     </Nav>
                                     <Nav className="col-4 d-flex align-items-center justify-content-center">
                                         <Nav.Link as={Link} to="/general-search">
@@ -62,7 +64,10 @@ const GlobalNavbar: React.FC = () => {
                                         </Nav.Link>
                                     </Nav>
                                     <Nav className="col-4 d-flex align-items-center justify-content-end">
-                                        <ThemeToggle className="ms-3" />
+                                        <div>Hello {user?.username}!</div>
+                                        <Link to="/logout" className="btn btn-danger ms-3">
+                                            Logout
+                                        </Link>
                                     </Nav>
                                 </Row>
                             </Offcanvas.Body>

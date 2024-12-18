@@ -12,6 +12,7 @@ import Home from './Home/Home.jsx';
 import EventTable from './components/EventTable.tsx';
 import Users from './Admin/Users.tsx';
 import GlobalNavbar from './components/Navbar.tsx';
+import Message from './components/Message.tsx';
 
 export interface RouteConfig extends AuthGuardProps {
     devName?: string;
@@ -27,27 +28,27 @@ const routeConfigs: RouteConfig[] = [
     {
         path: 'general-search',
         children: <GeneralSearch />,
-        noAuth: true,
+        devNoAuth: true,
     },
     {
         path: 'VenueDetail',
         children: <VenueDetail />,
-        noAuth: true,
+        devNoAuth: true,
     },
     {
         path: 'favourite-venue',
         children: <FavouriteVenue />,
-        noAuth: true,
+        devNoAuth: true,
     },
     {
         path: 'event-page',
         children: <EventTable />,
-        noAuth: true,
+        devNoAuth: true,
     },
     {
         devName: '404 Not Found',
         path: '*',
-        children: <h1>404 Not Found</h1>,
+        children: <Message message="404 Not Found" />,
         noAuth: true,
     },
     {
@@ -69,6 +70,13 @@ const devRouteConfigs: RouteConfig[] = [
         devName: 'Home',
         path: '',
         children: <Home />,
+        noAuth: true,
+    },
+    {
+        devName: 'Message',
+        path: 'message',
+        children: <Message message="Hello, World!" />,
+        noAuth: true,
     },
 ];
 
@@ -79,7 +87,12 @@ class App extends React.Component {
                 key={config.path}
                 path={config.path}
                 element={
-                    <AuthGuard noAuth={config.noAuth} roles={config.roles} noRedirect={config.noRedirect}>
+                    <AuthGuard
+                        noAuth={config.noAuth}
+                        roles={config.roles}
+                        noRedirect={config.noRedirect}
+                        devNoAuth={config.devNoAuth}
+                    >
                         {config.children}
                     </AuthGuard>
                 }
