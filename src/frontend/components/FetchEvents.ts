@@ -44,7 +44,6 @@ query{
           longitude
         }
         date_e
-        duration
         presenter_e
         price_e
         desc_e
