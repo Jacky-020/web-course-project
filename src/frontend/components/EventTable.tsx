@@ -4,6 +4,7 @@ import DataTable from 'react-data-table-component';
 import { Event, fetchEvents } from './FetchEvents';
 import { HandThumbsUp } from 'react-bootstrap-icons';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { useTheme } from '../Theme/ThemeProviderHooks';
 import { InfoCircle } from 'react-bootstrap-icons';
 
 function EventTable() {
@@ -13,6 +14,7 @@ function EventTable() {
   const [priceLimit, setPriceLimit] = useState<number>(500);
   const [likedEvents, setLikedEvents] = useState<(number | undefined) [] >([]);
   const [data, setData] = useState<Event[]>([]);
+  const theme = useTheme();
 
 
 
@@ -165,7 +167,8 @@ function EventTable() {
         highlightOnHover 
         dense
         persistTableHead={true}
-      />}
+        theme={theme === 'light' ? 'default' : 'dark'}
+        />}
     </div>
   );
 }

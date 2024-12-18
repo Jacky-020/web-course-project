@@ -3,13 +3,18 @@ import { useThemeToggle, useTheme } from './ThemeProviderHooks';
 import { Sun, Moon, Icon } from 'react-bootstrap-icons';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const ThemeToggle: React.FC<{ scale?: number; parentReady?: boolean }> = ({ scale = 1, parentReady = true }) => {
+const ThemeToggle: React.FC<{ scale?: number; parentReady?: boolean; className?: string }> = ({
+    scale = 1,
+    parentReady = true,
+    className,
+}) => {
     const toggleTheme = useThemeToggle();
     const theme = useTheme();
     const [ready, setReady] = React.useState(true);
 
     const iconProps: ComponentProps<Icon> = {
         size: 20 * scale,
+        style: { display: 'block' },
     };
     const toggleHandler = () => {
         toggleTheme();
@@ -28,7 +33,7 @@ const ThemeToggle: React.FC<{ scale?: number; parentReady?: boolean }> = ({ scal
                 borderWidth: `${4 * scale}px`,
                 overflow: 'hidden',
             }}
-            className={`d-flex justify-content-center align-items-center btn btn-outline-${theme === 'light' ? 'dark' : 'light'}`}
+            className={`d-flex justify-content-center align-items-center p-0 btn btn-outline-${theme === 'light' ? 'dark' : 'light'} ${className}`}
         >
             <AnimatePresence>
                 {parentReady && ready && (
@@ -37,6 +42,7 @@ const ThemeToggle: React.FC<{ scale?: number; parentReady?: boolean }> = ({ scal
                         animate={{ y: 0 }}
                         exit={{ y: 32 * scale }}
                         onAnimationComplete={() => setReady(true)}
+                        className="d-inline"
                     >
                         {theme === 'light' ? <Moon {...iconProps} /> : <Sun {...iconProps} />}
                     </motion.div>

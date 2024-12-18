@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Auth from './Auth/Auth.tsx';
 
 import VenueDetail from './components/VenueDetail.tsx';
 import AuthGuard, { AuthGuardProps } from './Auth/AuthGuard.tsx';
@@ -12,6 +11,7 @@ import Dev from './Dev/Dev.tsx';
 import Home from './Home/Home.jsx';
 import EventTable from './components/EventTable.tsx';
 import Users from './Admin/Users.tsx';
+import GlobalNavbar from './components/Navbar.tsx';
 
 export interface RouteConfig extends AuthGuardProps {
     devName?: string;
@@ -20,25 +20,9 @@ export interface RouteConfig extends AuthGuardProps {
 
 const routeConfigs: RouteConfig[] = [
     {
-        devName: 'Home',
-        path: '',
-        children: <Home />,
-        noAuth: true,
-    },
-    {
-        path: 'login',
-        children: <Auth type="login" key="login" />,
-        noAuth: true,
-    },
-    {
         path: 'logout',
         children: <Logout />,
         noRedirect: true,
-    },
-    {
-        path: 'register',
-        children: <Auth type="register" key="register" />,
-        noAuth: true,
     },
     {
         path: 'general-search',
@@ -68,7 +52,7 @@ const routeConfigs: RouteConfig[] = [
     },
     {
         devName: 'Admin User Management',
-        path: 'admin-user-management',
+        path: 'admin/users',
         roles: ['admin'],
         children: <Users />,
     },
@@ -80,6 +64,11 @@ const devRouteConfigs: RouteConfig[] = [
         path: 'role-test',
         roles: ['admin'],
         children: <h1>You have perms!</h1>,
+    },
+    {
+        devName: 'Home',
+        path: '',
+        children: <Home />,
     },
 ];
 
@@ -99,7 +88,11 @@ class App extends React.Component {
         return (
             <>
                 <Routes>
-                    {routes}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<GlobalNavbar />}>
+                        {routes}
+                    </Route>
+
                     <Route path="dev" element={<Dev configs={routeConfigs.concat(devRouteConfigs)} />}>
                         {routes}
                         {devRouteConfigs.map((config) => (

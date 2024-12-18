@@ -2,6 +2,7 @@
 import { SetStateAction, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Venue } from './FetchVenues';
+import { useTheme } from '../Theme/ThemeProviderHooks';
 import { useNavigate } from 'react-router-dom';
 
 const columns = [
@@ -54,6 +55,7 @@ interface LocationTableProps<T> {
 
 function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
   const [selectedRows, setSelectedRows] = useState([]);
+  const theme = useTheme();
 
   function handleSelectedRowsChange (state: { selectedRows: SetStateAction<never[]>; })  {
     setSelectedRows(state.selectedRows); // Directly use selectedRows from the state
@@ -74,7 +76,8 @@ function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
         selectableRows = {selectable}
         persistTableHead={true}
         onSelectedRowsChange={handleSelectedRowsChange} 
-      />
+        theme={theme === 'light' ? 'default' : 'dark'}
+        />
       {selectable && 
         <button  onClick={addFavourite}  
           className="btn btn-outline-success mt-3 btn-sm"

@@ -1,5 +1,5 @@
 import React from 'react';
-import DataTable from 'react-data-table-component';
+import DataTable, { TableProps, Media } from 'react-data-table-component';
 
 import { useQuery, useApolloClient, gql } from '@apollo/client';
 import { useTheme } from '../Theme/ThemeProviderHooks';
@@ -63,11 +63,12 @@ const Users: React.FC = () => {
     const { user } = useAuthState();
     const { loading, error, data, refetch } = useQuery(GET_USERS);
     const client = useApolloClient();
-    const columns = [
+    const columns: TableProps<ReqUser>['columns'] = [
         {
             name: 'ID',
             selector: (row: ReqUser) => row.id,
             sortable: true,
+            hide: Media.LG,
         },
         {
             name: 'Name',
@@ -83,6 +84,7 @@ const Users: React.FC = () => {
             name: 'Role',
             selector: (row: ReqUser) => row.roles.join(', '),
             sortable: true,
+            hide: Media.LG,
         },
         {
             name: 'Actions',
@@ -90,7 +92,7 @@ const Users: React.FC = () => {
                 if (row.id === user?.id) return 'You!';
                 return (
                     <>
-                        <div>
+                        <div style={{ whiteSpace: 'nowrap' }}>
                             <Button
                                 onClick={() => {
                                     setState({ show: true, state: 'UPDATE', user: row });
@@ -122,6 +124,16 @@ const Users: React.FC = () => {
                 <div className="container">
                     <DataTable
                         progressPending={loading}
+                        conditionalRowStyles={[
+                            {
+                                when: (row: ReqUser) => row.roles.includes('Admin') && row.id !== user?.id,
+                                classNames: ['text-danger-emphasis'],
+                            },
+                            {
+                                when: (row: ReqUser) => row.id === user?.id,
+                                classNames: ['text-danger'],
+                            },
+                        ]}
                         title={
                             <>
                                 <div className="container-fluid py-2">
