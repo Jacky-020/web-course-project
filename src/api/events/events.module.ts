@@ -15,7 +15,8 @@ import { EventsController } from './events.controller';
   providers: [EventsResolver, EventsService, EventsMetaResolver],
   controllers: [EventsController],
   exports: [
-    MongooseModule.forFeature([{name: Event.name, schema: EventSchema}]),
+    MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
+    EventsService
   ],
 })
 export class EventsModule {}

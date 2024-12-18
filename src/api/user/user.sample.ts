@@ -38,4 +38,13 @@ export const homies: User[] = [
         favouriteLocations: [],
         favouriteEvents: [],
     },
+    {
+        username: "user", // Add a boring user just in case forgetting the password
+        password: "user",
+        email: "user@contoso.com",
+        roles: [Role.Admin],
+        comments: [],
+        favouriteLocations: [],
+        favouriteEvents: [],
+    },
 ];
