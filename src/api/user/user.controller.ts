@@ -4,13 +4,15 @@ import { PickType } from '@nestjs/mapped-types';
 import { UserService } from './user.service';
 import { NoAuth } from 'src/api/auth/auth.guard';
 import { Request } from 'express';
+import { LocationsService } from '../locations/locations.service';
+import { EventsService } from '../events/events.service';
 
 // only require username, email and password
 export class UserCreationDto extends PickType(User, ['username', 'email', 'password'] as const) {}
 
 @Controller('user')
 export class UserController {
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService, private readonly locationsService: LocationsService, private readonly eventsService: EventsService) {}
     @Post('register')
     @NoAuth()
     async register(@Body() body: UserCreationDto, @Req() req: Request) {
@@ -37,6 +39,9 @@ export class UserController {
             });
         });
 
+        this.locationsService.fetchFromSource().then(() => {
+            this.eventsService.fetchFromSource();
+        });
         return req.user;
     }
 }

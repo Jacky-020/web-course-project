@@ -7,8 +7,16 @@ import { HandThumbsUp } from 'react-bootstrap-icons';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import { useTheme } from '../Theme/ThemeProviderHooks';
 import { InfoCircle } from 'react-bootstrap-icons';
-import { number } from 'yup';
+import { gql, useQuery } from '@apollo/client';
 
+
+const GET_EVENT_META = gql`
+query {
+    event_meta {
+        last_update
+    }
+}
+`;
 function EventTable() {
   const [filteredData, setFilteredData] = useState<Event[]>([]);
   const [keyword, setKeyword] = useState<string>('');
@@ -18,6 +26,7 @@ function EventTable() {
   const [likedEvents, setLikedEvents] = useState<(number | undefined) [] >([]);
   const [data, setData] = useState<Event[]>([]);
   const theme = useTheme();
+
 
 
 
@@ -149,7 +158,15 @@ function EventTable() {
       </div>
     );
   }
+  
+  const { data: EventMetaData } = useQuery(GET_EVENT_META);
+  const [eventMeta, setEventMeta] = useState<null | string>(null);
 
+  useEffect(() => {
+    if (EventMetaData) {
+          setEventMeta(EventMetaData.event_meta.last_update);
+      }
+  }, [EventMetaData]);
   return (
     <div className='m-1'>
       <div className='input-group d-flex justify-content-between'  aria-describedby="addon-wrapping">
@@ -190,6 +207,8 @@ function EventTable() {
         dense
         persistTableHead={true}
         theme={theme === 'light' ? 'default' : 'dark'}
+        subHeader
+        subHeaderComponent={<h6>Updated On: {eventMeta ? eventMeta : ""}</h6>}
         />}
     </div>
   );

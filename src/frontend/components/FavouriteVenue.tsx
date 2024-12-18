@@ -36,7 +36,7 @@ function FavouriteVenue() {
 
     return(
       <div className='w-100'>      
-          <LocationTable data={filteredData} selectable={false} />
+        <LocationTable data={filteredData} selectable={false} subheader={false} />
           <MapView data={filteredData} />          
       </div>
     )

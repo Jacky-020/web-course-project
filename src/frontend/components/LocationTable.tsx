@@ -1,10 +1,10 @@
 // used both in general-search and my-favourite page, display controlled by props {selectable}
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import { Venue } from './FetchVenues';
 import { useTheme } from '../Theme/ThemeProviderHooks';
 import { useNavigate } from 'react-router-dom';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
 const columns = [
   {
@@ -57,12 +57,21 @@ const FAVORITE_VENUE = gql`
     }
 `;
 
+const GET_EVENT_META = gql`
+  query {
+    event_meta {
+      last_update
+    }
+  }
+`;
+
 interface LocationTableProps<T> {
   data: T[];
   selectable: boolean; // if it is allow to add venues to favourite
+  subheader?: boolean;
 }
 
-function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
+function LocationTable<T>({ data , selectable, subheader=true}: LocationTableProps<T>) {
   const [favouriteLocation] = useMutation(FAVORITE_VENUE);
   const [selectedRows, setSelectedRows] = useState<Venue[]>([]);
   const theme = useTheme();
@@ -84,6 +93,15 @@ function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
     }
     alert('Add to favourite successfully');
   };
+  
+  const { data: EventMetaData } = useQuery(GET_EVENT_META);
+  const [eventMeta, setEventMeta] = useState<null | string>(null);
+
+  useEffect(() => {
+    if (EventMetaData) {
+          setEventMeta(EventMetaData.event_meta.last_update);
+      }
+  }, [EventMetaData]);
 
   return (
     <div className='m-1'>
@@ -97,6 +115,8 @@ function LocationTable<T>({ data , selectable}: LocationTableProps<T>) {
         persistTableHead={true}
         onSelectedRowsChange={handleSelectedRowsChange} 
         theme={theme === 'light' ? 'default' : 'dark'}
+        subHeader={subheader}
+        subHeaderComponent={<h6>Updated On: {eventMeta ? eventMeta : ""}</h6>}
         />
       {selectable && 
         <button  onClick={addFavourite}  

@@ -1,32 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { AirplaneFill } from 'react-bootstrap-icons';
 import ThemeToggle from '../Theme/ThemeToggle';
 import { useAuthState } from '../Auth/AuthProviderHooks';
 import { Link } from 'react-router-dom';
-import { gql, useQuery } from '@apollo/client';
 
 import { Navbar, Nav, Container, NavDropdown, Offcanvas, Row } from 'react-bootstrap';
 
-const GET_EVENT_META = gql`
-  query {
-    event_meta {
-      last_update
-    }
-  }
-`;
 const GlobalNavbar: React.FC = () => {
     const expand = 'lg';
     const { user } = useAuthState();
 
-    const { loading, error, data } = useQuery(GET_EVENT_META);
-    const [eventMeta, setEventMeta] = useState(null);
 
-    useEffect(() => {
-        if (data) {
-            setEventMeta(data.event_meta);
-        }
-    }, [data]);
     
     return (
         <>
@@ -49,7 +34,7 @@ const GlobalNavbar: React.FC = () => {
                             </Offcanvas.Header>
                             <Offcanvas.Body className="container-fluid">
                                 <Row className="w-100">
-                                    <Nav className="col-3 d-flex align-items-center justify-content-start">
+                                    <Nav className="col-4 d-flex align-items-center justify-content-start">
                                         {user?.roles.includes('admin') && (
                                             <NavDropdown
                                                 title="Admin Panel"
@@ -68,7 +53,7 @@ const GlobalNavbar: React.FC = () => {
                                         )}
                                         <ThemeToggle className="mx-3" />
                                     </Nav>
-                                    <Nav className="col-3 d-flex align-items-center justify-content-center">
+                                    <Nav className="col-4 d-flex align-items-center justify-content-center">
                                         <Nav.Link as={Link} to="/general-search">
                                             Search
                                         </Nav.Link>
@@ -82,8 +67,7 @@ const GlobalNavbar: React.FC = () => {
                                             Events
                                         </Nav.Link>
                                     </Nav>
-                                    <div  className="col-4 d-flex align-items-center justify-content-end">Data fetched: {eventMeta ? eventMeta.last_update : 'not fetched'}</div>
-                                    <Nav className="col-2 d-flex align-items-center justify-content-end">
+                                    <Nav className="col-4 d-flex align-items-center justify-content-end">
                                         <div>Hello {user?.username}!</div>
                                         <Link to="/logout" className="btn btn-danger ms-3">
                                             Logout
