@@ -1,1 +1,1 @@
-export const googleMapApiKey = 'AIzaSyCPY14ecVZnp1vIPbT-XR3GJgCbsOIzX_U';
+export const googleMapApiKey = 'fill here';
