@@ -53,7 +53,7 @@ const DELETE_USER = gql`
 
 interface UserManagementState {
     show: boolean;
-    state: 'NONE' | 'DELETE' | 'EDIT' | 'CREATE';
+    state: 'NONE' | 'DELETE' | 'UPDATE' | 'CREATE';
     user?: ReqUser;
 }
 
@@ -87,17 +87,17 @@ const Users: React.FC = () => {
         {
             name: 'Actions',
             cell: (row: ReqUser) => {
-                if (row.id === user?.id) return <>You!</>;
+                if (row.id === user?.id) return 'You!';
                 return (
                     <>
                         <div>
                             <Button
                                 onClick={() => {
-                                    setState({ show: true, state: 'EDIT', user: row });
+                                    setState({ show: true, state: 'UPDATE', user: row });
                                 }}
                                 variant="primary m-1"
                             >
-                                Edit
+                                Update
                             </Button>
                             <Button
                                 onClick={() => {
@@ -122,7 +122,27 @@ const Users: React.FC = () => {
                 <div className="container">
                     <DataTable
                         progressPending={loading}
-                        title="Users"
+                        title={
+                            <>
+                                <div className="container-fluid py-2">
+                                    <div className="row">
+                                        <div className="col-6 d-flex align-items-center justify-content-start">
+                                            <h1>Users</h1>
+                                        </div>
+                                        <div className="col-6 d-flex align-items-center justify-content-end">
+                                            <Button
+                                                onClick={() => {
+                                                    setState({ show: true, state: 'CREATE' });
+                                                }}
+                                                variant="success"
+                                            >
+                                                Create User
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        }
                         columns={columns}
                         data={data?.users ?? []}
                         theme={theme === 'light' ? 'default' : 'dark'}
@@ -134,29 +154,43 @@ const Users: React.FC = () => {
                 onHide={() => setState({ show: false, state: 'NONE', user: undefined })}
             >
                 <Modal.Header>
-                    <Modal.Title>Delete User</Modal.Title>
+                    <Modal.Title>Delete {state.user?.username}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to delete the user?</Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        onClick={() => setState({ show: false, state: 'NONE', user: undefined })}
-                        variant="secondary"
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="danger">Delete!</Button>
-                </Modal.Footer>
+                <Modal.Body>Are you sure you want to delete this user?</Modal.Body>
+                <AuthModal
+                    type="delete"
+                    callback={async () => {
+                        await client.mutate({
+                            mutation: DELETE_USER,
+                            variables: { id: state.user!.id },
+                        });
+
+                        await refetch();
+
+                        return { message: 'User Deleted!' };
+                    }}
+                    user={state.user!}
+                    key="delete"
+                    cancel={
+                        <Button
+                            onClick={() => setState({ show: false, state: 'NONE', user: undefined })}
+                            variant="secondary"
+                        >
+                            Cancel
+                        </Button>
+                    }
+                />
             </Modal>
 
             <Modal
-                show={state.show && state.state == 'EDIT'}
+                show={state.show && state.state == 'UPDATE'}
                 onHide={() => setState({ show: false, state: 'NONE', user: undefined })}
             >
                 <Modal.Header>
-                    <Modal.Title>Edit User</Modal.Title>
+                    <Modal.Title>Edit {state.user?.username}</Modal.Title>
                 </Modal.Header>
                 <AuthModal
-                    type="edit"
+                    type="update"
                     callback={async (data) => {
                         const updatedUser = {
                             id: state.user!.id,
@@ -174,7 +208,39 @@ const Users: React.FC = () => {
                         return { message: 'User updated!' };
                     }}
                     user={state.user!}
-                    key="edit"
+                    key="update"
+                    cancel={
+                        <Button
+                            onClick={() => setState({ show: false, state: 'NONE', user: undefined })}
+                            variant="secondary"
+                        >
+                            Cancel
+                        </Button>
+                    }
+                />
+            </Modal>
+
+            <Modal
+                show={state.show && state.state == 'CREATE'}
+                onHide={() => setState({ show: false, state: 'NONE', user: undefined })}
+            >
+                <Modal.Header>
+                    <Modal.Title>Create User</Modal.Title>
+                </Modal.Header>
+                <AuthModal
+                    type="create"
+                    callback={async (data) => {
+                        await client.mutate({
+                            mutation: CREATE_USER,
+                            variables: { createUserInput: { ...data, roles: ['User'] } },
+                        });
+
+                        await refetch();
+
+                        return { message: 'User Created!' };
+                    }}
+                    user={state.user!}
+                    key="create"
                     cancel={
                         <Button
                             onClick={() => setState({ show: false, state: 'NONE', user: undefined })}
