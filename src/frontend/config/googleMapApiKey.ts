@@ -1,0 +1,1 @@
+export const googleMapApiKey = 'fill here';
