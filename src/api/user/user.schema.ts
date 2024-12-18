@@ -51,7 +51,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 export class UserType extends User {
 
     @Field(() => String)
-    _id: string;
+    id: string;
 
     @Field(() => [Role])
     roles: Role[];

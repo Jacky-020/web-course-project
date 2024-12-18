@@ -103,10 +103,10 @@ const Home: React.FC = () => {
                                     </Modal.Header>
                                     <Tab.Content>
                                         <Tab.Pane eventKey="login">
-                                            <AuthModal isLogin />
+                                            <AuthModal type="login" />
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="register">
-                                            <AuthModal />
+                                            <AuthModal type="register" />
                                         </Tab.Pane>
                                     </Tab.Content>
                                 </Modal.Dialog>

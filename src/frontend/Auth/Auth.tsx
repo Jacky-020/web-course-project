@@ -12,7 +12,11 @@ interface AuthFormData {
 }
 
 interface AuthModalProps {
-    isLogin?: boolean;
+    type: 'login' | 'register' | 'edit';
+
+    callback?: (data: AuthFormData) => Promise<{ message?: string } | void>;
+    user?: { username: string; email: string };
+    cancel?: React.ReactNode;
 }
 
 interface AlertState {
@@ -40,45 +44,56 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
 
     const onSubmit = async (form: AuthFormData) => {
         setAlert({ state: 'HIDE', message: '' });
-        authUpdate(form.username, form.password, props.isLogin ? undefined : form.email)
-            .then(() => {
-                setAlert({ state: 'success', message: 'Success!' });
-                setTimeout(() => {
-                    const redirect = new URLSearchParams(location.search).get('redirect');
-                    if (redirect) navigate(redirect);
-                }, 1000);
-            })
-            .catch(({ data }) => {
-                setAlert({
-                    state: 'danger',
-                    message: data?.message ?? 'An error occurred!',
+
+        if (props.type === 'edit' && props.callback)
+            await props
+                .callback(form)
+                .then((data) => setAlert({ state: 'success', message: data?.message ?? 'Success!' }))
+                .catch((data) => {
+                    setAlert({
+                        state: 'danger',
+                        message: data?.message ?? 'An error occurred!',
+                    });
                 });
-            });
+        else
+            authUpdate(form.username, form.password, props.type == 'login' ? undefined : form.email)
+                .then(() => {
+                    setAlert({ state: 'success', message: 'Success!' });
+                    setTimeout(() => {
+                        const redirect = new URLSearchParams(location.search).get('redirect');
+                        if (redirect) navigate(redirect);
+                    }, 1000);
+                })
+                .catch(({ data }) => {
+                    setAlert({
+                        state: 'danger',
+                        message: data?.message ?? 'An error occurred!',
+                    });
+                });
     };
 
     return (
         <>
             <Formik
-                validationSchema={props.isLogin ? schema.omit(['email']) : schema}
+                validationSchema={
+                    props.type === 'login'
+                        ? schema.omit(['email'])
+                        : props.type == 'register'
+                          ? schema
+                          : schema.shape({ password: yup.string() })
+                }
                 onSubmit={onSubmit}
                 initialValues={{
-                    username: '',
-                    email: '',
+                    username: props.user?.username ?? '',
+                    email: props.user?.email ?? '',
                     password: '',
                 }}
             >
-                {({ handleSubmit, handleChange, touched, errors, isSubmitting }) => (
+                {({ handleSubmit, handleChange, touched, errors, isSubmitting, values }) => (
                     <>
                         <Modal.Body>
-                            <Form
-                                id={'form-' + (props.isLogin ? 'login' : 'register')}
-                                noValidate
-                                onSubmit={handleSubmit}
-                            >
-                                <Form.Group
-                                    className="mb-3"
-                                    controlId={'username-' + (props.isLogin ? 'login' : 'register')}
-                                >
+                            <Form id={'form-' + props.type} noValidate onSubmit={handleSubmit}>
+                                <Form.Group className="mb-3" controlId={'username-' + props.type}>
                                     <Form.Label>Username</Form.Label>
                                     <Form.Control
                                         type="text"
@@ -89,14 +104,15 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                         isValid={touched.username && !errors.username}
                                         isInvalid={touched.password && !!errors.username}
                                         autoComplete="username"
+                                        value={values.username}
                                     />
                                     <Form.Control.Feedback type="invalid">{errors.username}</Form.Control.Feedback>
                                 </Form.Group>
 
                                 <Form.Group
                                     className="mb-3"
-                                    hidden={props.isLogin}
-                                    controlId={'email-' + (props.isLogin ? 'login' : 'register')}
+                                    hidden={props.type === 'login'}
+                                    controlId={'email-' + props.type}
                                 >
                                     <Form.Label>Email address</Form.Label>
                                     <Form.Control
@@ -108,17 +124,12 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                         isValid={touched.email && !errors.email}
                                         isInvalid={touched.password && !!errors.email}
                                         autoComplete="email"
+                                        value={values.email}
                                     />
                                     <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-                                    <Form.Text className="text-muted">
-                                        We'll never share your email with anyone else.
-                                    </Form.Text>
                                 </Form.Group>
 
-                                <Form.Group
-                                    className="mb-3"
-                                    controlId={'password-' + (props.isLogin ? 'login' : 'register')}
-                                >
+                                <Form.Group className="mb-3" controlId={'password-' + props.type}>
                                     <Form.Label>Password</Form.Label>
                                     <Form.Control
                                         type="password"
@@ -128,7 +139,8 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                                         onChange={handleChange}
                                         isValid={touched.password && !errors.password}
                                         isInvalid={touched.password && !!errors.password}
-                                        autoComplete={props.isLogin ? 'current-password' : 'new-password'}
+                                        value={values.password}
+                                        autoComplete={props.type == 'login' ? 'current-password' : 'new-password'}
                                     />
                                     <Form.Control.Feedback type="invalid">{errors.password}</Form.Control.Feedback>
                                 </Form.Group>
@@ -136,10 +148,11 @@ const AuthModal: React.FC<AuthModalProps> = (props) => {
                         </Modal.Body>
 
                         <Modal.Footer>
+                            {props.cancel}
                             <Button
                                 variant="primary"
                                 type="submit"
-                                form={'form-' + (props.isLogin ? 'login' : 'register')}
+                                form={'form-' + props.type}
                                 disabled={isSubmitting}
                                 className="d-flex justify-content-center align-items-center"
                             >

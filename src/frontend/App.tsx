@@ -7,10 +7,11 @@ import AuthGuard, { AuthGuardProps } from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
 import Logout from './Auth/Logout.tsx';
 import FavouriteVenue from './components/FavouriteVenue.tsx';
-import MapComponent from './components/test.jsx';
+// import MapComponent from './components/test.jsx';
 import Dev from './Dev/Dev.tsx';
 import Home from './Home/Home.jsx';
 import EventTable from './components/EventTable.tsx';
+import Users from './Admin/Users.tsx';
 
 export interface RouteConfig extends AuthGuardProps {
     devName?: string;
@@ -26,7 +27,7 @@ const routeConfigs: RouteConfig[] = [
     },
     {
         path: 'login',
-        children: <Auth isLogin key="login" />,
+        children: <Auth type="login" key="login" />,
         noAuth: true,
     },
     {
@@ -36,7 +37,7 @@ const routeConfigs: RouteConfig[] = [
     },
     {
         path: 'register',
-        children: <Auth key="register" />,
+        children: <Auth type="register" key="register" />,
         noAuth: true,
     },
     {
@@ -64,6 +65,12 @@ const routeConfigs: RouteConfig[] = [
         path: '*',
         children: <h1>404 Not Found</h1>,
         noAuth: true,
+    },
+    {
+        devName: 'Admin User Management',
+        path: 'admin-user-management',
+        roles: ['admin'],
+        children: <Users />,
     },
 ];
 
