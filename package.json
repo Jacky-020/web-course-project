@@ -12,6 +12,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@apollo/client": "^3.12.3",
     "@apollo/server": "^4.11.2",
     "@nestjs/apollo": "^12.2.2",
     "@nestjs/common": "^10.0.0",
@@ -37,7 +38,7 @@
     "express-session": "^1.18.1",
     "formik": "^2.4.6",
     "google-map-react": "^2.2.1",
-    "graphql": "^16.9.0",
+    "graphql": "^16.10.0",
     "graphql-scalars": "^1.24.0",
     "isomorphic-dompurify": "^2.19.0",
     "jsdom": "^25.0.1",

@@ -45,3 +45,14 @@ export class UserSession extends OmitType(User, ['password'] as const) {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+@Schema()
+@ObjectType()
+export class UserType extends User {
+
+    @Field(() => String)
+    _id: string;
+
+    @Field(() => [Role])
+    roles: Role[];
+};
