@@ -4,15 +4,30 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { googleMapApiKey } from '../config/googleMapApiKey';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Venue } from './FetchVenues';
+import { gql, useMutation } from '@apollo/client';
 
 import Carousel from 'react-bootstrap/Carousel';
 
+const CREATE_COMMENT = gql`
+  mutation CreateComment($input: CreateCommentInput!) {
+    createComment(createCommentInput: $input) {
+      _id
+      body
+      post_date
+      last_update
+      user {
+        username
+      }
+    }
+  }
+`;
 
 function VenueDetail() {
     const location = useLocation();
     const [selectedVenue, setSelectedVenue] = useState<Venue | undefined >(undefined); // the venue to be displayed
     const [venueDetail, setVenueDetail] = useState<google.maps.places.Place[]>(); // info of venue visited (up to 3)
     const [infoWindowVisible, setInfoWindowVisible] = useState(true);
+    const [createComment] = useMutation(CREATE_COMMENT);
 
     useEffect(() => {
         function trackVenue(){
@@ -187,7 +202,13 @@ function VenueDetail() {
         };
     
         function addComment(){
-            alert(myComment);
+            // await createComment(variables: {
+            //     input: {
+            //       eventId: eventId,
+            //       comment: myComment, 
+            //     },
+            //   },)
+            alert('comment sent')
         }
         return (
             <div className="card w-100 mt-2">

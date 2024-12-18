@@ -1,16 +1,19 @@
 import React, { ReactNode } from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Auth from './Auth/Auth.tsx';
 
 import VenueDetail from './components/VenueDetail.tsx';
 import AuthGuard, { AuthGuardProps } from './Auth/AuthGuard.tsx';
 import GeneralSearch from './components/GeneralSearch.tsx';
 import Logout from './Auth/Logout.tsx';
 import FavouriteVenue from './components/FavouriteVenue.tsx';
-import MapComponent from './components/test.jsx';
+// import MapComponent from './components/test.jsx';
 import Dev from './Dev/Dev.tsx';
 import Home from './Home/Home.jsx';
 import EventTable from './components/EventTable.tsx';
+import Users from './Admin/Users.tsx';
+import GlobalNavbar from './components/Navbar.tsx';
+import Message from './components/Message.tsx';
+import ModifyEvents from './Admin/ModifyEvents';
 
 export interface RouteConfig extends AuthGuardProps {
     devName?: string;
@@ -19,51 +22,47 @@ export interface RouteConfig extends AuthGuardProps {
 
 const routeConfigs: RouteConfig[] = [
     {
-        devName: 'Home',
-        path: '',
-        children: <Home />,
-        noAuth: true,
-    },
-    {
-        path: 'login',
-        children: <Auth isLogin key="login" />,
-        noAuth: true,
-    },
-    {
         path: 'logout',
         children: <Logout />,
         noRedirect: true,
     },
     {
-        path: 'register',
-        children: <Auth key="register" />,
-        noAuth: true,
-    },
-    {
         path: 'general-search',
         children: <GeneralSearch />,
-        noAuth: true,
+        devNoAuth: true,
     },
     {
         path: 'VenueDetail',
         children: <VenueDetail />,
-        noAuth: true,
+        devNoAuth: true,
     },
     {
         path: 'favourite-venue',
         children: <FavouriteVenue />,
-        noAuth: true,
+        devNoAuth: true,
     },
     {
         path: 'event-page',
         children: <EventTable />,
-        noAuth: true,
+        devNoAuth: true,
+    },
+    {
+        path: 'admin/modify-events',
+        roles: ['admin'],
+        children: <ModifyEvents />,
+        devNoAuth: true,
     },
     {
         devName: '404 Not Found',
         path: '*',
-        children: <h1>404 Not Found</h1>,
+        children: <Message message="404 Not Found" />,
         noAuth: true,
+    },
+    {
+        devName: 'Admin User Management',
+        path: 'admin/users',
+        roles: ['admin'],
+        children: <Users />,
     },
 ];
 
@@ -74,6 +73,18 @@ const devRouteConfigs: RouteConfig[] = [
         roles: ['admin'],
         children: <h1>You have perms!</h1>,
     },
+    {
+        devName: 'Home',
+        path: '',
+        children: <Home />,
+        noAuth: true,
+    },
+    {
+        devName: 'Message',
+        path: 'message',
+        children: <Message message="Hello, World!" />,
+        noAuth: true,
+    },
 ];
 
 class App extends React.Component {
@@ -83,7 +94,12 @@ class App extends React.Component {
                 key={config.path}
                 path={config.path}
                 element={
-                    <AuthGuard noAuth={config.noAuth} roles={config.roles} noRedirect={config.noRedirect}>
+                    <AuthGuard
+                        noAuth={config.noAuth}
+                        roles={config.roles}
+                        noRedirect={config.noRedirect}
+                        devNoAuth={config.devNoAuth}
+                    >
                         {config.children}
                     </AuthGuard>
                 }
@@ -92,7 +108,11 @@ class App extends React.Component {
         return (
             <>
                 <Routes>
-                    {routes}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/" element={<GlobalNavbar />}>
+                        {routes}
+                    </Route>
+
                     <Route path="dev" element={<Dev configs={routeConfigs.concat(devRouteConfigs)} />}>
                         {routes}
                         {devRouteConfigs.map((config) => (

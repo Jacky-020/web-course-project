@@ -7,14 +7,23 @@ import AuthProvider from './Auth/AuthProvider.tsx';
 import ThemeProvider from './Theme/ThemeProvider.tsx';
 import './main.css';
 
+import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client';
+
+const client = new ApolloClient({
+    uri: '/api/graphql/',
+    cache: new InMemoryCache(),
+});
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
-        <ThemeProvider>
-            <AuthProvider>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </AuthProvider>
-        </ThemeProvider>
+        <ApolloProvider client={client}>
+            <ThemeProvider>
+                <AuthProvider>
+                    <BrowserRouter>
+                        <App />
+                    </BrowserRouter>
+                </AuthProvider>
+            </ThemeProvider>
+        </ApolloProvider>
     </StrictMode>,
 );

@@ -1,4 +1,4 @@
-import { Field, HideField, ObjectType } from "@nestjs/graphql";
+import { Field, HideField, ObjectType, registerEnumType } from "@nestjs/graphql";
 import { Prop, SchemaFactory, Schema, Virtual } from "@nestjs/mongoose";
 import { IsAlphanumeric, IsAscii, IsEmail } from "class-validator";
 import { HydratedDocument } from "mongoose";
@@ -12,6 +12,10 @@ export enum Role {
     User = 'user',
     Admin = 'admin',
 }
+
+registerEnumType(Role, {
+    name: 'Role',
+});
 
 @Schema()
 @ObjectType()
@@ -78,3 +82,14 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+@Schema()
+@ObjectType()
+export class UserType extends User {
+
+    @Field(() => String)
+    id: string;
+
+    @Field(() => [Role])
+    roles: Role[];
+};

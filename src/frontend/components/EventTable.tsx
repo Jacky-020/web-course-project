@@ -1,54 +1,76 @@
 
-import { useEffect, useState } from 'react';
+import { useDeferredValue, useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
 import { Event, fetchEvents } from './FetchEvents';
 import { HandThumbsUp } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom';
+import { OverlayTrigger, Popover } from 'react-bootstrap';
+import { useTheme } from '../Theme/ThemeProviderHooks';
+import { InfoCircle } from 'react-bootstrap-icons';
 
 function EventTable() {
-  const [likedEvents, setLikedEvents] = useState<number[]>([]);
+  const [filteredData, setFilteredData] = useState<Event[]>([]);
+  const [keyword, setKeyword] = useState<string>('');
+  const searchTerm = useDeferredValue(keyword);
+  const [priceLimit, setPriceLimit] = useState<number>(500);
+  const [likedEvents, setLikedEvents] = useState<(number | undefined) [] >([]);
   const [data, setData] = useState<Event[]>([]);
-  const navigate = useNavigate();
+  const theme = useTheme();
+
+
 
   const columns = [
     {
       name: 'id',
       sortable: true,
-      cell: (row: Event) => (
-        <a href="#" onClick={() => navigate(`/event/${row.id}`)}>
-          {row.id}
-        </a>
-      ),
-      width: "4rem" 
+      // cell: (row: Event) => (
+      //   <a href="#" onClick={() => navigate(`/event/${row.id}`)}>
+      //     {row.id}
+      //   </a>
+      // ),
+      selector: (row: Event) => row.id,
+      width: '5rem'
     },
     {
       name: 'title',
       selector: (row: Event) => row.title,
       wrap: true,
       sortable: true,
+      width: "20rem" 
     },
     {
       name: 'date',
-      selector: (row: Event) => new Date(row.date).toLocaleString(),
+      selector: (row: Event) => row.date,
       wrap: true,
-      width: "10rem"
+      width: "20rem"
     },
     {
       name: 'description',
-      selector: (row: Event) => row.description,
-      wrap: true,
-      width: "30rem" 
+      cell: (row: Event) => {
+      const popoverFocus = (
+          <Popover id="popover-trigger-hover-focus" title="Popover bottom" style={{fontSize: 10 }}>
+            <span>{row.description}</span> 
+          </Popover>
+        );  
+      return (
+      <OverlayTrigger trigger={['hover', 'focus']}placement="bottom" overlay={popoverFocus}>
+        <div  style={{ cursor: 'pointer'}} >
+          <InfoCircle className='text-info'/>
+        </div>
+      </OverlayTrigger>);
+      },
+      width: "6rem" 
     },
     {
-      name: 'presentar',
-      selector: (row: Event) => row.presentar,
+      name: 'presenter',
+      selector: (row: Event) => row.presenter,
       wrap: true,
       sortable: true,
     },
     {
       name: 'price',
-      selector: (row: Event) => row.price?.toFixed(2), // Format the price
+      selector: (row: Event) => row.price, 
       sortable: true,
+      wrap: true,
       width: "6rem" 
     },
     {
@@ -77,20 +99,76 @@ function EventTable() {
     async function getEvent() {
       const eventList = await fetchEvents();
       setData(eventList);
+      setFilteredData(eventList);
     }
     getEvent();
   }, []);
 
+  const handleSearch = () => {
+    const filteredData = data.filter(row => 
+      (row.title.toLowerCase().includes(searchTerm.toLowerCase()) || searchTerm.trim() === '') &&
+      (row.price && Number.parseInt(row.price.replace(/[$,]/g, ''), 10) <= priceLimit)
+    );
+    setFilteredData(filteredData);
+  };
+
+
+  function PriceSlider() {
+    // prevent rendering of whole page during sliding, which is very laggy
+    const [priceSelected, setPriceSelected] = useState(priceLimit); 
+    return (
+      <div>
+      <div className='col m-2'>
+        <input
+          type="range"
+          min="1"
+          max="500"
+          id="priceRange"
+          value={priceSelected}
+          step="3"
+          onChange={e => setPriceSelected(parseFloat(e.target.value))}
+          onBlur={()=> setPriceLimit(priceSelected)} // update whole page when released
+        />
+        <div>Price within : {priceSelected}</div>
+      </div>
+      </div>
+    );
+  }
+
   return (
     <div className='m-1'>
+      <div className='input-group d-flex justify-content-between'  aria-describedby="addon-wrapping">
+              <div className='d-flex flex-row'>
+                <input
+                type="search"
+                className="form-control-sm border ps-3 m-2 d-block "
+                placeholder="Search title"
+                value={searchTerm}
+                onChange={(e)=>setKeyword(e.target.value)} 
+                />
+                <PriceSlider/>
+              </div>
+              <div>
+                <button 
+                className="btn btn-outline-secondary btn-light m-2  mt-3 d-block" 
+                type="button" 
+                id="button-addon1" 
+                onClick={handleSearch} // Trigger search on button click
+                >
+                Apply filter
+                </button>
+              </div>
+              </div>
+      {filteredData&& 
       <DataTable
         columns={columns}
-        data={data}
+        data={filteredData}
         pagination 
         highlightOnHover 
         dense
         persistTableHead={true}
-      />
+        theme={theme === 'light' ? 'default' : 'dark'}
+        />}
     </div>
   );
 }

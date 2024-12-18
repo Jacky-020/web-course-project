@@ -92,29 +92,6 @@ function GeneralSearch(){
         );
       }
 
-
-    //   const InputGroup = () =>{
-    //     return(
-    //         <div className='input-group' aria-describedby="addon-wrapping">
-    //             <input
-    //             type="search"
-    //             className="form-control-sm border ps-3 m-2"
-    //             placeholder="Search locations"
-    //             value={searchTerm}
-    //             onChange={(e)=>setKeyword(e.target.value)} 
-    //             />
-    //         <DistanceSlider/>
-    //         <button 
-    //           className="btn btn-outline-secondary" 
-    //           type="button" 
-    //           id="button-addon1" 
-    //           onClick={handleSearch} // Trigger search on button click
-    //         >
-    //           Search
-    //         </button>
-    //       </div>
-    //     )
-    //   }
       return(
         <div className='w-100'>  
           <div className='container-fluid'>    

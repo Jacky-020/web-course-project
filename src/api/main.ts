@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import MongoStore from 'connect-mongo';
 
 dotenv.config();
+dotenv.config({ path: '.env.dev' });
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new ExpressAdapter());
@@ -18,7 +19,7 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 604800, // 7 days
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       },
       store: MongoStore.create({mongoUrl: process.env.MONGO_URL}),
     }),
