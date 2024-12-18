@@ -4,13 +4,13 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { googleMapApiKey } from '../config/googleMapApiKey';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Venue } from './FetchVenues';
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
 import Carousel from 'react-bootstrap/Carousel';
 
 const CREATE_COMMENT = gql`
-  mutation CreateComment($input: CreateCommentInput!) {
-    createComment(createCommentInput: $input) {
+  mutation createLocationComment($input: CreateLocationCommentInput!) {
+    createLocationComment(createCommentInput: $input) {
       _id
       body
       post_date
@@ -22,6 +22,31 @@ const CREATE_COMMENT = gql`
   }
 `;
 
+const GET_COMMENTS = gql`
+    query getComments($location_id: Int!) {
+        location(id: $location_id) {
+            comments {
+                _id
+                body
+                post_date
+                last_update
+                user {
+                    username
+                }
+            }
+        }
+    }
+`;
+
+
+const FAVORITE_VENUE = gql`
+    mutation favouriteLocation($id: Int!) {
+        favouriteLocation(id: $id) {
+            id
+        }
+    }
+`;
+
 function VenueDetail() {
     const location = useLocation();
     const [selectedVenue, setSelectedVenue] = useState<Venue | undefined >(undefined); // the venue to be displayed
@@ -29,6 +54,12 @@ function VenueDetail() {
     const [venueIdList, setVenueIdList] = useState<number[]>();
     const [infoWindowVisible, setInfoWindowVisible] = useState(true);
     const [createComment] = useMutation(CREATE_COMMENT);
+    const [favouriteLocation] = useMutation(FAVORITE_VENUE);
+    const { data, refetch } = useQuery(GET_COMMENTS, {
+        variables: {
+            location_id: selectedVenue?.id,
+        },
+    });
 
     useEffect(() => {
         function trackVenue(){
@@ -214,20 +245,38 @@ function VenueDetail() {
     
     function Detail() {
         const [myComment, setMyComment] = useState('');
-        const [commentList, setCommentList] = useState([]);
+        const [commentList, setCommentList] = useState<{
+            body: string;
+            user: { username: string; };
+        }[]>([]);
         
-        function addFavourite(){
-            alert(`Selected Rows: ${JSON.stringify(selectedVenue)}`);
+        function addFavourite() {
+            favouriteLocation({
+                variables: {
+                    id: selectedVenue?.id,
+                },
+            }).then((result) => {
+            });
         };
+
+        useEffect(() => {
+            if (data) {
+                setCommentList(data.location.comments);
+            }
+        }, []);
     
-        function addComment(){
-            // await createComment(variables: {
-            //     input: {
-            //       eventId: eventId,
-            //       comment: myComment, 
-            //     },
-            //   },)
-            alert('comment sent')
+        function addComment() {
+            createComment({
+                variables: {
+                    input: {
+                        location_id: selectedVenue?.id,
+                        comment: myComment,
+                    },
+                },
+            }).then((result) => {
+                refetch();
+            });
+            return false;
         }
         return (
             <div className="card w-100 mt-2">
@@ -243,7 +292,9 @@ function VenueDetail() {
                     <ul className="list-group mt-2">
                         {commentList.length ? commentList.map((comment, key) => {
                             return (
-                            <li key={key} className="list-group-item">{comment}</li>
+                                <li key={key} className="list-group-item">
+                                    <strong>{comment.user.username}</strong> <br/> {comment.body}
+                                </li>
                             );
                         }) : (
                             <li className="list-group-item">No comments yet</li>
