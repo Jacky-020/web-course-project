@@ -215,7 +215,7 @@ export class Event {
   /**
    * Comments for the event
    */
-  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: Comment.name})
+  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: "Comment"})
   @Field(() => [Comment])
   comments: Comment[];
 }

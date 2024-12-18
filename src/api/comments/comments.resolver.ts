@@ -1,22 +1,32 @@
 import { Resolver, Query, Mutation, Args, Int, GqlExecutionContext, ID, Info } from '@nestjs/graphql';
 import { CommentsService } from './comments.service';
 import { Comment } from './entities/comment.entity';
-import { CreateCommentInput } from './dto/create-comment.input';
+import { CreateEventCommentInput, CreateLocationCommentInput } from './dto/create-comment.input';
 import { UpdateCommentInput } from './dto/update-comment.input';
 import { ObjectIDResolver } from 'graphql-scalars';
 import { LoginUser } from '../auth/auth.service';
 import { SessionUser } from '../auth/auth.service';
+import { Event } from '../events/entities/event.entity';
 
 @Resolver(() => Comment)
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Mutation(() => Comment)
-  async createComment(
-    @Args('createCommentInput') createCommentInput: CreateCommentInput,
+  async createEventComment(
+    @Args('createCommentInput') createCommentInput: CreateEventCommentInput,
     @LoginUser() currentUser: SessionUser,
   ): Promise<Comment> {
-    return this.commentsService.create(createCommentInput, currentUser);
+    const comment = await this.commentsService.createEventComment(createCommentInput, currentUser);
+    return comment;
+  }
+
+  @Mutation(() => Comment)
+  async createLocationComment(
+    @Args('createCommentInput') createCommentInput: CreateLocationCommentInput,
+    @LoginUser() currentUser: SessionUser,
+  ): Promise<Comment> {
+    return this.commentsService.createLocationComment(createCommentInput, currentUser);
   }
 
   @Query(() => [Comment], { name: 'comments' })

@@ -2,13 +2,19 @@ import { Injectable, Logger } from '@nestjs/common';
 import { CreateLocationInput } from './dto/create-location.input';
 import { UpdateLocationInput } from './dto/update-location.input';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose'
+import { Model, PopulateOptions } from 'mongoose'
 import { Location } from './entities/location.entity';
 import { JSDOM } from 'jsdom'
 import { GraphQLError } from 'graphql';
 
 @Injectable()
 export class LocationsService {
+  POPULATES: PopulateOptions[] = [
+    {
+      path: 'comments',
+      populate: 'user',
+    }
+  ];
   private readonly logger = new Logger(LocationsService.name);
   constructor(@InjectModel(Location.name) private locationModel: Model<Location>) {}
   async create(createLocationInput: CreateLocationInput) {
@@ -16,15 +22,15 @@ export class LocationsService {
   }
 
   async findAll() {
-    return this.locationModel.find().exec();
+    return this.locationModel.find(null, null, {populate: this.POPULATES}).exec();
   }
 
   async findOne(id: number) {
-    return this.locationModel.findOne({id: id}).exec();
+    return this.locationModel.findOne({id: id}, null, {populate: this.POPULATES}).exec();
   }
 
   async update(id: number, updateLocationInput: UpdateLocationInput) {
-    return this.locationModel.findOneAndUpdate({id: id}, updateLocationInput).exec();
+    return this.locationModel.findOneAndUpdate({id: id}, updateLocationInput, {populate: this.POPULATES}).exec();
   }
 
   async remove(id: number) {
@@ -58,6 +64,7 @@ export class LocationsService {
         en_name: getOneText(venueTag, "venuee"),
         latitude: strToNumOrNull(getOneText(venueTag, "latitude")),
         longitude: strToNumOrNull(getOneText(venueTag, "longitude")),
+        comments: [],
       };
       this.locationModel.findOneAndUpdate(
         { id: loc.id },

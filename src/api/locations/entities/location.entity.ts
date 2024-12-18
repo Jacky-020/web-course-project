@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import { HydratedDocument } from "mongoose"
+import { Comment } from 'src/api/comments/entities/comment.entity';
 
 export type LocationDocument = HydratedDocument<Location>
 
@@ -26,6 +27,19 @@ export class Location {
   @Field(() => Float, {description: "Longitude of the venue", nullable: true})
   @Prop()
   longitude?: number;
+
+  /**
+   * Comments of the location
+   */
+  @Virtual({
+    options: {
+      ref: "Comment",
+      localField: "_id",
+      foreignField: "target",
+    }
+  })
+  @Field(() => [Comment])
+  comments: Comment[];
 }
 
 export const LocationSchema = SchemaFactory.createForClass(Location);
