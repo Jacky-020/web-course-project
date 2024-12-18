@@ -1,4 +1,4 @@
-
+import {  gql, ApolloClient, InMemoryCache } from '@apollo/client';
 
 export interface Venue {
     id?: number;
@@ -60,26 +60,56 @@ export interface Venue {
         // calculate the result
         return(c * r);
     }
+const client = new ApolloClient({
+    uri: 'http://localhost:5173/api/graphql/locations',
+    cache: new InMemoryCache(),
+});
+
+const GET_LOCATIONS = gql`
+  query {
+    locations {
+      id
+      en_name
+      latitude
+      longitude
+    }
+  }
+`;
 
 export const fetchVenues = async (): Promise<Venue[]> => {
+
+
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
-            (position: GeolocationPosition) => {
+            async (position: GeolocationPosition) => {
                 const userLocation = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
                 };
 
 
-                let venueList = predefinedVenueList;
-                // venueList = await fetch();  
+                let venueList = predefinedVenueList; 
 
-                // caclulate and add distance field, may alson need to extract and add category field
-                venueList = venueList.map(venue => ({
-                    ...venue,
-                    distance: calculateDistance(userLocation.lat, userLocation.lng, venue.latitude, venue.longitude),
-                }));
-
+                const { data } = await client.query({ query: GET_LOCATIONS });
+                // map each field from response data to venueList, 
+                // caclulate and add distance field, also extract and add category field
+                venueList = data.locations
+                .filter((location: { latitude: null; longitude: null; }) => location.latitude !== null && location.longitude !== null)
+                .map((location: { en_name: string; id: any; latitude: number; longitude: number; }) => {
+                    // Use regex to extract the category from en_name
+                    const regex = /\((.*?)\)/;
+                    const matches = regex.exec(location.en_name);
+                    const category = matches ? matches[1] : ''; 
+            
+                    return {
+                        id: location.id,
+                        category: category, // Set the extracted category
+                        location: location.en_name,
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                        distance: calculateDistance(userLocation.lat, userLocation.lng, location.latitude, location.longitude),
+                    };
+                });
                 resolve(venueList); // Resolve with the new venue list
             },
             (error) => {
