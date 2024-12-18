@@ -1,4 +1,4 @@
-import {  gql, ApolloClient, InMemoryCache } from '@apollo/client';
+import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
 
 export interface Venue {
     id?: number;
@@ -76,7 +76,18 @@ const GET_LOCATIONS = gql`
   }
 `;
 
-export const fetchVenues = async (): Promise<Venue[]> => {
+const GET_FAOURITE_LOCATIONS = gql`
+    query($id: String!) {
+        user(id: $id) {
+            favouriteLocations {
+                id
+                en_name
+                latitude
+                longitude
+            }
+        }
+}`;
+export const fetchVenues = async (user_id?:string): Promise<Venue[]> => {
 
 
     return new Promise((resolve, reject) => {
@@ -90,10 +101,14 @@ export const fetchVenues = async (): Promise<Venue[]> => {
 
                 let venueList = predefinedVenueList; 
 
-                const { data } = await client.query({ query: GET_LOCATIONS });
+                let data;
+                if(!user_id)
+                    data = (await client.query({ query: GET_LOCATIONS })).data.locations;
+                else
+                    data = (await client.query({ query: GET_FAOURITE_LOCATIONS, variables: { id: user_id } })).data.user.favouriteLocations;
                 // map each field from response data to venueList, 
                 // caclulate and add distance field, also extract and add category field
-                venueList = data.locations
+                venueList = data
                 .filter((location: { latitude: null; longitude: null; }) => location.latitude !== null && location.longitude !== null)
                 .map((location: { en_name: string; id: any; latitude: number; longitude: number; }) => {
                     // Use regex to extract the category from en_name

@@ -2,6 +2,7 @@ import React, { useState, useEffect, memo, useDeferredValue } from 'react';
 import {fetchVenues, Venue} from './FetchVenues';
 import LocationTable from './LocationTable';
 import MapView from './MapView';
+import { useAuthState } from '../Auth/AuthProviderHooks';
 
 
 
@@ -13,14 +14,15 @@ const predefinedVenue = {
   eventNum: 4,
   distance: 1,
 }
-function FavouriteVenue(){
+function FavouriteVenue() {
+  const  { user } = useAuthState();
     
 
       const [filteredData, setFilteredData] = useState<Venue[]>([]);
       useEffect(() => {
         const loadVenues = async () => {
             try {
-                const venues = await fetchVenues();
+                const venues = await fetchVenues(user?.id);
                 setFilteredData(venues);
            
             } catch (error) {

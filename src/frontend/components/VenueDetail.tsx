@@ -36,13 +36,23 @@ const GET_COMMENTS = gql`
     }
 `;
 
+
+const FAVORITE_VENUE = gql`
+    mutation favouriteLocation($id: Int!) {
+        favouriteLocation(id: $id) {
+            id
+        }
+    }
+`;
+
 function VenueDetail() {
     const location = useLocation();
     const [selectedVenue, setSelectedVenue] = useState<Venue | undefined >(undefined); // the venue to be displayed
     const [venueDetail, setVenueDetail] = useState<google.maps.places.Place[]>(); // info of venue visited (up to 3)
     const [infoWindowVisible, setInfoWindowVisible] = useState(true);
     const [createComment] = useMutation(CREATE_COMMENT);
-    const { loading, error, data, refetch } = useQuery(GET_COMMENTS);
+    const [favouriteLocation] = useMutation(FAVORITE_VENUE);
+    const { data, refetch } = useQuery(GET_COMMENTS);
 
     useEffect(() => {
         function trackVenue(){
@@ -215,8 +225,14 @@ function VenueDetail() {
             user: { username: string; };
         }[]>([]);
         
-        function addFavourite(){
-            alert(`Selected Rows: ${JSON.stringify(selectedVenue)}`);
+        function addFavourite() {
+            favouriteLocation({
+                variables: {
+                    id: selectedVenue?.id,
+                },
+            }).then((result) => {
+                console.log(result);
+            });
         };
 
         useEffect(() => {
