@@ -40,7 +40,7 @@ const GlobalNavbar: React.FC = () => {
                                                 <NavDropdown.Item as={Link} to="/admin/users">
                                                     User Management
                                                 </NavDropdown.Item>
-                                                <NavDropdown.Item as={Link} to="#event">
+                                                <NavDropdown.Item as={Link} to="/admin/modify-events">
                                                     Event Management
                                                 </NavDropdown.Item>
                                                 {/* <NavDropdown.Divider />
