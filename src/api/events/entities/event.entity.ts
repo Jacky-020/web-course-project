@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Location } from 'src/api/locations/entities/location.entity';
 import mongoose from 'mongoose';
 import { Comment } from 'src/api/comments/entities/comment.entity';
+import { User } from 'src/api/user/user.schema';
 
 @ObjectType()
 @Schema()
@@ -204,8 +205,18 @@ export class Event {
   @Prop()
   date_created: Date;
 
-  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: Comment.name})
-  @Field(() => [Comment], {description: "Comments for the event"})
+  /**
+   * Users that favourited this event
+   */
+  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'User'})
+  @Field(() => [User])
+  favourited: User[];
+
+  /**
+   * Comments for the event
+   */
+  @Prop({type: [mongoose.Schema.Types.ObjectId], ref: "Comment"})
+  @Field(() => [Comment])
   comments: Comment[];
 }
 
@@ -214,8 +225,14 @@ export const EventSchema = SchemaFactory.createForClass(Event);
 @ObjectType()
 @Schema()
 export class EventMeta {
+  /**
+   * Hash of the data fetched from source
+   */
   @Prop()
   data_hash?: string;
+  /**
+   * Datetime of last update from source
+   */
   @Prop()
   last_update?: Date;
 }

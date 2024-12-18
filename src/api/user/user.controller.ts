@@ -18,6 +18,9 @@ export class UserController {
         const user: User = {
             ...body,
             roles: [Role.User],
+            comments: [],
+            favouriteLocations: [],
+            favouriteEvents: [],
         };
         const newUser = await this.userService.create(user);
         const reqUser: ReqUser = {

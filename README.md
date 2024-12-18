@@ -61,15 +61,15 @@ logins and loads your page."* (*currently only on admin request*)
     - [x] ✨ use MongoDB for [session storage](https://medium.com/front-end-weekly/make-sessions-work-with-express-js-using-mongodb-62a8a3423ef5)
     - [x] ✨ Consider using [password hashing](https://www.mongodb.com/blog/post/password-authentication-with-mongoose-part-1)
 
-- [ ] CRUD endpoints for Locations, Events, Users, Comments
+- [-] CRUD endpoints for Locations, Events, Users, Comments
     - [-] Location Schema - `name, latitude, longitude, events[Event], Categories[Category]`
     - [x] Category Schema - `name, Locations[Location]`
     - [-] Event Schema - `title, Location/Venue, date/time, description, presenter, comments[Comment]` + ✨ `likes[User]`
     - [-] Comment Schema - `user, text, date, Event,` + ✨ `likes[User]`
     - [x] GET allowed for all users
     - [x] POST, PUT, DELETE allowed for Admins
-    - [ ] Like/Unlike endpoints for Events and Comments
-    - [ ] Favorite/Unfavorite endpoints for Users
+    - [x] Like/Unlike endpoints for Comments
+    - [x] Favorite/Unfavorite endpoints for Users
     - [x] New Comment endpoint for Events
     - [x] ✨ serverside comments sanitization, allow for html input (`DOMPurify.sanitize` lol)
     - [x] ✨ GraphQL API for CRUD operations?

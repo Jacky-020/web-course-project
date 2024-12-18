@@ -1,6 +1,6 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { UserService } from './user.service';
-import { Role } from '../user/user.schema';
+import { Role, User, UserDocument } from '../user/user.schema';
 import { Roles } from '../auth/auth.guard';
 import { UserType } from '../user/user.schema';
 import { CreateUserInput } from './dto/create-user.input';
@@ -13,7 +13,13 @@ export class UserResolver {
     @Mutation(() => UserType)
     @Roles([Role.Admin])
     createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-        return this.userService.create(createUserInput);
+        let newUser: User = {
+            ...createUserInput,
+            comments: [],
+            favouriteEvents: [],
+            favouriteLocations: [],
+        }
+        return this.userService.create(newUser);
     }
 
     @Query(() => [UserType], { name: 'users' })
@@ -38,5 +44,21 @@ export class UserResolver {
     @Roles([Role.Admin])
     removeUser(@Args('id', { type: () => String }) id: string) {
         return this.userService.remove(id);
+    }
+
+    @ResolveField()
+    async comments(@Parent() user: UserDocument) {
+        await user.populate('comments');
+        return user.comments;
+    }
+    @ResolveField()
+    async favouriteLocations(@Parent() user: UserDocument) {
+        await user.populate('favouriteLocations');
+        return user.favouriteLocations;
+    }
+    @ResolveField()
+    async favouriteEvents(@Parent() user: UserDocument) {
+        await user.populate('favouriteEvents')
+        return user.favouriteEvents;
     }
 }

@@ -1,9 +1,32 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { ObjectType, Field, Int, ID, createUnionType, registerEnumType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Event } from 'src/api/events/entities/event.entity';
 import { User } from 'src/api/user/user.schema';
 import mongoose from 'mongoose'
 import { ObjectIDResolver } from 'graphql-scalars';
+import { Location } from 'src/api/locations/entities/location.entity';
+
+export const CommentTargetType = createUnionType({
+  name: "CommentTargetType",
+  types: () => [Location, Event] as const,
+  resolveType(val) {
+    // Kind of a hack
+    if (val.en_name) {
+      return Location;
+    } else {
+      return Event;
+    }
+  }
+});
+
+export enum CommentTargetTypes {
+  LOCATION = "Location",
+  EVENT = "Event",
+}
+
+registerEnumType(CommentTargetTypes, {
+  name: "CommentTargetTypes",
+})
 
 @ObjectType()
 @Schema()
@@ -19,12 +42,22 @@ export class Comment {
   @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'User'})
   @Field(() => User)
   user: User;
+
+  @Prop({type: String}) // enum: CommentTargetTypes
+  @Field(() => CommentTargetTypes)
+  targetType: CommentTargetTypes;
+
   /**
-   * Event that was commented on
+   * Target of the comment, either Location / Event
    */
-  @Prop({type: mongoose.Schema.Types.ObjectId, ref: 'Event'})
-  @Field(() => Event)
-  event: Event;
+  @Field(() => CommentTargetType)
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'targetType',
+  })
+  target: Event | Location;
+  
   /**
    * Body of the comment
    */
@@ -45,7 +78,7 @@ export class Comment {
    */
   @Prop({type: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}]})
   @Field(() => [User])
-  likes: [User];
+  likes: User[];
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

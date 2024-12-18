@@ -1,7 +1,6 @@
-import { Logger, Module } from '@nestjs/common';
+import { HttpStatus, Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -41,6 +40,28 @@ import { ObjectIDResolver } from 'graphql-scalars';
       autoSchemaFile: true,
       formatError: (err) => ({ message: err.message, status: err.extensions.code }),
       resolvers: { ObjectID: ObjectIDResolver },
+      plugins: [
+        // ref: https://yylslolz.medium.com/adding-401-http-status-code-response-to-nestjs-graphql-endpoint-27c54bd555c5
+        {
+          async requestDidStart() {
+            return {
+              async willSendResponse(context) {
+                const { response, errors } = context;
+                if (errors) {
+                  const error = errors[0];
+                  // Set HTTP status code based on the error code
+                  if (error.originalError.name === "UnauthorizedException") {
+                    response.http.status = HttpStatus.UNAUTHORIZED;
+                  }
+                }
+              },
+            };
+          },
+        },
+      ],
+      subscriptions: {
+        'graphql-ws': true,
+      },
       path: '/api/graphql',
     }),
     EventsModule,
