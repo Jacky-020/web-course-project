@@ -8,6 +8,7 @@ import crypto from 'node:crypto'
 import { Event, EventMeta } from './entities/event.entity';
 import { Location } from '../locations/entities/location.entity';
 import parser from 'any-date-parser';
+import { populate } from 'dotenv';
 
 @Injectable()
 export class EventsService {
@@ -22,11 +23,11 @@ export class EventsService {
   }
 
   async findAll() {
-    return this.eventModel.find().exec();
+    return this.eventModel.find(null, null, { populate: ['venue', 'comments'] }).exec();
   }
 
   async findOne(id: number) {
-    return this.eventModel.findOne({id: id}).exec();
+    return this.eventModel.findOne({id: id}, null, { populate: ['venue', 'comments' ]}).exec();
   }
 
   update(id: number, updateEventInput: UpdateEventInput) {
