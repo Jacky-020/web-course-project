@@ -1,7 +1,7 @@
 import {  gql, ApolloClient, InMemoryCache } from '@apollo/client';
 
 export interface Venue {
-    id?: number;
+    id: number;
     location: string;
     category?: string;
     latitude: number;

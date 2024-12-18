@@ -26,6 +26,7 @@ function VenueDetail() {
     const location = useLocation();
     const [selectedVenue, setSelectedVenue] = useState<Venue | undefined >(undefined); // the venue to be displayed
     const [venueDetail, setVenueDetail] = useState<google.maps.places.Place[]>(); // info of venue visited (up to 3)
+    const [venueIdList, setVenueIdList] = useState<number[]>();
     const [infoWindowVisible, setInfoWindowVisible] = useState(true);
     const [createComment] = useMutation(CREATE_COMMENT);
 
@@ -46,11 +47,27 @@ function VenueDetail() {
                 if (updatedVenue.length > 3) {
                     updatedVenue = updatedVenue.slice(-3); 
                 }
+                console.log(updatedVenue);
                 localStorage.setItem('venueList', JSON.stringify(updatedVenue));
+
+                // set venue id
+                retrieveVenueIdList(updatedVenue);
+                
             }
         }
 
+        function retrieveVenueIdList(savedVenue: Venue[]) {
+            let prevenueIdList: number[] = [];
+        
+            for (const venue of savedVenue) {
+                prevenueIdList.push(venue.id); // Push the venue ID into the array
+            }
+            console.log(prevenueIdList)
+            setVenueIdList(prevenueIdList);
+        }
+
         trackVenue();
+        
     }, [location]);
 
     useEffect(() => {
@@ -113,7 +130,9 @@ function VenueDetail() {
             {venueDetail.map((venue, index) => (
                 <Carousel.Item key={index} >
                     <div onClick={() => {
+                        console.log(venueIdList);
                         navigate('/VenueDetail', { state: { selectedVenue: {
+                            id: venueIdList[index],
                             latitude: venueDetail[index].location?.lat(),
                             longitude: venueDetail[index].location?.lng(),
                             location: venueDetail[index].displayName,
@@ -126,7 +145,7 @@ function VenueDetail() {
                         
                     />
                     <Carousel.Caption>
-                        <h3>{venue?.displayName || ''}</h3>
+                        <h3 className='text-light'>{venue?.displayName || ''}</h3>
                     </Carousel.Caption>
                     </div>
                 </Carousel.Item>
